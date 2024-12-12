@@ -1,5 +1,0 @@
-module Flight_Management_System_Client
-typeinfo appFlight_Management_System_Client.qmltypes
-prefer :/qt/qml/Flight_Management_System_Client/
-Main 1.0 Main.qml
-

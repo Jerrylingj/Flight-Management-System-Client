@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/Flight_Management_System_Client/">
-    <file alias="Main.qml">D:/CodeFiles/Qt_Files/Flight_Management_System_Client/Main.qml</file>
-  </qresource>
-</RCC>
-
