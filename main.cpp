@@ -1,3 +1,4 @@
+#include "api/networkhandler.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
@@ -13,6 +14,7 @@ int main(int argc, char *argv[])
                              QCoreApplication::exit(-1);
                      }, Qt::QueuedConnection);
     engine.load(url);
+    qmlRegisterType<NetworkHandler>("NetworkHandler", 1, 0, "NetworkHandler");
 
     return app.exec();
 }

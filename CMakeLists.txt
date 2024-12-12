@@ -24,6 +24,9 @@ set(QML_FILES
 
 set(SOURCE_FILES
     main.cpp
+    api/networkhandler.cpp
+    api/networkhandler.h
+    static/sites.js
 )
 
 set(RESOURCES_FILES
@@ -38,6 +41,7 @@ qt_add_qml_module(${PROJECT_NAME}
     URI Flight_Management_System_Client
     VERSION 1.0
     RESOURCE_PREFIX /qt
+    SOURCES ${SOURCE_FILES}
     RESOURCES ${RESOURCES_FILES}
     QML_FILES ${QML_FILES}
 )
