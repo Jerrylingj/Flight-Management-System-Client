@@ -31,5 +31,6 @@ The **Flight Management System Client** is a desktop application designed for ma
 - **Backend Communication**: RESTful APIs
 - **Database**: MySQL
 
-
+## Notice
+- Try to use the relevant elements of this component library as much as possible
 
