@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/Flight_Management_System_Client">
+    <file alias="qmldir">D:/CodeFiles/Qt_Files/Flight_Management_System_Client/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/Flight_Management_System_Client/qmldir</file>
+  </qresource>
+</RCC>
+

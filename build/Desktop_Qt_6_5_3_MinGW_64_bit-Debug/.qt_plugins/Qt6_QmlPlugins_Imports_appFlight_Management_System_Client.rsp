@@ -1,0 +1,14 @@
+-rootPath
+D:/CodeFiles/Qt_Files/Flight_Management_System_Client
+-cmake-output
+-output-file
+D:/CodeFiles/Qt_Files/Flight_Management_System_Client/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/.qt_plugins/Qt6_QmlPlugins_Imports_appFlight_Management_System_Client.cmake
+-importPath
+D:/CodeFiles/Qt_Files/Flight_Management_System_Client/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/Flight_Management_System_Client
+-importPath
+D:/CodeFiles/Qt_Files/Flight_Management_System_Client/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug
+-importPath
+D:/Applications/Qt/6.5.3/mingw_64/./qml
+-qrcFiles
+D:/CodeFiles/Qt_Files/Flight_Management_System_Client/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/.rcc/qmake_Flight_Management_System_Client.qrc
+D:/CodeFiles/Qt_Files/Flight_Management_System_Client/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/.rcc/appFlight_Management_System_Client_raw_qml_0.qrc
