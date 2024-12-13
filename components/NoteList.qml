@@ -1,12 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import NetworkHandler 1.0
-import "../static/sites.js" as Site
+// import "../static/sites.js" as Site
 
 Flickable {
     id:flickableContainer
     contentWidth: width
-    contentHeight: Math.min(...yArray) + homeViewImage.height
+    contentHeight: Math.min(...yArray)
 
     property var yArray:[]
     property int column: 2 // 列数，默认为2
@@ -25,7 +25,7 @@ Flickable {
                                 noteContainer.model.append({article:item.article})
                                         })
                             if(!response.hasMore){
-                                cityID = Site.getRandomID()
+                                // cityID = Site.getRandomID()
                             }
                             isLoading = false
                         }
@@ -98,15 +98,6 @@ Flickable {
         }
     }
 
-
-    Image {
-        id:homeViewImage
-        source: "../figure/homepage-cover.png"
-        width: parent.width
-        height: 200
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
     Repeater {
         id: noteContainer
         model:ListModel{
@@ -121,7 +112,7 @@ Flickable {
             NoteCard {
                 id: card
                 Component.onCompleted: {
-                    curY = yArray[card.num] + homeViewImage.height
+                    curY = yArray[card.num]
                     yArray[card.num] += card.height + flickableContainer.spacing * 2
                     // 刷新数组, 触发yArray改变
                     yArray = [...yArray]
