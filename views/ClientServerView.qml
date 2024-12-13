@@ -63,6 +63,26 @@ FluContentPage {
 
         FluFilledButton {
             text: qsTr("发送")
+            onClicked: {
+                var newMessage=inputField.text.trim()
+                if(newMessage!=="" && newMessage.length < 20){
+                    // 创建一个新的消息对象
+                    var message = { type: "user", content: newMessage, avatar: "../figures/avatar.jpg" };
+
+                    // 更新 messages 数组并强制刷新
+                    var tempMessages = clientchatPage.messages.slice(); // 复制当前的消息数组
+                    tempMessages.push(message); // 添加新消息
+                    clientchatPage.messages = []; // 置空以触发变化通知
+                    clientchatPage.messages = tempMessages; // 设置为新的消息数组
+
+                    inputField.text = ""; // 清空输入框
+
+                    // 滚动到底部
+                    messageScroll.contentY = messageScroll.contentHeight;
+                }
+
+            }
+
 
         }
     }
