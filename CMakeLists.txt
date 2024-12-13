@@ -54,6 +54,7 @@ qt_add_qml_module(${PROJECT_NAME}
     QML_FILES views/ClientServerView.qml
     QML_FILES components/NoteCard.qml
     QML_FILES components/NoteList.qml
+    QML_FILES views/FindVIew.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
