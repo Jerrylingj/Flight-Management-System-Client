@@ -72,8 +72,8 @@ FluContentPage {
 
 
     ColumnLayout {
-        anchors.fill: parent
-        spacing: 16
+        // anchors.fill: parent
+        // spacing: 16
 
         // 筛选区域
         FluRectangle {

@@ -1,64 +1,67 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
 import FluentUI 1.0
+import QtQuick.Layouts 1.15
+import "../components"
 
-FluPage {
-    id: clientServerView
-    title: qsTr("客服咨询")
-    background: Rectangle { radius: 5 }
+FluContentPage {
+    id: clientchatPage
+    title: qsTr("客服页面")
+    property var messages: [
+        { type: "agent", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
+        { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
+        { type: "agent", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
+        { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
+        { type: "agent", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
+        { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
+        { type: "agent", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
+        { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" }
+    ]
 
-    // ColumnLayout {
-    //     anchors.fill: parent
+    // 消息列表区域
+    Flickable {
+        width: parent.width
+        height: parent.height-inputRow.height
+        id: messageScroll
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        contentHeight: messageList.height
+        clip: true
 
-    //     // 消息显示区域
-    //     ListView {
-    //         id: messageListView
-    //         Layout.fillWidth: true
-    //         Layout.fillHeight: true
-    //         model: messageModel
-    //         delegate: Item {
-    //             width: messageListView.width
-    //             height: textItem.paintedHeight + 20
-    //             Text {
-    //                 id: textItem
-    //                 text: model.message
-    //                 wrapMode: Text.Wrap
-    //                 anchors {
-    //                     left: parent.left
-    //                     right: parent.right
-    //                     leftMargin: 10
-    //                     rightMargin: 10
-    //                 }
-    //             }
-    //         }
-    //     }
+        ColumnLayout {
+            id: messageList
+            width: parent.width
+            spacing: 100
 
-    //     // 输入区域
-    //     RowLayout {
-    //         Layout.fillWidth: true
-    //         spacing: 10
+            Repeater {
+                model: messages
+                delegate: MessageItem {
+                    type: modelData.type
+                    content: modelData.content
+                    avatarSource: modelData.avatar
+                }
 
-    //         TextArea {
-    //             id: inputArea
-    //             Layout.fillWidth: true
-    //             placeholderText: qsTr("请输入消息...")
-    //         }
+            }
+        }
+    }
 
-    //         Button {
-    //             text: qsTr("发送")
-    //             onClicked: {
-    //                 if (inputArea.text.trim() !== "") {
-    //                     messageModel.append({"message": inputArea.text})
-    //                     inputArea.text = ""
-    //                     messageListView.positionViewAtEnd()
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+    RowLayout {
+        id: inputRow
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        spacing: 10
 
-    // ListModel {
-    //     id: messageModel
-    // }
+        FluTextBox {
+            id: inputField
+            placeholderText: qsTr("请输入消息")
+            Layout.fillWidth: true
+        }
+
+        FluFilledButton {
+            text: qsTr("发送")
+        }
+    }
+
 }
+
