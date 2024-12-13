@@ -21,6 +21,9 @@ set(QML_FILES
     views/OrdersView.qml
     views/ProfileView.qml
     components/FlightInfoCard.qml
+    components/NoteCard.qml
+    components/NoteList.qml
+    views/FindView.qml
 )
 
 set(SOURCE_FILES
@@ -38,6 +41,7 @@ set(RESOURCES_FILES
     figures/login-flight.png
     figures/help-desk.png
     figures/avatar.jpg
+    figures/nailong.jpg
 )
 
 qt_add_executable(${PROJECT_NAME}

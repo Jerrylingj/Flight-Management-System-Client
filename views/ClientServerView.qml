@@ -8,39 +8,42 @@ FluContentPage {
     id: clientchatPage
     title: qsTr("客服页面")
     property var messages: [
-        { type: "agent", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
+        { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
         { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
-        { type: "agent", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
+        { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
         { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
-        { type: "agent", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
+        { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
         { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
-        { type: "agent", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
+        { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
         { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" }
     ]
 
     // 消息列表区域
     Flickable {
-        width: parent.width
-        height: parent.height-inputRow.height
+        anchors.top:parent.top
+        anchors.left:parent.left
+        anchors.right: parent.right
+        anchors.bottom: inputRow.top
+
         id: messageScroll
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+
         contentHeight: messageList.height
         clip: true
 
         ColumnLayout {
             id: messageList
             width: parent.width
-            spacing: 100
+            spacing: 50
 
             Repeater {
+                width: parent.width
                 model: messages
                 delegate: MessageItem {
                     type: modelData.type
                     content: modelData.content
                     avatarSource: modelData.avatar
+                    width: clientchatPage.width
                 }
-
             }
         }
     }
@@ -60,6 +63,7 @@ FluContentPage {
 
         FluFilledButton {
             text: qsTr("发送")
+
         }
     }
 

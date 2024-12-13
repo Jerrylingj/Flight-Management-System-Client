@@ -11,7 +11,7 @@ FluWindow {
     visible: true
     title: qsTr("云途")
 
-    stayTop: true
+    stayTop: false
     showDark: true
     showStayTop: true
 
@@ -56,6 +56,14 @@ FluWindow {
                 title: qsTr("个人中心")
                 icon: FluentIcons.Contact
                 url: "qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml"
+                onTap: { navView.push(url) }
+            }
+
+            FluPaneItem {
+                id: item_find
+                title: qsTr("发现")
+                icon: FluentIcons.QuickNote
+                url: "qrc:/qt/Flight_Management_System_Client/views/FindView.qml"
                 onTap: { navView.push(url) }
             }
         }
