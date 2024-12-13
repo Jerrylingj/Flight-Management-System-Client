@@ -36,6 +36,14 @@ FluWindow {
             }
 
             FluPaneItem {
+                id: item_find
+                title: qsTr("发现")
+                icon: FluentIcons.QuickNote
+                url: "qrc:/qt/Flight_Management_System_Client/views/FindView.qml"
+                onTap: { navView.push(url) }
+            }
+
+            FluPaneItem {
                 id: item_flight_info
                 title: qsTr("全部航班")
                 icon: FluentIcons.Airplane
@@ -56,14 +64,6 @@ FluWindow {
                 title: qsTr("个人中心")
                 icon: FluentIcons.Contact
                 url: "qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml"
-                onTap: { navView.push(url) }
-            }
-
-            FluPaneItem {
-                id: item_find
-                title: qsTr("发现")
-                icon: FluentIcons.QuickNote
-                url: "qrc:/qt/Flight_Management_System_Client/views/FindView.qml"
                 onTap: { navView.push(url) }
             }
         }

@@ -7,6 +7,7 @@ import "../components"
 FluContentPage {
     id: clientchatPage
     title: qsTr("客服页面")
+    background: Rectangle { radius: 5 }
     property var messages: [
         { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
         { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
