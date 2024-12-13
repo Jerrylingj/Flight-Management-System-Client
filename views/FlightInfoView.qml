@@ -154,8 +154,5 @@ FluContentPage {
             // 绑定 contentHeight
             contentHeight: columnLayout.height
         }
-
-
-
     }
 }

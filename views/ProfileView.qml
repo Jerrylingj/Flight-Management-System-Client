@@ -1,174 +1,161 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
-import FluentUI
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Effects
+import QtQuick.Layouts 1.15
+import FluentUI 1.0
 
-// ProfileView.qml
-Page {
-    id: profileView
+FluContentPage {
+    id: userProfilePage
+    title: qsTr("个人中心")
+    background: Rectangle { radius: 5 }
 
-    property string viewName: '个人中心'
-    property StackView stack: StackView.view
-
-    Rectangle {
+    ColumnLayout {
         anchors.fill: parent
-        color: "#F5F5F5" // 背景颜色
+        spacing: 20
 
-        Column {
-            anchors.topMargin: 20
-            anchors.fill: parent
-            anchors.centerIn: parent
-            spacing: 20
+        // 个人信息部分
+        Rectangle {
+            Layout.fillWidth: true
+            height: 200
+            radius: 5
+            border.width: 1
 
-
-            // 头像和用户名部分
-            Row {
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.05
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 20
                 spacing: 10
+
+                // 头像
                 Rectangle {
-                    width: 80
-                    height: 80
-                    radius: 40
-                    color: "#FFD700" // 圆形背景颜色
-                    Text {
-                        anchors.centerIn: parent
-                        text: "头像"
-                        color: "white"
-                        font.bold: true
-                        font.pointSize: 12
+                    width: 150
+                    height: 150
+                    border.color: "#DDDDDD" // 可选，设置边框颜色
+                    layer.enabled: true
+
+                    Image {
+                        id: avatar
+                        source: "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
+                        anchors.fill: parent
+                        fillMode: Image.PreserveAspectCrop
+                        layer.enabled: true
+                        layer.effect: MultiEffect {
+                            maskEnabled: true
+                            maskSource: ShaderEffectSource {
+                                sourceItem: Rectangle {
+                                    width: avatar.width
+                                    height: avatar.height
+                                    radius: 5
+                                    color: "black"
+                                }
+                            }
+                        }
                     }
                 }
 
-                FluText {
-                    text: userInfo.userName
-                    anchors.topMargin: 20
-                    font.bold: true
-                    font.pointSize: 20
-                    color: "#333333"
+
+                // 用户信息
+                ColumnLayout {
+                    spacing: 10
+
+                    FluText {
+                        text: qsTr("用户 ID: ") + "123456"
+                        font.pixelSize: 16
+                    }
+
+                    FluText {
+                        text: qsTr("用户名: ") + "test"
+                        font.pixelSize: 16
+                    }
+
+                    FluText {
+                        text: qsTr("账号: ") + "user@example.com"
+                        font.pixelSize: 16
+                    }
+
+                    FluText {
+                        text: qsTr("简介: ") + "热爱旅行，探索世界。"
+                        font.pixelSize: 14
+                        wrapMode: Text.WordWrap
+                    }
+
+                    FluText {
+                        text: qsTr("钱包余额: ") + "￥500.00"
+                        font.pixelSize: 16
+                        color: FluTheme.primaryColor
+                    }
+                }
+            }
+        }
+
+        // 导航功能部分
+        Rectangle {
+            Layout.fillWidth: true
+            height: 120
+            radius: 5
+            border.width: 1
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 20
+                spacing: 20
+
+                FluFilledButton {
+                    text: qsTr("收藏")
+                    Layout.preferredWidth: 120
+                    onClicked: {
+                        console.log("跳转到收藏界面");
+                        // 跳转到收藏页面逻辑
+                    }
                 }
 
                 FluFilledButton {
-                    text: "编辑"
-                    anchors.top: parent.top
-                    anchors.topMargin: 20
-                    width: parent.width * 0.4
-                    height: 40
+                    text: qsTr("全部订单")
+                    Layout.preferredWidth: 120
                     onClicked: {
-                        console.log("编辑个人信息")
-                        stack.changeTo("views/EditPersonalInfo.qml")
+                        console.log("跳转到航班信息界面");
+                        // 跳转到航班信息页面逻辑
                     }
                 }
 
             }
+        }
 
-            // 个人信息文本框
-            FluText {
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.05
-                text: "个人简介"
-                font.pointSize: 15
-                color: "#008000"
-            }
+        // 账号操作部分
+        Rectangle {
+            Layout.fillWidth: true
+            height: 120
+            radius: 5
+            border.width: 1
 
-            FluText {
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.05
-                text: "    " + userInfo.userPersonalInfo
-                font.pointSize: 14
-                color: "#666666"
-                wrapMode: Text.Wrap // 自动换行
-                horizontalAlignment: Text.AlignLeft // 修改这里为左对齐
-                width: parent.width * 0.9 // 增加宽度到90%
-            }
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 20
+                spacing: 20
 
-            // 剩余金额
-            FluText {
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.1
-                text: "剩余金额：￥"+userInfo.myMoney
-                font.pointSize: 20
-                color: "#EE82EE"
-            }
-
-            FluFilledButton {
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.15
-                width: parent.width * 0.7
-                height: 40
-                text: "我的订单"
-                font.pixelSize: 20
-                onClicked: {
-                    console.log("我的订单")
-                    stack.changeTo("views/OrdersView.qml")
+                FluFilledButton {
+                    text: qsTr("登录")
+                    Layout.preferredWidth: 100
+                    onClicked: {
+                        console.log("登录按钮点击");
+                        // 登录逻辑
+                    }
                 }
-            }
 
-            FluFilledButton {
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.15
-                width: parent.width * 0.7
-                height: 40
-                text: "我的收藏"
-                font.pixelSize: 20
-                onClicked: {
-                    console.log("我的收藏")
-                    stack.changeTo("views/FlightInfoView.qml")
+                FluFilledButton {
+                    text: qsTr("注册")
+                    Layout.preferredWidth: 100
+                    onClicked: {
+                        console.log("注册按钮点击");
+                        // 注册逻辑
+                    }
                 }
-            }
 
-            FluFilledButton {
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.15
-                width: parent.width * 0.7
-                height: 40
-                text: "注册"
-                font.pixelSize: 20
-                onClicked: {
-                    console.log("注册")
-                    stack.changeTo('views/Register.qml')
-                }
-            }
-
-            FluFilledButton {
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.15
-                width: parent.width * 0.7
-                height: 40
-                text: "登录/切换账号"
-                font.pixelSize: 20
-                onClicked: {
-                    console.log("登录/切换账号")
-                    stack.changeTo('views/Login.qml')
-                }
-            }
-
-            FluFilledButton {
-                id: button
-                text: qsTr("注销账号")
-                anchors.left: parent.left // 左边对齐到父元素的左边
-                anchors.leftMargin: parent.width * 0.15
-                width: parent.width * 0.7
-                height: 40
-                font.pixelSize: 20
-                onClicked: confirmationDialog.open()
-
-                FluContentDialog {
-                    id: confirmationDialog
-
-                    x: (parent.width - width) / 2
-                    y: (parent.height - height) / 2
-                    parent: Overlay.overlay
-
-                    modal: true
-                    title: qsTr("你确认要注销账号？")
-
-
-                    onPositiveClicked: {
-                        console.log("确定")
-                        userInfo.userName="未知用户"
-                        userInfo.myMoney=0
-                        userInfo.userPersonalInfo="无"
+                FluTextButton {
+                    text: qsTr("注销")
+                    Layout.preferredWidth: 100
+                    onClicked: {
+                        console.log("注销按钮点击");
+                        // 注销逻辑
                     }
                 }
             }

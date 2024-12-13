@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import FluentUI 1.0
 import QtQuick.Layouts 1.15
+import FluentUI 1.0
 
 FluRectangle {
     id: flightInfoCard
@@ -31,6 +31,7 @@ FluRectangle {
             Layout.preferredWidth: flightInfoCard.width / 6
             spacing: 5
 
+            // 航空公司Logo
             // FluImage {
             //     id: airlineLogo
             //     source: "qrc:/images/airline_logo.png" // 替换为真实路径
