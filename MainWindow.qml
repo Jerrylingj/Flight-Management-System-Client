@@ -6,6 +6,8 @@ FluWindow {
     id: mainWindow
     width: Screen.width * 0.6
     height: Screen.height * 0.6
+    minimumWidth: 768
+    minimumHeight: 420
     visible: true
     title: qsTr("云途")
 
@@ -21,8 +23,9 @@ FluWindow {
 
         // 使用 FluPaneItemExpander 包裹多个 FluPaneItem
         items: FluPaneItemExpander {
-            title: "Main Menu"
+            title: qsTr("主菜单")
             iconVisible: false
+            showEdit: true
 
             FluPaneItem {
                 id: item_home
@@ -53,6 +56,19 @@ FluWindow {
                 title: qsTr("个人中心")
                 icon: FluentIcons.Contact
                 url: "qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml"
+                onTap: { navView.push(url) }
+            }
+        }
+
+        footerItems:FluPaneItemExpander {
+            title: qsTr("主菜单")
+            iconVisible: false
+
+            FluPaneItem {
+                id: item_client_server
+                title: qsTr("客服")
+                icon: FluentIcons.Message
+                url: "qrc:/qt/Flight_Management_System_Client/views/ClientServerView.qml"
                 onTap: { navView.push(url) }
             }
         }

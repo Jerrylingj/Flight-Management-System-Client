@@ -4,8 +4,9 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 FluContentPage {
-    id: flightInfoPage
+    id: flightInfoView
     title: qsTr("航班信息")
+    background: Rectangle { radius: 5 }
 
     // 筛选面板
     FluFrame {
@@ -66,32 +67,32 @@ FluContentPage {
             {
                 title: qsTr("航班号"),
                 dataIndex: "flightNumber",
-                width: 100
+                // width: 100
             },
             {
                 title: qsTr("起点"),
                 dataIndex: "departure",
-                width: 150
+                // width: 150
             },
             {
                 title: qsTr("终点"),
                 dataIndex: "destination",
-                width: 150
+                // width: 150
             },
             {
                 title: qsTr("日期"),
                 dataIndex: "date",
-                width: 120
+                // width: 120
             },
             {
                 title: qsTr("票价"),
                 dataIndex: "price",
-                width: 100
+                // width: 100
             },
             {
                 title: qsTr("操作"),
                 dataIndex: "action",
-                width: 200
+                // width: 200
             }
         ]
     }

@@ -1,12 +1,9 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import FluentUI 1.0
 
-Rectangle {
-    color: "lightpink"
-    anchors.fill: parent
-    Text {
-        text: qsTr("Profile Page")
-        anchors.centerIn: parent
-        font.pixelSize: 24
-    }
+FluPage {
+    id: profileView
+    title: "个人中心"
+    background: Rectangle { radius: 5 }
 }

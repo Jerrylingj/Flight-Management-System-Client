@@ -31,6 +31,7 @@ set(SOURCE_FILES
 
 set(RESOURCES_FILES
     favicon.ico
+    figures/homepage-cover.png
 )
 
 qt_add_executable(${PROJECT_NAME}
@@ -44,6 +45,7 @@ qt_add_qml_module(${PROJECT_NAME}
     SOURCES ${SOURCE_FILES}
     RESOURCES ${RESOURCES_FILES}
     QML_FILES ${QML_FILES}
+    QML_FILES views/ClientServerView.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
