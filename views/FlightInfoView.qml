@@ -1,165 +1,161 @@
 import QtQuick 2.15
-import FluentUI 1.0
 import QtQuick.Controls 2.15
+import FluentUI 1.0
 import QtQuick.Layouts 1.15
+import NetworkHandler 1.0
+import "../components"
 
 FluContentPage {
-    id: flightInfoView
+    id: flightInfoPage
     title: qsTr("航班信息")
     background: Rectangle { radius: 5 }
 
-    // 筛选面板
-    FluFrame {
-        id: filterPanel
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-            topMargin: 10
+    property var flightData: []
+
+    // 创建 NetworkHandler 实例
+    NetworkHandler {
+        id: networkHandler
+
+        onRequestSuccess: function(responseData) {
+            var jsonString = JSON.stringify(responseData);
+            // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+
+            // 检查 responseData 是否为数组
+            if (Array.isArray(responseData)) {
+                console.log("responseData 是一个数组，长度为:", responseData.length);
+                // 为每个航班添加 isBooked 和 isFaved 字段，初始化为 false
+                flightData = responseData.map(function(flight) {
+                    flight.isBooked = false;
+                    flight.isFaved = false;
+                    flight.remainingSeats = 10;
+                    return flight;
+                });
+            } else {
+                console.log("responseData 不是一个数组，类型为:", typeof responseData);
+                // 如果 responseData 不是数组，检查是否包含数组字段
+                if (responseData.data && Array.isArray(responseData.data)) {
+                    console.log("responseData.data 是一个数组，长度为:", responseData.data.length);
+                    flightData = responseData.data.map(function(flight) {
+                        /*** 初始化数据 ***/
+                        flight.isBooked = false;
+                        flight.isFaved = false;
+                        flight.remainingSeats = 10;
+                        return flight;
+                    });
+
+                } else {
+                    console.log("无法识别的响应数据结构");
+                    flightData = [];
+                }
+            }
+
         }
-        height: 80
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: 10
-            spacing: 20
 
-            FluTextBox {
-                id: departureInput
-                placeholderText: qsTr("请输入起点")
-                Layout.preferredWidth: 150
-            }
+        onRequestFailed: function(errorMessage) {
+            console.log("请求失败：", errorMessage); // 打印失败的错误信息
+        }
+    }
 
-            FluTextBox {
-                id: destinationInput
-                placeholderText: qsTr("请输入终点")
-                Layout.preferredWidth: 150
-            }
 
-            FluDatePicker {
-                id: datePicker
-                Layout.preferredWidth: 150
-            }
+    // 调用网络请求
+    function fetchFlightData() {
+        var url = "http://127.0.0.1:8080/api/flights";  // 后端 API URL
+        // console.log("发送请求，URL:", url); // 打印请求的 URL
+        networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
+    }
 
-            FluFilledButton {
-                text: qsTr("查询")
-                Layout.preferredWidth: 100
-                onClicked: {
-                    // 模拟查询后更新表格
-                    loadFlightData(departureInput.text, destinationInput.text, datePicker.text);
+
+    // 在页面初始化时调用 fetchFlightData 获取航班数据
+    Component.onCompleted: {
+        fetchFlightData();  // 页面加载完毕后调用 fetchFlightData 方法获取数据
+    }
+
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 16
+
+        // 筛选区域
+        FluRectangle {
+            z: 10
+            id: filterPanel
+            radius: 10
+            Layout.fillWidth: true
+            height: 40
+            color: FluTheme.backgroundSecondaryColor
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 20
+
+                FluTextBox {
+                    id: departureInput
+                    placeholderText: qsTr("请输入起点")
+                    Layout.preferredWidth: 150
+                }
+
+                FluTextBox {
+                    id: destinationInput
+                    placeholderText: qsTr("请输入终点")
+                    Layout.preferredWidth: 150
+                }
+
+                FluDatePicker {
+                    id: datePicker
+                    Layout.preferredWidth: 180
+                }
+
+                FluFilledButton {
+                    text: qsTr("查询")
+                    Layout.preferredWidth: 100
+                    onClicked: {
+                        console.log("筛选条件: 起点=${departureInput.text}, 终点=${destinationInput.text}, 日期=${datePicker.date}");
+                    }
                 }
             }
         }
-    }
 
-    // 航班表格
-    FluTableView {
-        id: flightTable
-        anchors {
-            top: filterPanel.bottom
-            left: parent.left
-            right: parent.right
-            bottom: pagination.top
-            topMargin: 10
-        }
-        width: parent.width
+        Flickable {
+            y: filterPanel.height
+            width: parent.width
+            height: parent.height
+            contentWidth: parent.width
+            clip: true
 
-        columnSource: [
-            {
-                title: qsTr("航班号"),
-                dataIndex: "flightNumber",
-                // width: 100
-            },
-            {
-                title: qsTr("起点"),
-                dataIndex: "departure",
-                // width: 150
-            },
-            {
-                title: qsTr("终点"),
-                dataIndex: "destination",
-                // width: 150
-            },
-            {
-                title: qsTr("日期"),
-                dataIndex: "date",
-                // width: 120
-            },
-            {
-                title: qsTr("票价"),
-                dataIndex: "price",
-                // width: 100
-            },
-            {
-                title: qsTr("操作"),
-                dataIndex: "action",
-                // width: 200
+            ColumnLayout {
+                id: columnLayout
+                width: parent.width
+                spacing: 10
+
+                Repeater {
+                    model: flightData
+                    width: parent.width
+
+                    FlightInfoCard {
+                        width: parent.width
+                        height: 80 // 确保 FlightInfoCard 有固定高度
+                        flightId: modelData.flightId
+                        flightNumber: modelData.flightNumber
+                        departureTime: modelData.departureTime
+                        arrivalTime: modelData.arrivalTime
+                        departureAirport: modelData.departureAirport
+                        arrivalAirport: modelData.arrivalAirport
+                        price: modelData.price
+                        airlineCompany: modelData.airlineCompany
+                        status: modelData.status
+                        isBooked: modelData.isBooked
+                        isFaved: modelData.isFaved
+                        remainingSeats: modelData.remainingSeats
+                    }
+                }
             }
-        ]
-    }
 
-    // 分页组件
-    FluPagination {
-        id: pagination
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-            bottomMargin: 10
-        }
-        pageCurrent: 1
-        itemCount: 50
-        pageButtonCount: 5
-        __itemPerPage: 10
-        previousText: qsTr("< 上一页")
-        nextText: qsTr("下一页 >")
-        onRequestPage: function (page, count) {
-            loadFlightData(page, count);
-        }
-    }
-
-    // 模拟数据生成
-    function loadFlightData(departure, destination, date) {
-        const sampleData = [];
-        const flightPrefix = "CA";
-        const cities = ["北京", "上海", "广州", "深圳", "杭州", "成都"];
-        const randomCity = () => cities[Math.floor(Math.random() * cities.length)];
-        const randomPrice = () => `¥${(Math.random() * 500 + 500).toFixed(0)}`;
-
-        for (let i = 0; i < pagination.__itemPerPage; i++) {
-            sampleData.push({
-                flightNumber: `${flightPrefix}${Math.floor(Math.random() * 9000 + 1000)}`,
-                departure: departure || randomCity(),
-                destination: destination || randomCity(),
-                date: date || "2024-12-12",
-                price: randomPrice(),
-                action: createActionButtons(i)
-            });
+            // 绑定 contentHeight
+            contentHeight: columnLayout.height
         }
 
-        flightTable.dataSource = sampleData;
-    }
 
-    // // 创建操作按钮
-    // function createActionButtons(index) {
-    //     return flightTable.customItem(
-    //         Component {
-    //             Item {
-    //                 RowLayout {
-    //                     FluButton {
-    //                         text: qsTr("购买")
-    //                         onClicked: console.log(`购买航班: ${index}`);
-    //                     }
-    //                     FluButton {
-    //                         text: qsTr("收藏")
-    //                         onClicked: console.log(`收藏航班: ${index}`);
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     );
-    // }
 
-    Component.onCompleted: {
-        loadFlightData("", "", "");
     }
 }

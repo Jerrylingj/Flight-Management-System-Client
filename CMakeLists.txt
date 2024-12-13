@@ -20,6 +20,7 @@ set(QML_FILES
     views/FlightInfoView.qml
     views/OrdersView.qml
     views/ProfileView.qml
+    components/FlightInfoCard.qml
 )
 
 set(SOURCE_FILES
