@@ -6,8 +6,8 @@ FluWindow {
     id: mainWindow
     width: Screen.width * 0.6
     height: Screen.height * 0.6
-    minimumWidth: 768
-    minimumHeight: 420
+    minimumWidth: 800
+    minimumHeight: 600
     visible: true
     title: qsTr("云途")
 

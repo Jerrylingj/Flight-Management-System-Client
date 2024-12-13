@@ -40,7 +40,7 @@ Page {
                     }
                 }
 
-                Text {
+                FluText {
                     text: userInfo.userName
                     anchors.topMargin: 20
                     font.bold: true
@@ -63,7 +63,7 @@ Page {
             }
 
             // 个人信息文本框
-            Text {
+            FluText {
                 anchors.left: parent.left // 左边对齐到父元素的左边
                 anchors.leftMargin: parent.width * 0.05
                 text: "个人简介"
@@ -71,7 +71,7 @@ Page {
                 color: "#008000"
             }
 
-            Text {
+            FluText {
                 anchors.left: parent.left // 左边对齐到父元素的左边
                 anchors.leftMargin: parent.width * 0.05
                 text: "    " + userInfo.userPersonalInfo
@@ -83,7 +83,7 @@ Page {
             }
 
             // 剩余金额
-            Text {
+            FluText {
                 anchors.left: parent.left // 左边对齐到父元素的左边
                 anchors.leftMargin: parent.width * 0.1
                 text: "剩余金额：￥"+userInfo.myMoney
@@ -153,7 +153,7 @@ Page {
                 font.pixelSize: 20
                 onClicked: confirmationDialog.open()
 
-                Dialog {
+                FluContentDialog {
                     id: confirmationDialog
 
                     x: (parent.width - width) / 2
@@ -161,21 +161,11 @@ Page {
                     parent: Overlay.overlay
 
                     modal: true
-                    title: qsTr("确认")
-                    standardButtons: Dialog.Yes | Dialog.No
+                    title: qsTr("你确认要注销账号？")
 
-                    Column {
-                        spacing: 20
-                        anchors.fill: parent
-                        Label {
-                            text: qsTr("你确定要注销账号？")
-                        }
-                        CheckBox {
-                            text: qsTr("Do not ask again")
-                            anchors.right: parent.right
-                        }
-                    }
-                    onAccepted: {
+
+                    onPositiveClicked: {
+                        console.log("确定")
                         userInfo.userName="未知用户"
                         userInfo.myMoney=0
                         userInfo.userPersonalInfo="无"

@@ -28,11 +28,15 @@ set(SOURCE_FILES
     api/networkhandler.cpp
     api/networkhandler.h
     static/sites.js
+    storage/userinfo.h
 )
 
 set(RESOURCES_FILES
     favicon.ico
     figures/homepage-cover.png
+    figures/editinfo.png
+    figures/login-flight.png
+    figures/help-desk.png
 )
 
 qt_add_executable(${PROJECT_NAME}

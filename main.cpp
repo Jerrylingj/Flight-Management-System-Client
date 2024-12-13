@@ -1,6 +1,8 @@
 #include "api/networkhandler.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include "storage/userinfo.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +17,15 @@ int main(int argc, char *argv[])
                      }, Qt::QueuedConnection);
     engine.load(url);
     qmlRegisterType<NetworkHandler>("NetworkHandler", 1, 0, "NetworkHandler");
+
+    UserInfo userInfo;
+    userInfo.setUserName("John Doe");
+    userInfo.setUserPersonalInfo("Some personal info about John");
+    userInfo.setMyMoney(1000);
+
+    // 将 UserInfo 对象暴露给 QML
+    engine.rootContext()->setContextProperty("userInfo", &userInfo);
+
 
     return app.exec();
 }
