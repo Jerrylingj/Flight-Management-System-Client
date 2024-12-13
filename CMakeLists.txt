@@ -20,10 +20,14 @@ set(QML_FILES
     views/FlightInfoView.qml
     views/OrdersView.qml
     views/ProfileView.qml
+    views/FindView.qml
+    views/FlightInfoEditView.qml
+    views/ClientServerView.qml
+    views/AgentServerView.qml
     components/FlightInfoCard.qml
     components/NoteCard.qml
     components/NoteList.qml
-    views/FindView.qml
+    components/MessageItem.qml
 )
 
 set(SOURCE_FILES
@@ -55,8 +59,7 @@ qt_add_qml_module(${PROJECT_NAME}
     SOURCES ${SOURCE_FILES}
     RESOURCES ${RESOURCES_FILES}
     QML_FILES ${QML_FILES}
-    QML_FILES views/ClientServerView.qml
-    QML_FILES components/MessageItem.qml
+    QML_FILES views/FlightFavoriteView.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

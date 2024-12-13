@@ -104,7 +104,8 @@ FluContentPage {
                     Layout.preferredWidth: 120
                     onClicked: {
                         console.log("跳转到收藏界面");
-                        // 跳转到收藏页面逻辑
+                        userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml")
+                        userNavView.setCurrentIndex(3);
                     }
                 }
 
@@ -112,8 +113,10 @@ FluContentPage {
                     text: qsTr("全部订单")
                     Layout.preferredWidth: 120
                     onClicked: {
-                        console.log("跳转到航班信息界面");
-                        // 跳转到航班信息页面逻辑
+                        console.log("跳转到全部订单界面");
+                        // 跳转到全部订单页面逻辑
+                        userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightInfoView.qml")
+                        userNavView.setCurrentIndex(4);
                     }
                 }
 
