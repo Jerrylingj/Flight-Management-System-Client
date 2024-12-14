@@ -21,12 +21,13 @@ public:
 
     Q_ENUM(RequestMethod)
 
-    explicit NetworkHandler(QObject *parent = nullptr);
+    explicit NetworkHandler(QObject *parent = nullptr, QString api_url = "http://localhost:8080");
 
     Q_INVOKABLE void request(
         const QString &url,
         RequestMethod method,
-        const QJsonObject &data = QJsonObject()
+        const QJsonObject &data = QJsonObject(),
+        const QString Token = ""
         );
 
 signals:
@@ -35,6 +36,7 @@ signals:
 
 private:
     QNetworkAccessManager *m_NetworkHandler;
+    QString api_url;
 
     QUrl buildUrlWithParams(const QString &baseUrl, const QJsonObject &params);
 };

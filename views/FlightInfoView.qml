@@ -39,7 +39,7 @@ FluContentPage {
 
     // 调用网络请求
     function fetchFlightData() {
-        var url = "http://127.0.0.1:8080/api/flights";  // 后端 API URL
+        const url = "/api/flights";  // 后端 API URL
         // console.log("发送请求，URL:", url); // 打印请求的 URL
         networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
     }
