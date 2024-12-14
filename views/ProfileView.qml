@@ -37,18 +37,6 @@ FluContentPage {
                         source: "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
-                        layer.enabled: true
-                        layer.effect: MultiEffect {
-                            maskEnabled: true
-                            maskSource: ShaderEffectSource {
-                                sourceItem: Rectangle {
-                                    width: avatar.width
-                                    height: avatar.height
-                                    radius: 5
-                                    color: "black"
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -58,28 +46,28 @@ FluContentPage {
                     spacing: 10
 
                     FluText {
-                        text: qsTr("用户 ID: ") + "123456"
+                        text: qsTr("用户 ID: ") + userInfo.userId
                         font.pixelSize: 16
                     }
 
                     FluText {
-                        text: qsTr("用户名: ") + "test"
+                        text: qsTr("用户名: ") + userInfo.userName
                         font.pixelSize: 16
                     }
 
                     FluText {
-                        text: qsTr("账号: ") + "user@example.com"
+                        text: qsTr("账号: ") + userInfo.userEmail
                         font.pixelSize: 16
                     }
 
                     FluText {
-                        text: qsTr("简介: ") + "热爱旅行，探索世界。"
+                        text: qsTr("简介: ") + userInfo.userPersonalInfo
                         font.pixelSize: 14
                         wrapMode: Text.WordWrap
                     }
 
                     FluText {
-                        text: qsTr("钱包余额: ") + "￥500.00"
+                        text: qsTr("钱包余额: ") + userInfo.myMoney
                         font.pixelSize: 16
                         color: FluTheme.primaryColor
                     }
@@ -153,12 +141,27 @@ FluContentPage {
                     }
                 }
 
+
                 FluTextButton {
                     text: qsTr("注销")
                     Layout.preferredWidth: 100
+
+                    FluContentDialog{
+                        id:quittextDialog
+                        title: "确定注销账号？"
+                        onPositiveClickListener:()=>{
+                                                    quittextDialog.close()
+                                                    userInfo.userName="未知用户"
+                                                    userInfo.userPersonalInfo="无"
+                                                    userInfo.myMoney=0
+                                                    userInfo.userId=0
+                                                    userInfo.userEmail="none"
+                                                }
+                    }
                     onClicked: {
                         console.log("注销按钮点击");
                         // 注销逻辑
+                        quittextDialog.open();
                     }
                 }
             }

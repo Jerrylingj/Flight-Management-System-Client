@@ -64,9 +64,17 @@ FluContentPage {
 
         FluFilledButton {
             text: qsTr("发送")
+            FluContentDialog{
+                id:quittextDialog
+                title: "字数过长"
+            }
             onClicked: {
                 var newMessage=inputField.text.trim()
-                if(newMessage!=="" && newMessage.length < 20){
+                if(newMessage.length>=20){
+                    quittextDialog.open()
+                }
+
+                else if(newMessage!=="" && newMessage.length < 20){
                     // 创建一个新的消息对象
                     var message = { type: "user", content: newMessage, avatar: "../figures/avatar.jpg" };
 

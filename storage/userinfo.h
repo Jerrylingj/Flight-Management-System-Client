@@ -12,9 +12,27 @@ class UserInfo : public QObject
     Q_PROPERTY(int myMoney READ myMoney WRITE setMyMoney NOTIFY myMoneyChanged)
     Q_PROPERTY(QString myTelephone READ myTelephone WRITE setMyTelephone NOTIFY myTelephoneChanged)
     Q_PROPERTY(QString myToken READ myToken WRITE setMyToken NOTIFY myTokenChanged)
+    Q_PROPERTY(int userId READ userId WRITE setUserId NOTIFY userIdChanged)
+    Q_PROPERTY(QString userEmail READ userEmail WRITE setUserEmail NOTIFY userEmailChanged)
 
 public:
     explicit UserInfo(QObject *parent = nullptr) : QObject(parent), m_myMoney(0) {}
+
+    int userId() const { return m_userId; }
+    void setUserId(int userId) {
+        if (m_userId != userId) {
+            m_userId = userId;
+            emit userIdChanged();
+        }
+    }
+
+    QString userEmail() const { return m_userEmail; }
+    void setUserEmail(const QString &userEmail) {
+        if (m_userEmail != userEmail) {
+            m_userEmail = userEmail;
+            emit userEmailChanged();
+        }
+    }
 
     QString userName() const { return m_userName; }
     void setUserName(const QString &userName) {
@@ -57,6 +75,8 @@ public:
     }
 
 signals:
+    void userIdChanged();
+    void userEmailChanged();
     void userNameChanged();
     void userPersonalInfoChanged();
     void myMoneyChanged();
@@ -69,6 +89,8 @@ private:
     int m_myMoney;
     QString m_myTelephone;
     QString m_myToken;
+    int m_userId;
+    QString m_userEmail;
 };
 
 #endif // USERINFO_H

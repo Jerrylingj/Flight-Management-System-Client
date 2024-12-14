@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
     userInfo.setUserName("John Doe");
     userInfo.setUserPersonalInfo("Some personal info about John");
     userInfo.setMyMoney(1000);
+    userInfo.setUserEmail("example.com");
+    userInfo.setUserId(0);
 
     // 将 UserInfo 对象暴露给 QML
     engine.rootContext()->setContextProperty("userInfo", &userInfo);
