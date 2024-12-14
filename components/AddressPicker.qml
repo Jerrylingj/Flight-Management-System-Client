@@ -5,8 +5,9 @@ import QtQuick.Window
 import FluentUI
 
 FluButton {
-    property var provinces: ["北京", "上海", "天津", "重庆", "河北", "山西", "内蒙古", "辽宁", "吉林", "黑龙江", "江苏", "浙江", "安徽", "福建", "江西", "山东", "河南", "湖北", "湖南", "广东", "广西", "海南", "四川", "贵州", "云南", "西藏", "陕西", "甘肃", "青海", "宁夏", "新疆", "香港", "澳门", "台湾"]
+    property var provinces: ["全部", "北京", "上海", "天津", "重庆", "河北", "山西", "内蒙古", "辽宁", "吉林", "黑龙江", "江苏", "浙江", "安徽", "福建", "江西", "山东", "河南", "湖北", "湖南", "广东", "广西", "海南", "四川", "贵州", "云南", "西藏", "陕西", "甘肃", "青海", "宁夏", "新疆", "香港", "澳门", "台湾"]
     property var cities: {
+        "全部": ["全部"],
         "北京": ["北京"],
         "上海": ["上海"],
         "天津": ["天津"],
@@ -54,10 +55,10 @@ FluButton {
     implicitWidth: 180
     Component.onCompleted: {
         if(selectedProvince === "") {
-            selectedProvince = provinces[19] // 默认选择广东
+            selectedProvince = provinces[0] // 默认省份
         }
         if(selectedCity === "" && cities[selectedProvince]) {
-            selectedCity = cities[selectedProvince][2] // 默认选择珠海
+            selectedCity = cities[selectedProvince][0] // 默认省份
         }
         text_province.text = selectedProvince
         text_city.text = selectedCity
