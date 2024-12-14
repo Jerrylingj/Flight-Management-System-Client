@@ -69,17 +69,38 @@ FluContentPage {
                 anchors.margins: 10
                 spacing: 20
 
-                FluTextBox {
-                    id: departureInput
-                    placeholderText: qsTr("请输入起点")
-                    Layout.preferredWidth: 150
-                }
+                // FluTextBox {
+                //     id: departureInput
+                //     placeholderText: qsTr("请输入起点")
+                //     Layout.preferredWidth: 150
+                // }
 
-                FluTextBox {
-                    id: destinationInput
-                    placeholderText: qsTr("请输入终点")
-                    Layout.preferredWidth: 150
-                }
+                // FluTextBox {
+                //     id: destinationInput
+                //     placeholderText: qsTr("请输入终点")
+                //     Layout.preferredWidth: 150
+                // }
+                // AddressPicker {
+                //     id: departureAddressPicker
+                //     onAccepted: {
+                //         console.log("选择的省份:", selectedProvince);
+                //         console.log("选择的城市:", selectedCity);
+
+                //         // 更新页面显示选择结果
+                //         selectedAddress.text = qsTr("当前选择: ") + selectedProvince + ", " + selectedCity;
+                //     }
+                // }
+
+                // AddressPicker {
+                //     id: arrivalAddressPicker
+                //     onAccepted: {
+                //         console.log("选择的省份:", selectedProvince);
+                //         console.log("选择的城市:", selectedCity);
+
+                //         // 更新页面显示选择结果
+                //         selectedAddress.text = qsTr("当前选择: ") + selectedProvince + ", " + selectedCity;
+                //     }
+                // }
 
                 FluDatePicker {
                     id: datePicker
