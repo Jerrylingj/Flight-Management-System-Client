@@ -7,6 +7,7 @@ Flickable {
     id:flickableContainer
     contentWidth: width
     contentHeight: Math.min(...yArray)
+    clip: true
 
     property var yArray:[]
     property int column: 2 // 列数，默认为2
