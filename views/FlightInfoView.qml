@@ -68,7 +68,6 @@ FluContentPage {
             radius: 10
             Layout.fillWidth: true
             height: 40
-            color: FluTheme.backgroundSecondaryColor
 
             RowLayout {
                 anchors.fill: parent
