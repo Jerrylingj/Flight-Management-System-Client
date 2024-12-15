@@ -19,11 +19,10 @@ int main(int argc, char *argv[])
     qmlRegisterType<NetworkHandler>("NetworkHandler", 1, 0, "NetworkHandler");
 
     UserInfo userInfo;
-    userInfo.setUserName("John Doe");
-    userInfo.setUserPersonalInfo("Some personal info about John");
-    userInfo.setMyMoney(1000);
-    userInfo.setUserEmail("example.com");
-    userInfo.setUserId(0);
+    userInfo.setUserName("旅客");
+    userInfo.setUserPersonalInfo("普通的旅客");
+    userInfo.setMyMoney(-1);
+    userInfo.setUserEmail("noname@mail2.sysu.edu.cn");
 
     // 将 UserInfo 对象暴露给 QML
     engine.rootContext()->setContextProperty("userInfo", &userInfo);

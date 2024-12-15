@@ -34,9 +34,12 @@ FluContentPage {
 
                     Image {
                         id: avatar
-                        source: "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
+                        source: userInfo.myAvatar||"qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
+                        Component.onCompleted: {
+                            console.log(userInfo.myAvatar)
+                        }
                     }
                 }
 
@@ -44,11 +47,6 @@ FluContentPage {
                 // 用户信息
                 ColumnLayout {
                     spacing: 10
-
-                    FluText {
-                        text: qsTr("用户 ID: ") + userInfo.userId
-                        font.pixelSize: 16
-                    }
 
                     FluText {
                         text: qsTr("用户名: ") + userInfo.userName

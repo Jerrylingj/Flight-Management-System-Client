@@ -3,17 +3,44 @@ import FluentUI 1.0
 import NetworkHandler 1.0
 
 FluPage {
-    id: registrationPage
+    id: loginPage
 
     NetworkHandler{
         id: networkHandler
+        // 枚举类型不知道为什么用不了，用了构建不成功
+        property string curType:'login'
         onRequestSuccess:function(data){
-            if(data['code'] === 200) {
-                console.log(JSON.stringify(data['data'], null, 2))
-                userInfo.myToken = data['data']['token']
-                console.log(userInfo.myToken)
-            }else{
-                console.error(data['message'])
+            switch(networkHandler.curType){
+            case 'login':{
+                if(data['code'] === 200) {
+                    console.log(JSON.stringify(data['data'], null, 2))
+                    userInfo.myToken = data['data']['token']
+                    console.log(userInfo.myToken)
+                    networkHandler.curType = 'user'
+                    networkHandler.request('/api/user', NetworkHandler.GET, {}, userInfo.myToken)
+                }else{
+                    console.error(data['message'])
+                }
+                break
+            }
+
+            case 'user':{
+                if(data['code'] === 200) {
+                    console.log(JSON.stringify(data['data']))
+                    const info = data['data']
+                    userInfo.myMoney = info['balance']
+                    userInfo.myAvatar = info['avatar_url']
+                    userInfo.myCreateTime = info['created_at']
+                    userInfo.userName = info['username']
+                    userInfo.userEmail = info['email']
+                }else{
+                    console.error(data['message'])
+                }
+                break
+            }
+            default:{
+                console.log("?")
+            }
             }
         }
         onRequestFailed: (data)=>{console.log(JSON.stringify(data))}

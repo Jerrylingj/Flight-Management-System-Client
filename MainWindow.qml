@@ -11,11 +11,6 @@ FluWindow {
     visible: true
     title: qsTr("云途")
 
-    // 判断是否为管理员端
-    /*
-      由于当前userInfo没有管理员字段，暂时用userInfo.myToken代替
-    */
-
     stayTop: false
     showDark: true
     showStayTop: true
@@ -26,7 +21,7 @@ FluWindow {
         anchors.fill: parent
         pageMode: FluNavigationViewType.NoStack
         displayMode: FluNavigationViewType.Auto
-        visible: !userInfo.myToken // 只有当Identity为false时显示用户端
+        visible: true
 
         items: FluPaneItemExpander {
             title: qsTr("主菜单")
@@ -102,7 +97,7 @@ FluWindow {
         anchors.fill: parent
         pageMode: FluNavigationViewType.NoStack
         displayMode: FluNavigationViewType.Auto
-        visible: userInfo.myToken // 只有当Identity为true时显示管理员端
+        visible: false
 
         items: FluPaneItemExpander {
             title: qsTr("主菜单")
@@ -137,10 +132,11 @@ FluWindow {
     }
 
     Component.onCompleted: {
-        if (userInfo.myToken) {
-            agentNavView.setCurrentIndex(0)
-        } else {
-            userNavView.setCurrentIndex(0)
-        }
+        // if (userInfo.myToken) {
+        //     agentNavView.setCurrentIndex(0)
+        // } else {
+        //     userNavView.setCurrentIndex(0)
+        // }
+        userNavView.setCurrentIndex(0)
     }
 }
