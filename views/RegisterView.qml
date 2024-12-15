@@ -13,6 +13,7 @@ FluPage {
                     registrationPage.value = data['data']
                 }else{
                     console.log(data['data'])
+                    userNavView.push("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
                 }
             }else{
                 console.error(data['message'])

@@ -13,9 +13,7 @@ FluPage {
             switch(networkHandler.curType){
             case 'login':{
                 if(data['code'] === 200) {
-                    console.log(JSON.stringify(data['data'], null, 2))
                     userInfo.myToken = data['data']['token']
-                    console.log(userInfo.myToken)
                     networkHandler.curType = 'user'
                     networkHandler.request('/api/user', NetworkHandler.GET, {}, userInfo.myToken)
                 }else{
@@ -26,13 +24,13 @@ FluPage {
 
             case 'user':{
                 if(data['code'] === 200) {
-                    console.log(JSON.stringify(data['data']))
                     const info = data['data']
                     userInfo.myMoney = info['balance']
                     userInfo.myAvatar = info['avatar_url']
                     userInfo.myCreateTime = info['created_at']
                     userInfo.userName = info['username']
                     userInfo.userEmail = info['email']
+                    userNavView.push("qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml")
                 }else{
                     console.error(data['message'])
                 }
