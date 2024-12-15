@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import FluentUI 1.0
 import QtQuick.Layouts 1.15
+import NetworkHandler 1.0
 import "../components"
 
 FluContentPage {
@@ -9,15 +10,27 @@ FluContentPage {
     title: qsTr("客服")
     background: Rectangle { radius: 5 }
     property var messages: [
-        { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
-        { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
-        { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
-        { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
-        { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
-        { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" },
-        { type: "user", content: "我想看看航班信息", avatar: "../figures/avatar.jpg" },
-        { type: "agent", content: "我是奶龙", avatar: "../figures/nailong.jpg" }
+{role:"system", content:"你是一个航班信息管理系统的客服，你可以查询航班信息。你需要准确地回答客户，如果你不知道你应该直接回答不知道而不是编造一条数据"}
     ]
+
+    NetworkHandler{
+        id: networkHandler
+        onRequestSuccess: function(data){
+            console.log(JSON.stringify(data.data))
+            if(data['code'] === 200){
+                const msg = data.data
+                listModel.append(msg)
+                clientchatPage.messages.push(msg)
+            }else{
+                // error
+            }
+
+
+        }
+        onRequestFailed: function(data){
+            console.error(data.message)
+        }
+    }
 
     // 消息列表区域
     Flickable {
@@ -38,11 +51,14 @@ FluContentPage {
 
             Repeater {
                 width: parent.width
-                model: messages
+                model: ListModel{
+                    id:listModel
+                }
+
                 delegate: MessageItem {
-                    type: modelData.type
-                    content: modelData.content
-                    avatarSource: modelData.avatar
+                    type: role
+                    content: model.content
+                    avatarSource: role === 'user'?"../figures/avatar.jpg":"../figures/nailong.jpg"
                     width: clientchatPage.width
                 }
             }
@@ -76,16 +92,14 @@ FluContentPage {
 
                 else if(newMessage!=="" && newMessage.length < 20){
                     // 创建一个新的消息对象
-                    var message = { type: "user", content: newMessage, avatar: "../figures/avatar.jpg" };
+                    const msg = { role: "user", content: newMessage };
 
-                    // 更新 messages 数组并强制刷新
-                    var tempMessages = clientchatPage.messages.slice(); // 复制当前的消息数组
-                    tempMessages.push(message); // 添加新消息
-                    clientchatPage.messages = []; // 置空以触发变化通知
-                    clientchatPage.messages = tempMessages; // 设置为新的消息数组
+                    listModel.append(msg)
+                    clientchatPage.messages.push(msg)
 
                     inputField.text = ""; // 清空输入框
 
+                    networkHandler.request("/api/aichat", NetworkHandler.POST, {messages:clientchatPage.messages})
                     // 滚动到底部
                     messageScroll.contentY = messageScroll.contentHeight;
                 }

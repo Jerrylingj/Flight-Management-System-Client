@@ -30,10 +30,12 @@ Item {
     RowLayout {
         id: agentRow
         spacing: 10
-        visible: type === "agent"
+        visible: type === "assistant"
         anchors.left: parent.left
         anchors.margins: 20 // 左右边距设置
+        width:parent.width
         Rectangle {
+            id:assistantAvatar
             width: 50
             height: 50
             radius: 25
@@ -60,17 +62,18 @@ Item {
         }
         Rectangle {
             radius: 10
+            width:(agentRow.width - assistantAvatar.width) * 0.5
+            height: text.height * 1.25
             color: "#F5F5F5"
             border.color: "#DDDDDD"
             border.width: 1
-            Layout.preferredWidth: calculateTextWidth(content)  // 自动适应文本长度，最小50，最大400
-            Layout.preferredHeight: Math.max(40, content.length / 40 * 20) // 自动调整高度
             Text {
+                id:text
                 text: content
                 font.pixelSize: 18
+                width:parent.width
                 wrapMode: Text.Wrap
-                anchors.centerIn: parent
-                horizontalAlignment: Text.AlignHCenter
+                // horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
         }
