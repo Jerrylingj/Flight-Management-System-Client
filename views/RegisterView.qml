@@ -1,11 +1,30 @@
 import QtQuick 2.15
 import FluentUI 1.0
+import NetworkHandler 1.0
 
 FluPage {
     id: registrationPage
 
+    NetworkHandler{
+        id: networkHandler
+        onRequestSuccess:function(data){
+            if(data['code'] === 200) {
+                if(data['data'].length>10){
+                    registrationPage.value = data['data']
+                }else{
+                    console.log(data['data'])
+                }
+            }else{
+                console.error(data['message'])
+            }
+        }
+        onRequestFailed: (data)=>{console.log(JSON.stringify(data))}
+    }
+
     width: parent.width
     height:parent.height
+
+    property string value:""
 
     Column {
         spacing: 20
@@ -49,18 +68,23 @@ FluPage {
             text: "发送验证码"
             width: parent.width * 0.8
             onClicked: {
-                // 模拟发送验证码
-                console.log("验证码已发送！")
+                networkHandler.request("/api/send-code", NetworkHandler.POST, {email:emailField.text})
             }
         }
 
         FluButton {
             text: "注册"
             width: parent.width * 0.8
-            enabled: true
+            enabled: usernameField.text.length>0&&emailField.text.length>0&&passwordField.text.length>0&&confirmPasswordField.text.length>0&&captchaField.text.length>0&&registrationPage.value.length>0
             onClicked: {
                 // 模拟注册
-                console.log("注册成功！")
+                networkHandler.request("/api/register", NetworkHandler.POST, {
+                                           email:emailField.text,
+                                           username:usernameField.text,
+                                           password:passwordField.text,
+                                           code:captchaField.text,
+                                           value:registrationPage.value
+                                       })
             }
         }
     }
