@@ -17,17 +17,18 @@ FluContentPage {
         id: networkHandler
 
         onRequestSuccess: function(responseData) {
+            console.log("进入onRequestSuccess函数")
             var jsonString = JSON.stringify(responseData);
-            // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+            console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
 
             // 检查 responseData 是否为数组
             if (Array.isArray(responseData)) {
                 console.log("responseData 是一个数组，长度为:", responseData.length);
-                // 为每个航班添加 isBooked 和 isFaved 字段，初始化为 false
+                // 为每个航班添加 isBooked 和 isFaved 字段，初始化为 false，确保每个字段存在
                 flightData = responseData.map(function(flight) {
-                    flight.isBooked = false;
-                    flight.isFaved = false;
-                    flight.remainingSeats = 10;
+                    flight.isBooked = (flight.isBooked !== undefined) ? flight.isBooked : false;
+                    flight.isFaved = (flight.isFaved !== undefined) ? flight.isFaved : false;
+                    flight.remainingSeats = (flight.remainingSeats !== undefined) ? flight.remainingSeats : 10;
                     return flight;
                 });
             } else {
@@ -36,31 +37,30 @@ FluContentPage {
                 if (responseData.data && Array.isArray(responseData.data)) {
                     console.log("responseData.data 是一个数组，长度为:", responseData.data.length);
                     flightData = responseData.data.map(function(flight) {
-                        /*** 初始化数据 ***/
-                        flight.isBooked = false;
-                        flight.isFaved = false;
-                        flight.remainingSeats = 10;
+                        flight.isBooked = (flight.isBooked !== undefined) ? flight.isBooked : false;
+                        flight.isFaved = (flight.isFaved !== undefined) ? flight.isFaved : false;
+                        flight.remainingSeats = (flight.remainingSeats !== undefined) ? flight.remainingSeats : 10;
                         return flight;
                     });
-
                 } else {
                     console.log("无法识别的响应数据结构");
-                    flightData = [];
+                    flightData = []; // 如果数据结构无法识别，确保 flightData 为一个空数组
                 }
             }
-
         }
 
         onRequestFailed: function(errorMessage) {
             console.log("请求失败：", errorMessage); // 打印失败的错误信息
+            flightData = []; // 在请求失败时，确保 flightData 为空数组，避免渲染问题
         }
     }
+
 
 
     // 调用网络请求
     function fetchFlightData() {
         var url = "http://127.0.0.1:8080/api/flights";  // 后端 API URL
-        // console.log("发送请求，URL:", url); // 打印请求的 URL
+        console.log("发送请求，URL:", url); // 打印请求的 URL
         networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
     }
 
@@ -72,8 +72,8 @@ FluContentPage {
 
 
     ColumnLayout {
-        anchors.fill: parent
-        spacing: 16
+        // anchors.fill: parent
+        // spacing: 16
 
         // 筛选区域
         FluRectangle {
@@ -82,7 +82,7 @@ FluContentPage {
             radius: 10
             Layout.fillWidth: true
             height: 40
-            color: FluTheme.backgroundSecondaryColor
+            // color: FluTheme.backgroundSecondaryColor
 
             RowLayout {
                 anchors.fill: parent
@@ -134,7 +134,7 @@ FluContentPage {
 
                     FlightInfoCard {
                         width: parent.width
-                        height: 80 // 确保 FlightInfoCard 有固定高度
+                        height: 80
                         flightId: modelData.flightId
                         flightNumber: modelData.flightNumber
                         departureTime: modelData.departureTime
