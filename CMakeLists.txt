@@ -61,6 +61,8 @@ qt_add_qml_module(${PROJECT_NAME}
     QML_FILES ${QML_FILES}
     QML_FILES views/FlightFavoriteView.qml
     QML_FILES components/AddressPicker.qml
+    QML_FILES views/RegisterView.qml
+    QML_FILES views/LoginView.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

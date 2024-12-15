@@ -127,6 +127,7 @@ FluContentPage {
                     text: qsTr("登录")
                     Layout.preferredWidth: 100
                     onClicked: {
+                        userNavView.push("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
                         console.log("登录按钮点击");
                         // 登录逻辑
                     }
@@ -136,6 +137,7 @@ FluContentPage {
                     text: qsTr("注册")
                     Layout.preferredWidth: 100
                     onClicked: {
+                        userNavView.push("qrc:/qt/Flight_Management_System_Client/views/RegisterView.qml")
                         console.log("注册按钮点击");
                         // 注册逻辑
                     }
