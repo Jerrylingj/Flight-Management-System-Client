@@ -46,6 +46,7 @@ set(RESOURCES_FILES
     figures/help-desk.png
     figures/avatar.jpg
     figures/nailong.jpg
+    figures/user.png
 )
 
 qt_add_executable(${PROJECT_NAME}

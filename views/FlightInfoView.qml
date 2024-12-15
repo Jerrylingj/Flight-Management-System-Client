@@ -18,7 +18,7 @@ FluContentPage {
         id: networkHandler
         onRequestSuccess: function(responseData) {
             var jsonString = JSON.stringify(responseData);
-            // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+            console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
             flightData = responseData.data.map(function(flight) {
                 /*** 初始化数据 ***/
                 flight.isBooked = false;
@@ -62,7 +62,7 @@ FluContentPage {
         anchors.fill: parent
         spacing: 16
 
-        FluRectangle {
+        Rectangle {
             z: 10
             id: filterPanel
             radius: 10
@@ -125,7 +125,7 @@ FluContentPage {
                 spacing: 10
 
                 Repeater {
-                    model: filteredData  // 使用筛选后的数据
+                    model: filteredData.length > 0 ? filteredData : []  // 如果 filteredData 为空，避免空数组导致的问题
                     width: parent.width
 
                     FlightInfoCard {

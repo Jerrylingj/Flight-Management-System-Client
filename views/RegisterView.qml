@@ -32,20 +32,36 @@ FluPage {
         anchors.centerIn: parent
         width: parent.width
         height:parent.height
+        Rectangle{
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
+            width:150
+            height:150
+            radius: 15
+            Image {
+                anchors.fill: parent
+                source: "../figures/login-flight.png"
+            }
+        }
 
         FluTextBox {
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
+
             id: usernameField
             placeholderText: "用户名"
             width: parent.width * 0.8
         }
 
         FluTextBox {
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
+
             id: emailField
             placeholderText: "邮箱"
             width: parent.width * 0.8
         }
 
         FluTextBox {
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
+
             id: passwordField
             placeholderText: "密码"
             width: parent.width * 0.8
@@ -53,6 +69,8 @@ FluPage {
         }
 
         FluTextBox {
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
+
             id: confirmPasswordField
             placeholderText: "确认密码"
             width: parent.width * 0.8
@@ -60,12 +78,16 @@ FluPage {
         }
 
         FluTextBox {
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
+
             id: captchaField
             placeholderText: "验证码"
             width: parent.width * 0.8
         }
 
         FluButton {
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
+
             text: "发送验证码"
             width: parent.width * 0.8
             onClicked: {
@@ -74,6 +96,8 @@ FluPage {
         }
 
         FluButton {
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
+
             text: "注册"
             width: parent.width * 0.8
             enabled: usernameField.text.length>0&&emailField.text.length>0&&passwordField.text.length>0&&confirmPasswordField.text.length>0&&captchaField.text.length>0&&registrationPage.value.length>0
