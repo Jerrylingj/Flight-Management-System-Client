@@ -5,11 +5,9 @@ import FluentUI 1.0
 
 FluFrame {
     id: flightInfoCard
-    // width: parent.width
-    // height: 20
     radius: 10
     Layout.fillWidth: true
-    Layout.preferredHeight: 80
+    Layout.preferredHeight: 100
     padding: 10
 
     property int flightId
@@ -25,31 +23,22 @@ FluFrame {
     property bool isFaved: false
     property int remainingSeats: 10
 
-    // 布局
     RowLayout {
+        anchors.fill: parent
         spacing: 30
 
-        // 航空公司 Logo 和航班信息
+        // 航空公司信息
         ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
+            Layout.preferredWidth: 150
             spacing: 5
 
-            // 航空公司Logo
-            // FluImage {
-            //     id: airlineLogo
-            //     source: "qrc:/images/airline_logo.png" // 替换为真实路径
-            //     width: 40
-            //     height: 20
-            //     fillMode: Image.PreserveAspectFit
-            // }
-
             FluText {
-                text: airlineCompany // 航空公司名称
+                text: airlineCompany
                 font.pixelSize: 14
             }
 
             FluText {
-                text: flightNumber // 航班号
+                text: flightNumber
                 font.pixelSize: 12
             }
         }
@@ -57,28 +46,28 @@ FluFrame {
         // 时间和机场信息
         RowLayout {
             Layout.fillWidth: true
-            Layout.preferredWidth: flightInfoCard.width * 2 / 6
             spacing: 20
 
-            ColumnLayout{
+            ColumnLayout {
                 Layout.fillWidth: true
+
                 FluText {
                     id: departure
-                    text: formatTime(departureTime) // 起飞时间
+                    text: formatTime(departureTime)
                     font.pixelSize: 24
                     font.bold: true
                 }
 
                 FluText {
-                    text: departureAirport // 起点机场
+                    text: departureAirport
                     font.pixelSize: 12
                 }
             }
 
             FluText {
-                width: 50
                 text: "→"
                 font.bold: true
+                verticalAlignment: Text.AlignVCenter
             }
 
             ColumnLayout {
@@ -86,12 +75,13 @@ FluFrame {
 
                 FluText {
                     id: arrival
-                    text: formatTime(arrivalTime) // 到达时间
+                    text: formatTime(arrivalTime)
                     font.pixelSize: 24
                     font.bold: true
                 }
+
                 FluText {
-                    text: arrivalAirport // 终点机场
+                    text: arrivalAirport
                     font.pixelSize: 12
                 }
             }
@@ -99,25 +89,24 @@ FluFrame {
 
         // 价格和状态
         ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
+            Layout.preferredWidth: 150
             spacing: 5
 
             FluText {
-                text: qsTr("￥") + price.toFixed(2) // 动态绑定价格
+                text: qsTr("￥") + price.toFixed(2)
                 font.pixelSize: 18
                 font.bold: true
                 color: "#F39C12"
             }
 
             Rectangle {
-                z: 5
                 id: statusBadge
-                anchors.horizontalCenter: parent.horizontalCenter // 居中对齐
+                Layout.alignment: Qt.AlignHCenter
                 width: 80
                 height: 24
                 radius: 5
-
                 color: status === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
+
                 FluText {
                     anchors.centerIn: parent
                     text: status
@@ -128,13 +117,14 @@ FluFrame {
             }
         }
 
-        // 预订和收藏按钮
+        // 收藏和预定按钮
         ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
+            Layout.preferredWidth: 150
+            spacing: 5
 
             FluFilledButton {
                 text: isBooked ? qsTr("取消预订") : qsTr("预订")
-                Layout.preferredWidth: 100
+                Layout.preferredWidth: 120
                 onClicked: {
                     isBooked = !isBooked;
                     console.log(isBooked ? "预订航班: " + flightNumber : "取消预订航班: " + flightNumber);
@@ -143,7 +133,7 @@ FluFrame {
 
             FluTextButton {
                 text: isFaved ? qsTr("取消收藏") : qsTr("收藏")
-                Layout.preferredWidth: 100
+                Layout.preferredWidth: 120
                 onClicked: {
                     isFaved = !isFaved;
                     console.log(isFaved ? "收藏航班: " + flightNumber : "取消收藏航班: " + flightNumber);
@@ -154,11 +144,9 @@ FluFrame {
 
     // 函数：格式化时间为 "hh:mm" 格式
     function formatTime(timeString) {
-        var date = new Date(timeString);  // 使用 JavaScript 内置的 Date 对象解析时间字符串
-        var hours = date.getHours();  // 获取小时
-        var minutes = date.getMinutes();  // 获取分钟
-
-        // 保证小时和分钟都是两位数格式
+        var date = new Date(timeString);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
         return (hours < 10 ? '0' + hours : hours) + ":" + (minutes < 10 ? '0' + minutes : minutes);
     }
 }

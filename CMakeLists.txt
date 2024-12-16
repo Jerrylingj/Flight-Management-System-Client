@@ -69,6 +69,7 @@ qt_add_qml_module(${PROJECT_NAME}
     QML_FILES views/OrderDetailView.qml
     QML_FILES views/OrderRebookingView.qml
     QML_FILES views/OrderPaymentView.qml
+    QML_FILES components/FlightInfoEditCard.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

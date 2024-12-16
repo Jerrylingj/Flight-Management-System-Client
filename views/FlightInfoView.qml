@@ -119,8 +119,8 @@ FluContentPage {
 
         Flickable {
             y: filterPanel.height
-            width: parent.width
-            height: parent.height
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             contentWidth: parent.width
             clip: true
 
@@ -134,8 +134,8 @@ FluContentPage {
                     width: parent.width
 
                     FlightInfoCard {
-                        width: parent.width
-                        height: 80
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 80
                         flightId: modelData.flightId
                         flightNumber: modelData.flightNumber
                         departureTime: modelData.departureTime
