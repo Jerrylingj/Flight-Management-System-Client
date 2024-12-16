@@ -1,14 +1,26 @@
+import QtQml 2.15
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Effects
 import QtQuick.Layouts 1.15
 import FluentUI 1.0
 import QtQuick.Dialogs
+import NetworkHandler 1.0
 
 FluContentPage {
     id: userProfilePage
     title: qsTr("个人中心")
     background: Rectangle { radius: 5 }
+
+    NetworkHandler{
+        id:networkHandler
+        onRequestSuccess: function(data) {
+            console.log(JSON.stringify(data, null, 2))
+        }
+        onRequestFailed: function(data) {
+            console.log(JSON.stringify(data, null, 2))
+        }
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -35,11 +47,17 @@ FluContentPage {
 
                     Image {
                         id: avatar
-                        source: userInfo.myAvatar||"qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
+                        property url avatar_url
+                        source: avatar_url
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
                         Component.onCompleted: {
                             console.log(userInfo.myAvatar)
+                            if(userInfo.myAvatar.length>0){
+                                avatar_url = userInfo.myAvatar
+                            }else{
+                                avatar_url = "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
+                            }
                         }
                         MouseArea{
                             width:parent.width
@@ -55,8 +73,9 @@ FluContentPage {
                         title: "选择图片文件"
                         nameFilters: ["图片文件 (*.png *.jpg *.jpeg *.gif)"]
                         onAccepted: {
-                            console.log(fileDialog.selectedFiles[0])
                             avatar.source = fileDialog.selectedFiles[0]
+                            userInfo.myAvatar = JSON.stringify(fileDialog.selectedFiles[0]).replace(/"/g,'')
+                            networkHandler.request('/api/user', NetworkHandler.PUT, {avatar_url:userInfo.myAvatar}, userInfo.myToken)
                         }
                     }
                 }
@@ -174,6 +193,9 @@ FluContentPage {
                                                     userInfo.myMoney=0
                                                     userInfo.userId=0
                                                     userInfo.userEmail="none"
+                                                    networkHandler.request('/api/user',NetworkHandler.DELETE,{},userInfo.myToken)
+                                                    userInfo.myToken = ""
+                                                    userInfo.myAvatar = ""
                                                 }
                     }
                     onClicked: {
