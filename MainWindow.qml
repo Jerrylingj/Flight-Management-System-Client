@@ -28,11 +28,12 @@ FluWindow {
                                      "qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml",
                                      "qrc:/qt/Flight_Management_System_Client/views/OrdersView.qml"
                                  ]
+            console.log(notAllowRoutes.indexOf(url))
             if(userInfo.myToken.length === 0&&notAllowRoutes.indexOf(url) !== -1){
                 userNavView.navigateTo("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
                 return
             }
-            userNavView.navigateTo(url)
+            userNavView.push(url)
         }
 
         items: FluPaneItemExpander {
