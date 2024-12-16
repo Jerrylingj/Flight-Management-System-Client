@@ -63,12 +63,13 @@ FluContentPage {
         anchors.fill: parent
         spacing: 16
 
-        FluRectangle {
+        FluFrame{
             z: 10
             id: filterPanel
-            radius: 10
             Layout.fillWidth: true
-            height: 40
+            Layout.preferredHeight: 80
+            padding: 10
+            clip: true
 
             RowLayout {
                 anchors.fill: parent
@@ -102,14 +103,16 @@ FluContentPage {
                     Layout.preferredWidth: 180
                 }
 
-                FluFilledButton {
-                    text: qsTr("筛选")
-                    Layout.preferredWidth: 100
-                    onClicked: {
-                        console.log("筛选条件: 起点=${departureInput.text}, 终点=${destinationInput.text}, 日期=${datePicker.date}");
-                        filterFlights(); // 点击查询时也触发筛选
-                    }
-                }
+
+                // 决定做成实时筛选，就不单独放筛选按钮了
+                // FluFilledButton {
+                //     text: qsTr("查询")
+                //     Layout.preferredWidth: 100
+                //     onClicked: {
+                //         console.log("筛选条件: 起点=${departureInput.text}, 终点=${destinationInput.text}, 日期=${datePicker.date}");
+                //         filterFlights(); // 点击查询时也触发筛选
+                //     }
+                // }
             }
         }
 

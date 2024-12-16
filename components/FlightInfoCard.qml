@@ -3,11 +3,14 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import FluentUI 1.0
 
-FluRectangle {
+FluFrame {
     id: flightInfoCard
-    width: parent.width
-    height: 20
+    // width: parent.width
+    // height: 20
     radius: 10
+    Layout.fillWidth: true
+    Layout.preferredHeight: 80
+    padding: 10
 
     property int flightId
     property string flightNumber
@@ -113,6 +116,7 @@ FluRectangle {
                 width: 80
                 height: 24
                 radius: 5
+
                 color: status === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
                 FluText {
                     anchors.centerIn: parent
