@@ -18,7 +18,7 @@ FluContentPage {
         id: networkHandler
         onRequestSuccess: function(responseData) {
             var jsonString = JSON.stringify(responseData);
-            // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+            console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
             flightData = responseData.data.map(function(flight) {
                 /*** 初始化数据 ***/
                 flight.isBooked = false;
@@ -38,7 +38,7 @@ FluContentPage {
         var url = "/api/favorites"; // 收藏信息 API URL
         console.log("发送收藏航班信息请求，URL:", url);
         console.log("token: ", userInfo.myToken)
-        networkHandler.request(url, networkHandler.POST, {}, userInfo.myToken);
+        networkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
     // 页面加载完毕后调用 fetchFavoriteFlights 方法获取收藏数据
