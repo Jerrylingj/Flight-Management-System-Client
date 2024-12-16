@@ -44,7 +44,7 @@ Rectangle {
             width:parent.width
             height: Math.max(avatarRect.height,userNameRect.height)
 
-            Rectangle{
+            Rectangle {
                 id: avatarRect
                 width: 50
                 height: 50
@@ -71,10 +71,10 @@ Rectangle {
                 }
             }
 
-            Rectangle{
+            Rectangle {
                 id: userNameRect
                 width: parent.width - avatarRect.width - 10
-                height: Math.max(userName.implicitHeight,avatarRect.height) //统一高度
+                height: Math.max(userName.implicitHeight,avatarRect.height) // 统一高度
                 color:"transparent"
                 z:-1
                 FluText {
@@ -97,7 +97,6 @@ Rectangle {
                 text: qsTr("　　" + note.articleTitle)
                 font.bold: true  // 粗体
                 font.pixelSize: 16  // 字体大小
-                // color: "black"  // 文字颜色
                 wrapMode: Text.Wrap  // 自动换行
                 width: parent.width
             }

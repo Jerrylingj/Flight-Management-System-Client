@@ -102,6 +102,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
             }
         }
+
         Rectangle {
             width: 50
             height: 50
