@@ -30,6 +30,7 @@ set(QML_FILES
     views/LoginView.qml
     views/RegisterView.qml
     views/FlightFavoriteView.qml
+    views/EditPersonalInfo.qml
     components/FlightInfoCard.qml
     components/NoteCard.qml
     components/NoteList.qml
