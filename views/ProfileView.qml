@@ -115,33 +115,57 @@ FluContentPage {
             Layout.preferredHeight: 120
             radius: 5
             border.width: 1
-
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: 20
                 spacing: 20
 
-                FluFilledButton {
-                    text: qsTr("收藏")
-                    Layout.preferredWidth: 120
-                    onClicked: {
-                        console.log("跳转到收藏界面");
-                        userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml")
-                        userNavView.setCurrentIndex(3);
+                ColumnLayout{
+                    height: parent.height
+                    width: parent.width/2
+                    spacing: 20
+                    FluFilledButton {
+                        text: qsTr("收藏")
+                        Layout.preferredWidth: 120
+                        onClicked: {
+                            console.log("跳转到收藏界面");
+                            userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml")
+                            userNavView.setCurrentIndex(3);
+                        }
+                    }
+
+                    FluFilledButton {
+                        text: qsTr("充值")
+                        Layout.preferredWidth: 120
+                        onClicked: {
+                            console.log("跳转到充值界面");
+                            userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml")
+                        }
                     }
                 }
-
-                FluFilledButton {
-                    text: qsTr("全部订单")
-                    Layout.preferredWidth: 120
-                    onClicked: {
-                        console.log("跳转到全部订单界面");
-                        // 跳转到全部订单页面逻辑
-                        userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightInfoView.qml")
-                        userNavView.setCurrentIndex(4);
+                ColumnLayout{
+                    height: parent.height
+                    width: parent.width/2
+                    spacing: 20
+                    FluFilledButton {
+                        text: qsTr("编辑个人信息")
+                        Layout.preferredWidth: 120
+                        onClicked: {
+                            console.log("跳转到编辑界面");
+                            userNavView.push("qrc:/qt/Flight_Management_System_Client/views/EditPersonalInfo.qml")
+                        }
+                    }
+                    FluFilledButton {
+                        text: qsTr("全部订单")
+                        Layout.preferredWidth: 120
+                        onClicked: {
+                            console.log("跳转到全部订单界面");
+                            // 跳转到全部订单页面逻辑
+                            userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightInfoView.qml")
+                            userNavView.setCurrentIndex(4);
+                        }
                     }
                 }
-
             }
         }
 

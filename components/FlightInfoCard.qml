@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import FluentUI 1.0
+import NetworkHandler 1.0
 
 FluFrame {
     id: flightInfoCard
@@ -22,6 +23,50 @@ FluFrame {
     property bool isBooked: false
     property bool isFaved: false
     property int remainingSeats: 10
+
+    // 收藏与取消收藏的函数
+       function toggleFavorite(flightId, isFaved) {
+           var url = isFaved
+               ? "http://127.0.0.1:8080/api/favorites/remove" // 取消收藏接口
+               : "http://127.0.0.1:8080/api/favorites/add"; // 收藏接口
+
+           var payload = {
+               flightId: flightId, // 当前航班的 ID
+           };
+
+           console.log(isFaved ? "正在取消收藏航班: " + flightId : "正在收藏航班: " + flightId);
+
+           favoriteHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
+       }
+
+       // 收藏接口的 NetworkHandler 实例
+       NetworkHandler {
+           id: favoriteHandler
+
+           onRequestSuccess: function (responseData) {
+               console.log("收藏/取消收藏请求成功，返回数据：", JSON.stringify(responseData));
+
+               if (responseData.success) {
+                   console.log("收藏操作成功");
+
+                   // 更新 UI 中的 isFaved 状态
+                   flightInfoCard.isFaved = !flightInfoCard.isFaved;
+
+                   if (flightInfoCard.isFaved) {
+                       console.log("航班 " + flightInfoCard.flightId + " 已收藏");
+                   } else {
+                       console.log("航班 " + flightInfoCard.flightId + " 已取消收藏");
+                   }
+               } else {
+                   console.error("收藏/取消收藏操作失败，错误信息：", responseData.message);
+               }
+           }
+
+           onRequestFailed: function (errorMessage) {
+               console.error("收藏/取消收藏请求失败：", errorMessage);
+           }
+       }
+
 
     RowLayout {
         anchors.fill: parent
@@ -135,8 +180,9 @@ FluFrame {
                 text: isFaved ? qsTr("取消收藏") : qsTr("收藏")
                 Layout.preferredWidth: 120
                 onClicked: {
-                    isFaved = !isFaved;
-                    console.log(isFaved ? "收藏航班: " + flightNumber : "取消收藏航班: " + flightNumber);
+                    // isFaved = !isFaved;
+                    toggleFavorite(flightId, isFaved);
+                    // console.log(isFaved ? "收藏航班: " + flightNumber : "取消收藏航班: " + flightNumber);
                 }
             }
         }

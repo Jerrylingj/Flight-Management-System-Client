@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import FluentUI 1.0
+import QtQuick.Layouts
 
 FluWindow {
     id: mainWindow
@@ -15,6 +16,31 @@ FluWindow {
     showDark: true
     showStayTop: true
 
+    property bool isAdmin: false // 标志当前是否管理员端
+
+    // 顶部切换开关
+    RowLayout {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.leftMargin: 40
+        anchors.topMargin: 10
+        spacing: 10
+        FluToggleSwitch {
+            id: toggleSwitch
+            checked: isAdmin
+            Layout.alignment: Qt.AlignVCenter
+            // textOn: qsTr("管理员端")
+            // textOff: qsTr("用户端")
+
+            onCheckedChanged: {
+                isAdmin = checked;
+                userNavView.visible = !isAdmin;
+                agentNavView.visible = isAdmin;
+                console.log("当前模式: " + (isAdmin ? "管理员端" : "用户端"));
+            }
+        }
+    }
+
     // 用户端布局var
     FluNavigationView {
         id: userNavView
@@ -22,7 +48,6 @@ FluWindow {
         pageMode: FluNavigationViewType.NoStack
         displayMode: FluNavigationViewType.Auto
         visible: true
-
         function navigateTo(url) {
             const notAllowRoutes = [
                                      "qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml",
@@ -151,5 +176,6 @@ FluWindow {
         //     userNavView.setCurrentIndex(0)
         // }
         userNavView.setCurrentIndex(0)
+        agentNavView.setCurrentIndex((0))
     }
 }

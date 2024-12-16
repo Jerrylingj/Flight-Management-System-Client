@@ -17,19 +17,38 @@ FluContentPage {
     NetworkHandler {
         id: networkHandler
         onRequestSuccess: function(responseData) {
-            var jsonString = JSON.stringify(responseData);
-            // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
-            flightData = responseData.data.map(function(flight) {
-                /*** 初始化数据 ***/
-                flight.isBooked = false;
-                flight.isFaved = false;
-                flight.remainingSeats = 10;
-                return flight;
-            });
-            filteredData = flightData; // 初始化时显示所有航班数据
+            try {
+                // 打印整个返回数据
+                var jsonString = JSON.stringify(responseData);
+                console.log("请求成功，返回数据：", jsonString);
+
+                // 验证返回结果是否成功
+                if (responseData.success && responseData.favorites) {
+                    flightData = responseData.favorites.map(function(flight) {
+                        /*** 初始化数据 ***/
+                        flight.isBooked = false;  // 初始化是否预订状态
+                        flight.isFaved = true;    // 标记为已收藏
+                        flight.remainingSeats = 10; // 假设每个航班有 10 个余票
+                        return flight;
+                    });
+
+                    // 设置过滤后的数据为初始航班数据
+                    filteredData = flightData;
+                } else {
+                    console.warn("返回数据格式错误或 success 为 false");
+                    flightData = [];
+                    filteredData = [];
+                }
+            } catch (error) {
+                console.error("解析返回数据时发生错误：", error);
+                flightData = [];
+                filteredData = [];
+            }
         }
         onRequestFailed: function(errorMessage) {
             console.log("请求失败：", errorMessage); // 打印失败的错误信息
+            flightData = [];
+            filteredData = [];
         }
     }
 

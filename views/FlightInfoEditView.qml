@@ -6,19 +6,21 @@ import NetworkHandler 1.0
 import "../components"
 
 FluContentPage {
-    id: flightEditPage
-    title: qsTr("航班编辑")
+    id: flightInfoPage
+    title: qsTr("航班信息")
 
-    property var flightData: []   // 航班数据
+    property var flightData: []   // 所有航班数据
+    property var filteredData: [] // 筛选后的航班数据
 
     NetworkHandler {
         id: networkHandler
         onRequestSuccess: function(responseData) {
             console.log("请求成功，返回数据：", JSON.stringify(responseData));
             flightData = responseData.data.map(function(flight) {
-                flight.isEdited = false; // 标记为未编辑状态
+                flight.checked = false; // 添加选中状态
                 return flight;
             });
+            filterFlights(); // 刷新筛选
         }
         onRequestFailed: function(errorMessage) {
             console.log("请求失败：", errorMessage);
@@ -31,118 +33,113 @@ FluContentPage {
         networkHandler.request(url, NetworkHandler.GET);
     }
 
-    function saveFlight(flight) {
-        const url = "/api/flights/" + flight.flightId;
-        const data = {
-            flightNumber: flight.flightNumber,
-            departureTime: flight.departureTime,
-            arrivalTime: flight.arrivalTime,
-            departureAirport: flight.departureAirport,
-            arrivalAirport: flight.arrivalAirport,
-            price: flight.price,
-            status: flight.status,
-        };
-        console.log("保存航班:", JSON.stringify(data));
-        networkHandler.request(url, NetworkHandler.PUT, data);
-    }
+    Component.onCompleted: fetchFlightData();
 
-    function deleteFlight(flightId) {
-        const url = "/api/flights/" + flightId;
-        console.log("删除航班 ID:", flightId);
-        networkHandler.request(url, NetworkHandler.DELETE);
-    }
-
-    Component.onCompleted: {
-        fetchFlightData(); // 页面加载时获取航班数据
+    // 筛选航班数据
+    function filterFlights() {
+        filteredData = flightData; // 默认不过滤所有数据
     }
 
     ColumnLayout {
         anchors.fill: parent
         spacing: 16
 
+        // 筛选面板
         FluFrame {
             id: filterPanel
             Layout.fillWidth: true
             Layout.preferredHeight: 80
             padding: 10
-            clip: true
 
             RowLayout {
-                anchors.fill: parent
                 spacing: 20
+                anchors.fill: parent
 
-                FluButton {
-                    text: qsTr("新增航班")
-                    onClicked: {
-                        const newFlight = {
-                            flightId: "new_" + Date.now(),
-                            flightNumber: "",
-                            departureTime: new Date().toISOString(),
-                            arrivalTime: new Date().toISOString(),
-                            departureAirport: "",
-                            arrivalAirport: "",
-                            price: 0,
-                            status: "正常",
-                            isEdited: true,
-                        };
-                        flightData.push(newFlight);
-                    }
+                AddressPicker {
+                    id: departureAddressPicker
+                    onAccepted: filterFlights();
+                }
+
+                AddressPicker {
+                    id: arrivalAddressPicker
+                    onAccepted: filterFlights();
+                }
+
+                FluDatePicker {
+                    id: datePicker
+                    Layout.preferredWidth: 180
                 }
             }
         }
 
-        Flickable {
-            y: filterPanel.height
-            width: parent.width
-            height: parent.height - filterPanel.height
-            contentWidth: parent.width
-            clip: true
+        FluTableView {
+            id: flightTable
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            // rowHeight: 60 // 增加行高
 
-            ColumnLayout {
-                id: columnLayout
-                width: parent.width
-                spacing: 10
+            columnSource: [
+                { title: qsTr("选择"), dataIndex: "checkbox", width: 80, editDelegate: checkboxDelegate },
+                { title: qsTr("航班号"), dataIndex: "flightNumber" },
+                { title: qsTr("起飞时间"), dataIndex: "departureTime" },
+                { title: qsTr("到达时间"), dataIndex: "arrivalTime" },
+                { title: qsTr("起点机场"), dataIndex: "departureAirport" },
+                { title: qsTr("终点机场"), dataIndex: "arrivalAirport" },
+                { title: qsTr("价格"), dataIndex: "price" },
+                { title: qsTr("航空公司"), dataIndex: "airlineCompany" },
+                { title: qsTr("状态"), dataIndex: "status" },
+                { title: qsTr("操作"), dataIndex: "action", width: 200, editDelegate: actionDelegate }
+            ]
 
-                Repeater {
-                    model: flightData
-                    FlightInfoCard {
-                        width: parent.width
-                        height: 100
+            dataSource: filteredData
 
-                        flightNumber: modelData.flightNumber
-                        departureTime: modelData.departureTime
-                        arrivalTime: modelData.arrivalTime
-                        departureAirport: modelData.departureAirport
-                        arrivalAirport: modelData.arrivalAirport
-                        price: modelData.price
-                        status: modelData.status
-                        editable: true
-
-                        onFlightEdited: function(key, value) {
-                            modelData[key] = value;
-                            modelData.isEdited = true;
-                        }
-
-                        RowLayout {
-                            spacing: 10
-                            FluButton {
-                                text: qsTr("保存")
-                                enabled: modelData.isEdited
-                                onClicked: {
-                                    saveFlight(modelData);
-                                    modelData.isEdited = false; // 重置编辑状态
-                                }
-                            }
-                            FluButton {
-                                text: qsTr("删除")
-                                onClicked: deleteFlight(modelData.flightId);
-                            }
+            // 复选框组件
+            Component {
+                id: checkboxDelegate
+                Item {
+                    FluCheckBox {
+                        anchors.centerIn: parent
+                        checked: modelData.checked
+                        onClicked: {
+                            modelData.checked = !modelData.checked;
+                            console.log("复选框状态:", modelData.checked);
                         }
                     }
                 }
             }
 
-            contentHeight: columnLayout.height
+            // 操作按钮组件
+            Component {
+                id: actionDelegate
+                Item {
+                    RowLayout {
+                        spacing: 10
+                        anchors.centerIn: parent
+
+                        FluFilledButton {
+                            text: qsTr("编辑")
+                            Layout.preferredWidth: 60
+                            onClicked: {
+                                console.log("编辑航班:", modelData.flightNumber);
+                                // 这里添加编辑逻辑
+                            }
+                        }
+
+                        FluButton {
+                            text: qsTr("删除")
+                            Layout.preferredWidth: 60
+                            onClicked: {
+                                var index = flightData.indexOf(modelData);
+                                if (index !== -1) {
+                                    flightData.splice(index, 1);
+                                    filterFlights();
+                                    console.log("删除航班:", modelData.flightNumber);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
