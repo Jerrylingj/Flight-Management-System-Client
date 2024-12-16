@@ -4,23 +4,31 @@ import QtQuick.Layouts 1.15
 import FluentUI 1.0
 
 FluRectangle {
-    id: flightInfoCard
+    id: orderInfoCard
     width: parent.width
     height: 20
     radius: 10
 
+    property int  orderId
+    property int userId
     property int flightId
+    property int totalChangeCount
+    property bool paymentStatus
+
     property string flightNumber
+    property string airlineCompany
+    property double price
+    property string flightStatus
+
+    property string departure
+    property string destination
     property string departureTime
     property string arrivalTime
     property string departureAirport
     property string arrivalAirport
-    property double price
-    property string airlineCompany
-    property string status
-    property bool isBooked: false
-    property bool isFaved: false
-    property int remainingSeats: 10
+
+    property string checkInStartTime
+    property string checkInEndTime
 
     // 布局
     RowLayout {
@@ -28,7 +36,7 @@ FluRectangle {
 
         // 航空公司 Logo 和航班信息
         ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
+            Layout.preferredWidth: orderInfoCard.width / 6
             spacing: 5
 
             // 航空公司Logo
@@ -54,7 +62,7 @@ FluRectangle {
         // 时间和机场信息
         RowLayout {
             Layout.fillWidth: true
-            Layout.preferredWidth: flightInfoCard.width * 2 / 6
+            Layout.preferredWidth: orderInfoCard.width * 2 / 6
             spacing: 20
 
             ColumnLayout{
@@ -96,7 +104,7 @@ FluRectangle {
 
         // 价格和状态
         ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
+            Layout.preferredWidth: orderInfoCard.width / 6
             spacing: 5
 
             FluText {
@@ -106,46 +114,46 @@ FluRectangle {
                 color: "#F39C12"
             }
 
-            Rectangle {
-                z: 5
-                id: statusBadge
-                anchors.horizontalCenter: parent.horizontalCenter // 居中对齐
-                width: 80
-                height: 24
-                radius: 5
-                color: status === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
-                FluText {
-                    anchors.centerIn: parent
-                    text: status
-                    color: "white"
-                    font.pixelSize: 14
-                    font.bold: true
-                }
-            }
+            // Rectangle {
+            //     z: 5
+            //     id: statusBadge
+            //     anchors.horizontalCenter: parent.horizontalCenter // 居中对齐
+            //     width: 80
+            //     height: 24
+            //     radius: 5
+            //     color: status === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
+            //     FluText {
+            //         anchors.centerIn: parent
+            //         text: status
+            //         color: "white"
+            //         font.pixelSize: 14
+            //         font.bold: true
+            //     }
+            // }
         }
 
-        // 预订和收藏按钮
-        ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
+    //     // 预订和收藏按钮
+    //     ColumnLayout {
+    //         Layout.preferredWidth: orderInfoCard.width / 6
 
-            FluFilledButton {
-                text: isBooked ? qsTr("取消预订") : qsTr("预订")
-                Layout.preferredWidth: 100
-                onClicked: {
-                    isBooked = !isBooked;
-                    console.log(isBooked ? "预订航班: " + flightNumber : "取消预订航班: " + flightNumber);
-                }
-            }
+    //         FluFilledButton {
+    //             text: isBooked ? qsTr("取消预订") : qsTr("预订")
+    //             Layout.preferredWidth: 100
+    //             onClicked: {
+    //                 isBooked = !isBooked;
+    //                 console.log(isBooked ? "预订航班: " + flightNumber : "取消预订航班: " + flightNumber);
+    //             }
+    //         }
 
-            FluTextButton {
-                text: isFaved ? qsTr("取消收藏") : qsTr("收藏")
-                Layout.preferredWidth: 100
-                onClicked: {
-                    isFaved = !isFaved;
-                    console.log(isFaved ? "收藏航班: " + flightNumber : "取消收藏航班: " + flightNumber);
-                }
-            }
-        }
+    //         FluTextButton {
+    //             text: isFaved ? qsTr("取消收藏") : qsTr("收藏")
+    //             Layout.preferredWidth: 100
+    //             onClicked: {
+    //                 isFaved = !isFaved;
+    //                 console.log(isFaved ? "收藏航班: " + flightNumber : "取消收藏航班: " + flightNumber);
+    //             }
+    //         }
+    //     }
     }
 
     // 函数：格式化时间为 "hh:mm" 格式

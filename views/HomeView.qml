@@ -4,10 +4,10 @@ import FluentUI 1.0
 
 FluContentPage {
     id: homeView
-    background: Rectangle {
-        radius: 5
-        anchors.rightMargin: 10
-    }
+    // background: Rectangle {
+    //     radius: 5
+    //     anchors.rightMargin: 10
+    // }
 
     FluImage {
         id: home_cover

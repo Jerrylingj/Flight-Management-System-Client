@@ -5,6 +5,7 @@ FluLauncher {
     id: app
 
     Component.onCompleted: {
+        console.log("init")
         FluApp.init(app)  
         FluApp.useSystemAppBar = false      // 不使用原生的AppBar
         FluTheme.animationEnabled = true    // 开启动画
@@ -17,5 +18,4 @@ FluLauncher {
         }
         FluRouter.navigate("/")
     }
-
 }

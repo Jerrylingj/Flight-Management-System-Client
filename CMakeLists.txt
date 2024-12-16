@@ -20,7 +20,14 @@ set(QML_FILES
     views/FlightInfoView.qml
     views/OrdersView.qml
     views/ProfileView.qml
+    views/FindView.qml
+    views/FlightInfoEditView.qml
+    views/ClientServerView.qml
+    views/AgentServerView.qml
     components/FlightInfoCard.qml
+    components/NoteCard.qml
+    components/NoteList.qml
+    components/MessageItem.qml
 )
 
 set(SOURCE_FILES
@@ -28,11 +35,18 @@ set(SOURCE_FILES
     api/networkhandler.cpp
     api/networkhandler.h
     static/sites.js
+    storage/userinfo.h
 )
 
 set(RESOURCES_FILES
     favicon.ico
     figures/homepage-cover.png
+    figures/editinfo.png
+    figures/login-flight.png
+    figures/help-desk.png
+    figures/avatar.jpg
+    figures/nailong.jpg
+    figures/user.png
 )
 
 qt_add_executable(${PROJECT_NAME}
@@ -46,7 +60,15 @@ qt_add_qml_module(${PROJECT_NAME}
     SOURCES ${SOURCE_FILES}
     RESOURCES ${RESOURCES_FILES}
     QML_FILES ${QML_FILES}
-    QML_FILES views/ClientServerView.qml
+    QML_FILES views/FlightFavoriteView.qml
+    QML_FILES components/AddressPicker.qml
+    QML_FILES views/RegisterView.qml
+    QML_FILES views/LoginView.qml
+    QML_FILES components/OrderInfoCard.qml
+    QML_FILES components/TimeProgressBar.qml
+    QML_FILES views/OrderDetailView.qml
+    QML_FILES views/OrderRebookingView.qml
+    QML_FILES views/OrderPaymentView.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

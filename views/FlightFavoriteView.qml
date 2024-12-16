@@ -6,9 +6,9 @@ import NetworkHandler 1.0
 import "../components"
 
 FluContentPage {
-    id: flightInfoPage
-    title: qsTr("航班信息")
-    // background: FluRectangle { radius: 5 }
+    id: flightFavoriteView
+    title: "我的收藏"
+    // background: Rectangle { radius: 5 }
 
     property var flightData: []   // 所有航班数据
     property var filteredData: [] // 筛选后的航班数据
@@ -17,9 +17,8 @@ FluContentPage {
     NetworkHandler {
         id: networkHandler
         onRequestSuccess: function(responseData) {
-            console.log("进入onRequestSuccess函数")
             var jsonString = JSON.stringify(responseData);
-            console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+            // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
             flightData = responseData.data.map(function(flight) {
                 /*** 初始化数据 ***/
                 flight.isBooked = false;
@@ -31,20 +30,20 @@ FluContentPage {
         }
         onRequestFailed: function(errorMessage) {
             console.log("请求失败：", errorMessage); // 打印失败的错误信息
-            flightData = []; // 在请求失败时，确保 flightData 为空数组，避免渲染问题
         }
     }
 
-    // 调用网络请求
-    function fetchFlightData() {
-        const url = "/api/flights";  // 后端 API URL
-        // console.log("发送请求，URL:", url); // 打印请求的 URL
-        networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
+    // 查询收藏信息
+    function fetchFavoriteFlights() {
+        var url = "/api/favorites"; // 收藏信息 API URL
+        console.log("发送收藏航班信息请求，URL:", url);
+        console.log("token: ", userInfo.myToken)
+        networkHandler.request(url, networkHandler.POST, {}, userInfo.myToken);
     }
 
-    // 在页面初始化时调用 fetchFlightData 获取航班数据
+    // 页面加载完毕后调用 fetchFavoriteFlights 方法获取收藏数据
     Component.onCompleted: {
-        fetchFlightData();  // 页面加载完毕后调用 fetchFlightData 方法获取数据
+        fetchFavoriteFlights();
     }
 
     // 筛选函数
@@ -61,10 +60,10 @@ FluContentPage {
     }
 
     ColumnLayout {
-        // anchors.fill: parent
-        // spacing: 16
+        anchors.fill: parent
+        spacing: 16
 
-        Rectangle {
+        FluRectangle {
             z: 10
             id: filterPanel
             radius: 10
@@ -104,7 +103,7 @@ FluContentPage {
                 }
 
                 FluFilledButton {
-                    text: qsTr("查询")
+                    text: qsTr("筛选")
                     Layout.preferredWidth: 100
                     onClicked: {
                         console.log("筛选条件: 起点=${departureInput.text}, 终点=${destinationInput.text}, 日期=${datePicker.date}");
@@ -127,12 +126,12 @@ FluContentPage {
                 spacing: 10
 
                 Repeater {
-                    model: filteredData.length > 0 ? filteredData : []  // 如果 filteredData 为空，避免空数组导致的问题
+                    model: filteredData  // 使用筛选后的数据
                     width: parent.width
 
                     FlightInfoCard {
                         width: parent.width
-                        height: 80
+                        height: 80 // 确保 FlightInfoCard 有固定高度
                         flightId: modelData.flightId
                         flightNumber: modelData.flightNumber
                         departureTime: modelData.departureTime
