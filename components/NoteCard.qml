@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Effects
+import FluentUI 1.0
 
 Rectangle {
     height: userInfo.height + articleContentRect.height + columnContainer.topPadding + columnContainer.bottomPadding
@@ -49,7 +50,7 @@ Rectangle {
                 height: 50
                 radius: width/2
                 color:"transparent"
-                Image {
+                FluImage {
                     // 圆框框头像，ai给的看不懂
                     id: avatar
                     anchors.fill: parent
@@ -76,7 +77,7 @@ Rectangle {
                 height: Math.max(userName.implicitHeight,avatarRect.height) //统一高度
                 color:"transparent"
                 z:-1
-                Text {
+                FluText {
                     id: userName
                     anchors.verticalCenter: parent.verticalCenter // 竖向居中
                     text: qsTr(note.author.nickName)
@@ -90,13 +91,13 @@ Rectangle {
             color: "transparent"
             width: parent.width - columnContainer.leftPadding - columnContainer.rightPadding
             height: articleTitle.height
-            Text {
+            FluText {
                 id: articleTitle
                 z:0
                 text: qsTr("　　" + note.articleTitle)
                 font.bold: true  // 粗体
                 font.pixelSize: 16  // 字体大小
-                color: "black"  // 文字颜色
+                // color: "black"  // 文字颜色
                 wrapMode: Text.Wrap  // 自动换行
                 width: parent.width
             }
