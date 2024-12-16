@@ -10,7 +10,6 @@ import NetworkHandler 1.0
 FluContentPage {
     id: userProfilePage
     title: qsTr("个人中心")
-    background: Rectangle { radius: 5 }
 
     NetworkHandler{
         id:networkHandler
@@ -27,9 +26,9 @@ FluContentPage {
         spacing: 20
 
         // 个人信息部分
-        Rectangle {
+        FluFrame {
             Layout.fillWidth: true
-            height: 200
+            Layout.preferredHeight: 200
             radius: 5
             border.width: 1
 
@@ -39,9 +38,9 @@ FluContentPage {
                 spacing: 10
 
                 // 头像
-                Rectangle {
-                    width: 150
-                    height: 150
+                FluFrame {
+                    Layout.preferredWidth: 150
+                    Layout.preferredHeight: 150
                     border.color: "#DDDDDD" // 可选，设置边框颜色
                     layer.enabled: true
 
@@ -111,9 +110,9 @@ FluContentPage {
         }
 
         // 导航功能部分
-        Rectangle {
+        FluFrame {
             Layout.fillWidth: true
-            height: 120
+            Layout.preferredHeight: 120
             radius: 5
             border.width: 1
 
@@ -147,9 +146,9 @@ FluContentPage {
         }
 
         // 账号操作部分
-        Rectangle {
+        FluFrame {
             Layout.fillWidth: true
-            height: 120
+            Layout.preferredHeight: 120
             radius: 5
             border.width: 1
 
@@ -188,11 +187,11 @@ FluContentPage {
                         title: "确定注销账号？"
                         onPositiveClickListener:()=>{
                                                     quittextDialog.close()
-                                                    userInfo.userName="未知用户"
-                                                    userInfo.userPersonalInfo="无"
-                                                    userInfo.myMoney=0
+                                                    userInfo.userName="旅客"
+                                                    userInfo.userPersonalInfo="简单的旅客"
+                                                    userInfo.myMoney=-1
                                                     userInfo.userId=0
-                                                    userInfo.userEmail="none"
+                                                    userInfo.userEmail="noname@mail2.sysu.edu.cn"
                                                     networkHandler.request('/api/user',NetworkHandler.DELETE,{},userInfo.myToken)
                                                     userInfo.myToken = ""
                                                     userInfo.myAvatar = ""
