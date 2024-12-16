@@ -41,6 +41,23 @@ FluContentPage {
                         Component.onCompleted: {
                             console.log(userInfo.myAvatar)
                         }
+                        MouseArea{
+                            width:parent.width
+                            height: parent.height
+                            anchors.fill: parent
+                            onClicked: {
+                                fileDialog.open()
+                            }
+                        }
+                    }
+                    FileDialog{
+                        id:fileDialog
+                        title: "选择图片文件"
+                        nameFilters: ["图片文件 (*.png *.jpg *.jpeg *.gif)"]
+                        onAccepted: {
+                            console.log(fileDialog.selectedFiles[0])
+                            avatar.source = fileDialog.selectedFiles[0]
+                        }
                     }
                 }
 
