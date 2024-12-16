@@ -19,7 +19,9 @@ FluPage {
                 console.error(data['message'])
             }
         }
-        onRequestFailed: (data)=>{console.log(JSON.stringify(data))}
+        onRequestFailed: (data)=>{
+                             console.log("error",JSON.stringify(data))
+                         }
     }
 
     width: parent.width

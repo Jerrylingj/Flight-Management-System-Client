@@ -14,6 +14,8 @@ void NetworkHandler::request(const QString &url, RequestMethod method, const QJs
         finalUrl = api_url + url;
     }
 
+    // qDebug() << finalUrl;
+
     // 如果 token 不为空，则将其添加到请求头的 Authorization 字段，格式为 Bearer <token>
     if (!Token.isEmpty()) {
         request.setRawHeader("Authorization", QString("Bearer %1").arg(Token).toUtf8());

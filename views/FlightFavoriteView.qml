@@ -38,7 +38,7 @@ FluContentPage {
         var url = "/api/favorites"; // 收藏信息 API URL
         console.log("发送收藏航班信息请求，URL:", url);
         console.log("token: ", userInfo.myToken)
-        networkHandler.request(url, networkHandler.POST, {}, userInfo.myToken);
+        networkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
     // 页面加载完毕后调用 fetchFavoriteFlights 方法获取收藏数据

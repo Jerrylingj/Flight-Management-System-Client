@@ -1,160 +1,99 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
-import FluentUI 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Basic
+import FluentUI
 
-FluRectangle {
-    id: flightInfoCard
-    width: parent.width
-    height: 20
-    radius: 10
+// 进度条组件
+ProgressBar {
+    // 动画持续时间（毫秒）
+    property int duration: 888
 
-    property int flightId
-    property string flightNumber
-    property string departureTime
-    property string arrivalTime
-    property string departureAirport
-    property string arrivalAirport
-    property double price
-    property string airlineCompany
-    property string status
-    property bool isBooked: false
-    property bool isFaved: false
-    property int remainingSeats: 10
+    // 进度条的宽度
+    property real strokeWidth: 6
 
-    // 布局
-    RowLayout {
-        spacing: 30
+    // 进度文本是否可见
+    property bool progressVisible: true
 
-        // 航空公司 Logo 和航班信息
-        ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
-            spacing: 5
+    // 进度条颜色
+    property color color: FluTheme.primaryColor
 
-            // 航空公司Logo
-            // FluImage {
-            //     id: airlineLogo
-            //     source: "qrc:/images/airline_logo.png" // 替换为真实路径
-            //     width: 40
-            //     height: 20
-            //     fillMode: Image.PreserveAspectFit
-            // }
+    // 进度条背景颜色，根据主题变化
+    property color backgroundColor : FluTheme.dark ? Qt.rgba(99/255,99/255,99/255,1) : Qt.rgba(214/255,214/255,214/255,1)
 
-            FluText {
-                text: airlineCompany // 航空公司名称
-                font.pixelSize: 14
-            }
+    // 进度条组件的唯一标识符
+    id: control
 
-            FluText {
-                text: flightNumber // 航班号
-                font.pixelSize: 12
-            }
+    // 是否为不确定进度
+    indeterminate: false
+
+    QtObject {
+        id: d
+        // 进度条圆角半径
+        property real _radius: strokeWidth / 2
+    }
+
+    // 不确定进度属性变化时的处理程序
+    onIndeterminateChanged: {
+        if (!indeterminate) {
+            animator_x.duration = 0
+            rect_progress.x = 0
+            animator_x.duration = control.duration
         }
+    }
 
-        // 时间和机场信息
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.preferredWidth: flightInfoCard.width * 2 / 6
-            spacing: 20
+    // 进度条背景
+    background: Rectangle {
+        implicitWidth: 150
+        implicitHeight: control.strokeWidth
+        color: control.backgroundColor
+        radius: d._radius
+    }
 
-            ColumnLayout{
-                Layout.fillWidth: true
-                FluText {
-                    id: departure
-                    text: formatTime(departureTime) // 起飞时间
-                    font.pixelSize: 24
-                    font.bold: true
+    // 进度条内容
+    contentItem: FluClip {
+        clip: true
+        radius: [d._radius, d._radius, d._radius, d._radius]
+
+        // 表示进度填充的矩形
+        Rectangle {
+            id: rect_progress
+            width: {
+                if (control.indeterminate) {
+                    return 0.5 * parent.width
                 }
-
-                FluText {
-                    text: departureAirport // 起点机场
-                    font.pixelSize: 12
-                }
+                return control.visualPosition * parent.width
             }
+            height: parent.height
+            radius: d._radius
+            color: control.color
 
-            FluText {
-                width: 50
-                text: "→"
-                font.bold: true
-            }
-
-            ColumnLayout {
-                Layout.fillWidth: true
-
-                FluText {
-                    id: arrival
-                    text: formatTime(arrivalTime) // 到达时间
-                    font.pixelSize: 24
-                    font.bold: true
-                }
-                FluText {
-                    text: arrivalAirport // 终点机场
-                    font.pixelSize: 12
-                }
-            }
-        }
-
-        // 价格和状态
-        ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
-            spacing: 5
-
-            FluText {
-                text: qsTr("￥") + price.toFixed(2) // 动态绑定价格
-                font.pixelSize: 18
-                font.bold: true
-                color: "#F39C12"
-            }
-
-            Rectangle {
-                z: 5
-                id: statusBadge
-                anchors.horizontalCenter: parent.horizontalCenter // 居中对齐
-                width: 80
-                height: 24
-                radius: 5
-                color: status === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
-                FluText {
-                    anchors.centerIn: parent
-                    text: status
-                    color: "white"
-                    font.pixelSize: 14
-                    font.bold: true
-                }
-            }
-        }
-
-        // 预订和收藏按钮
-        ColumnLayout {
-            Layout.preferredWidth: flightInfoCard.width / 6
-
-            FluFilledButton {
-                text: isBooked ? qsTr("取消预订") : qsTr("预订")
-                Layout.preferredWidth: 100
-                onClicked: {
-                    isBooked = !isBooked;
-                    console.log(isBooked ? "预订航班: " + flightNumber : "取消预订航班: " + flightNumber);
-                }
-            }
-
-            FluTextButton {
-                text: isFaved ? qsTr("取消收藏") : qsTr("收藏")
-                Layout.preferredWidth: 100
-                onClicked: {
-                    isFaved = !isFaved;
-                    console.log(isFaved ? "收藏航班: " + flightNumber : "取消收藏航班: " + flightNumber);
+            // 进度填充的动画
+            SequentialAnimation on x {
+                id: animator_x
+                running: control.indeterminate && control.visible
+                loops: Animation.Infinite
+                PropertyAnimation {
+                    from: -rect_progress.width
+                    to: control.width + rect_progress.width
+                    duration: control.duration
                 }
             }
         }
     }
 
-    // 函数：格式化时间为 "hh:mm" 格式
-    function formatTime(timeString) {
-        var date = new Date(timeString);  // 使用 JavaScript 内置的 Date 对象解析时间字符串
-        var hours = date.getHours();  // 获取小时
-        var minutes = date.getMinutes();  // 获取分钟
-
-        // 保证小时和分钟都是两位数格式
-        return (hours < 10 ? '0' + hours : hours) + ":" + (minutes < 10 ? '0' + minutes : minutes);
+    // 显示进度百分比的文本
+    FluText {
+        text: "距离检票开始还有()分钟"
+        visible: {
+            if (control.indeterminate) {
+                return false
+            }
+            return control.progressVisible
+        }
+        anchors {
+            left: parent.left
+            leftMargin: control.width + 5
+            verticalCenter: parent.verticalCenter
+        }
     }
 }

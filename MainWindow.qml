@@ -109,7 +109,7 @@ FluWindow {
         id: agentNavView
         anchors.fill: parent
         pageMode: FluNavigationViewType.NoStack
-        displayMode: FluNavigationViewType.Auto
+        displayMode: FluNatruevigationViewType.Auto
         visible: false
 
         items: FluPaneItemExpander {

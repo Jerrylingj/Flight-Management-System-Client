@@ -25,6 +25,7 @@ FluPage {
             case 'user':{
                 if(data['code'] === 200) {
                     const info = data['data']
+                    console.log(JSON.stringify(info))
                     userInfo.myMoney = info['balance']
                     userInfo.myAvatar = info['avatar_url']
                     userInfo.myCreateTime = info['created_at']
