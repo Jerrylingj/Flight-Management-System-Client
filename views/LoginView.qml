@@ -20,7 +20,7 @@ FluPage {
                     showSuccess(qsTr("登录成功"))
                 }else{
                     console.error(data['message'])
-                    loginPage.showError("未能连接网络")
+                    showError(data['message'])
                 }
                 break
             }
