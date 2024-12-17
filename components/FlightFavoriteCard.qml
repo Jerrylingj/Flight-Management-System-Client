@@ -5,7 +5,7 @@ import FluentUI 1.0
 import NetworkHandler 1.0
 
 FluFrame {
-    id: flightInfoCard
+    id: flightFavoriteCard
     radius: 10
     Layout.fillWidth: true
     Layout.preferredHeight: 100
@@ -24,6 +24,21 @@ FluFrame {
     property bool isFaved: false
     property int remainingSeats: 10
 
+    // 收藏与取消收藏的函数
+    function toggleFavorite(flightId, isFaved) {
+        var url = isFaved
+            ? "http://127.0.0.1:8080/api/favorites/remove" // 取消收藏接口
+            : "http://127.0.0.1:8080/api/favorites/add"; // 收藏接口
+
+        var payload = {
+            flightId: flightId, // 当前航班的 ID
+        };
+
+        console.log(isFaved ? "正在取消收藏航班: " + flightId : "正在收藏航班: " + flightId);
+
+        favoriteHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
+    }
+
 
     // 收藏接口的 NetworkHandler 实例
     NetworkHandler {
@@ -36,14 +51,17 @@ FluFrame {
                 console.log("收藏操作成功");
 
                 // 更新 UI 中的 isFaved 状态
-                flightInfoCard.isFaved = !flightInfoCard.isFaved;
+                flightFavoriteCard.isFaved = !flightFavoriteCard.isFaved;
 
-                if (flightInfoCard.isFaved) {
-                    console.log("航班 " + flightInfoCard.flightId + " 已收藏");
-                    showSuccess(qsTr("收藏成功"))
+                if (flightFavoriteCard.isFaved) {
+                    console.log("航班 " + flightFavoriteCard.flightId + " 已收藏");
+                } else {
+                    console.log("航班 " + flightFavoriteCard.flightId + " 已取消收藏");
                 }
+                showSuccess(qsTr("操作成功"))
             } else {
                 console.error("收藏/取消收藏操作失败，错误信息：", responseData.message);
+                showError(qsTr("操作失败"))
             }
         }
 
@@ -52,18 +70,7 @@ FluFrame {
         }
     }
 
-    // 收藏的函数
-    function toggleFavorite(flightId, isFaved) {
-        var url = "/api/favorites/add"; // 收藏接口
 
-        var payload = {
-            flightId: flightId, // 当前航班的 ID
-        };
-
-        console.log("正在收藏航班: " + flightId);
-
-        favoriteHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
-    }
 
     RowLayout {
         anchors.fill: parent
@@ -159,39 +166,18 @@ FluFrame {
             }
         }
 
-        // 收藏和预定按钮
+        // 收藏按钮
         ColumnLayout {
             Layout.preferredWidth: 150
             spacing: 5
 
             FluFilledButton {
-                text: isBooked ? qsTr("取消预订") : qsTr("预订")
+                text: isFaved ? qsTr("取消收藏") : qsTr("收藏")
                 Layout.preferredWidth: 120
                 onClicked: {
-                    if(!userInfo.myToken)  {
-                        showWarning(qsTr("请先登录！"))
-                        return
-                    }
-                    isBooked = !isBooked;
-                    console.log(isBooked ? "预订航班: " + flightNumber : "取消预订航班: " + flightNumber);
+                    toggleFavorite(flightId, isFaved);
                 }
             }
-
-            FluTextButton {
-                text: isFaved ? qsTr("已收藏") : qsTr("收藏")
-                Layout.preferredWidth: 120
-                enabled: !isFaved  // 如果已收藏，禁用按钮
-                onClicked: {
-                    if(!userInfo.myToken)  {
-                        showWarning(qsTr("请先登录！"))
-                        return
-                    }
-                    if (!isFaved) {
-                        toggleFavorite(flightId, isFaved);
-                    }
-                }
-            }
-
         }
     }
 
