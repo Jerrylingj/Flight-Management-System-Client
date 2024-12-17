@@ -39,7 +39,6 @@ FluFrame {
         favoriteHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
     }
 
-
     // 收藏接口的 NetworkHandler 实例
     NetworkHandler {
         id: favoriteHandler

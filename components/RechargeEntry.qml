@@ -64,11 +64,11 @@ FluContentDialog{
             positiveText: qsTr("奶龙大人我错了")
             onPositiveClicked:{
                 recharge(1000);
-                showWarning("可我还是喜欢你桀骜不驯的样子")
+                showWarning(qsTr("我原谅你了"), 7000, qsTr("可我还是喜欢你桀骜不驯的样子"))
             }
 
             onNegativeClickListener:()=>{
-                showError("我会一直看着你哦")
+                showError(qsTr("我会一直看着你哦"), 2000, qsTr("奶龙 IS WATCHING YOU!"))
             }
         }
 
@@ -93,6 +93,6 @@ FluContentDialog{
 
     function recharge(value = 3000){
         userInfo.myMoney += value;
-        showSuccess(qsTr("已到账"+value+"奶龙币"))
+        showSuccess(qsTr("已到账"+value+"奶龙币"), 4000, qsTr("我是只慷慨的奶龙，给的钱量大管饱"))
     }
 }

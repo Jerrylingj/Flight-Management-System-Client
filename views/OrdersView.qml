@@ -28,8 +28,15 @@ FluScrollablePage {
             console.log("进入onRequestSuccess函数");
 
             // 检查responseData是否为空
-            if (!responseData || !responseData.data || responseData.data.length === 0) {
+            if (!responseData || !responseData.data) {
                 console.log("返回数据为空");
+                orderData = []; // 确保 orderData 为空数组
+                return;
+            }
+
+            // 检查data是否为数组
+            if (!Array.isArray(responseData.data)) {
+                console.log("返回的data不是数组");
                 orderData = []; // 确保 orderData 为空数组
                 return;
             }
@@ -39,13 +46,13 @@ FluScrollablePage {
 
             var tempOrderData = responseData.data.map(function(order) {
                 /*** 初始化数据 ***/
-                // 订单界面需要怎么初始化吗？
                 return order;
             });
 
             // 检查处理后的 orderData 是否为空
             if (tempOrderData.length === 0) {
                 console.log("处理后的 orderData 为空");
+                orderData = []; // 确保 orderData 为空数组
                 return;
             }
 
@@ -105,11 +112,29 @@ FluScrollablePage {
                 Layout.preferredWidth: 180
             }
 
+            // 还无法调节速度
+            Timer{
+                id: timer_progress
+                interval: 80
+                onTriggered: {
+                    queryButton.progress = (queryButton.progress + 0.1).toFixed(1)
+                    if(queryButton.progress===1){
+                        timer_progress.stop()
+                    }else{
+                        timer_progress.start()
+                    }
+                }
+            }
+
+            // 还无法调节速度
             FluProgressButton {
                 id: queryButton
-                text: "查询"
+                width: 100
+                text: qsTr("查询")
                 onClicked:{
-                    console.log("点击查询按钮")
+                    // console.log("点击查询按钮")
+                    queryButton.progress = 0
+                    timer_progress.restart()
                 }
             }
         }

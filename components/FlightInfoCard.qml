@@ -52,7 +52,30 @@ FluFrame {
         }
     }
 
+    NetworkHandler{
+        id: orderHandler
+
+        onRequestSuccess: function (responseData) {
+            console.log("预定请求成功，返回数据：", JSON.stringify(responseData));
+
+            if (responseData.success) {
+                console.log("预定操作成功");
+                isBooked = true;
+                showSuccess(qsTr("预定操作成功"), 4000, qsTr("您可以前往“我的订单”界面进行支付"))
+            } else {
+                console.error("收藏/取消收藏操作失败，错误信息：", responseData.message);
+                showError(qsTr("操作失败了"), 4000, qsTr("↙请点击左下角客服界面反馈"))
+            }
+        }
+
+        onRequestFailed: function (errorMessage) {
+            console.error("收藏/取消收藏请求失败：", errorMessage);
+            showError(qsTr("操作失败了"), 4000, qsTr("↙请点击左下角客服界面反馈"))
+        }
+    }
+
     // 收藏的函数
+    // 其实不需要传入参数的吧？flightId和isFaved是可以直接调用的
     function toggleFavorite(flightId, isFaved) {
         var url = "/api/favorites/add"; // 收藏接口
 
@@ -65,10 +88,22 @@ FluFrame {
         favoriteHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
     }
 
+    // 预定的函数
+    function toggleBooked(){
+        var url = "/api/orders/add";
+
+        var payload = {
+            flightId : flightId
+        };
+
+        console.log("正在预定航班（toggledBooked函数运行中）：" + flightId + flightNumber);
+
+        orderHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
+    }
+
     RowLayout {
         anchors.fill: parent
         spacing: 30
-
         // 航空公司信息
         ColumnLayout {
             Layout.preferredWidth: 150
@@ -165,15 +200,16 @@ FluFrame {
             spacing: 5
 
             FluFilledButton {
-                text: isBooked ? qsTr("取消预订") : qsTr("预订")
+                text: isBooked ? qsTr("已预订") : qsTr("预订")
+                disabled: isBooked
                 Layout.preferredWidth: 120
                 onClicked: {
                     if(!userInfo.myToken)  {
                         showWarning(qsTr("请先登录！"))
                         return
                     }
-                    isBooked = !isBooked;
-                    console.log(isBooked ? "预订航班: " + flightNumber : "取消预订航班: " + flightNumber);
+                    toggleBooked();
+                    console.log(qsTr("已发送预定航班请求：" + flightId + flightNumber));
                 }
             }
 

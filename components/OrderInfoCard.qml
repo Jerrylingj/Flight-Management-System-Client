@@ -93,13 +93,13 @@ FluFrame {
 
             if (responseData.success) {
                 console.log("订单操作成功");
-                showSuccess(qsTr("操作成功，请耐心等待刷新！"))
+                showSuccess(qsTr("操作成功！"), 3000, qsTr("感谢您对云途公司的信赖！"))
                 // 触发信号，通知父组件刷新数据
                 orderUpdated();
 
             } else {
                 console.error("订单操作失败，错误信息：", responseData.message);
-                showError(qsTr("操作失败"))
+                showError(qsTr("操作失败"), 5000, qsTr("↙请点击左下角\"客服\"询问"))
             }
         }
 
@@ -239,11 +239,10 @@ FluFrame {
                 message: qsTr("确定删除订单？")
                 positiveText: qsTr("取消")
                 onPositiveClicked: {
-                    showInfo("已取消操作");
+                    showWarning("已取消操作", 3000);
                 }
                 negativeText: qsTr("确认删除")
                 onNegativeClicked: {
-                    showInfo("正在删除");
                     deleteOrder();
                 }
             }
@@ -269,7 +268,7 @@ FluFrame {
                 buttonFlags: FluContentDialogType.PositiveButton
                 positiveText: qsTr("完成")
                 onPositiveClicked: {
-                    showSuccess(qsTr("祝您旅途愉快！"))
+                    showSuccess(qsTr("祝您旅途愉快！"), 3000)
                 }
             }
 
@@ -309,7 +308,7 @@ FluFrame {
 
                     negativeText: qsTr("取消")
                     onNegativeClicked: {
-                        showInfo("已取消购票")
+                        showWarning("已取消购票", 3000, "您真的不看看我们的充值界面吗？")
                     }
                 }
 
@@ -417,7 +416,7 @@ FluFrame {
                 }
                 negativeText: qsTr("狠心拒绝")
                 onNegativeClicked: {
-                    showWarning(qsTr("已取消支付"))
+                    showWarning(qsTr("已取消支付"), 0, qsTr("您真的不考虑考虑吗？"))
                 }
 
                 positiveText: qsTr("大方支付")
@@ -453,14 +452,20 @@ FluFrame {
                 }
                 neutralText: qsTr("取消操作")
                 onNeutralClicked: {
-                    showSuccess(qsTr("操作已取消"))
+                    showWarning(qsTr("操作已取消"), 3000)
                     }
                 }
             // 改签弹窗
             FluContentDialog{
                 id : rebookingDialog
+                title : qsTr("航班改签")
             }
         }
+    }
+
+    function getNearestFlight(departure, destination, checkInStartTime){
+        var flightInfoCard;
+        return flightInfoCard;
     }
 
     // 函数：格式化时间为 "hh:mm" 格式

@@ -65,6 +65,10 @@ FluContentPage {
                             height: parent.height
                             anchors.fill: parent
                             onClicked: {
+                                if(!userInfo.myToken)  {
+                                    showWarning(qsTr("请先登录！"))
+                                    return
+                                }
                                 fileDialog.open()
                             }
                         }
@@ -130,6 +134,10 @@ FluContentPage {
                         text: qsTr("收藏")
                         Layout.preferredWidth: 120
                         onClicked: {
+                            if(!userInfo.myToken)  {
+                                showWarning(qsTr("请先登录！"))
+                                return
+                            }
                             console.log("跳转到收藏界面");
                             userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml")
                             userNavView.setCurrentIndex(3);
@@ -162,6 +170,10 @@ FluContentPage {
                         text: qsTr("编辑个人信息")
                         Layout.preferredWidth: 120
                         onClicked: {
+                            if(!userInfo.myToken)  {
+                                showWarning(qsTr("请先登录！"))
+                                return
+                            }
                             console.log("跳转到编辑界面");
                             userNavView.push("qrc:/qt/Flight_Management_System_Client/views/EditPersonalInfo.qml")
                         }
@@ -170,6 +182,10 @@ FluContentPage {
                         text: qsTr("全部订单")
                         Layout.preferredWidth: 120
                         onClicked: {
+                            if(!userInfo.myToken)  {
+                                showWarning(qsTr("请先登录！"))
+                                return
+                            }
                             console.log("跳转到全部订单界面");
                             // 跳转到全部订单页面逻辑
                             userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightInfoView.qml")
