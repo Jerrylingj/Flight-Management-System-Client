@@ -44,14 +44,16 @@ FluPage {
             text: "确认更改"
             width: parent.width * 0.8
             enabled: usernameField.text>0 && personlinfoField.text>0
-            FluContentDialog{
-                id:quittextDialog
-                title: "更改成功"
-            }
             onClicked: {
-                userInfo.userName=usernameField.text
-                userInfo.userPersonalInfo=personlinfoField.text
-                quittextDialog.open()
+                if(userInfo.myToken.length<=1){
+                    showWarning("请先登录")
+                }
+                else{
+                    userInfo.userName=usernameField.text
+                    userInfo.userPersonalInfo=personlinfoField.text
+                    showSuccess("更改个人信息成功")
+                    userNavView.push("qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml")
+                }
             }
         }
     }

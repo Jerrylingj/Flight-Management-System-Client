@@ -144,8 +144,13 @@ FluContentPage {
                         text: qsTr("充值")
                         Layout.preferredWidth: 120
                         onClicked: {
-                            console.log("跳转到充值界面");
-                            rechargeEntry1.open();
+                            if(userInfo.myToken.length<=1){
+                                showWarning("请先登录")
+                            }
+                            else{
+                                console.log("跳转到充值界面");
+                                rechargeEntry1.open();
+                            }
                         }
                     }
                 }
@@ -229,8 +234,12 @@ FluContentPage {
                     }
                     onClicked: {
                         console.log("注销按钮点击");
-                        // 注销逻辑
-                        quittextDialog.open();
+                        if(userInfo.myToken.length<=1){
+                            showWarning("请先登录")
+                        }
+                        else{
+                            quittextDialog.open();
+                        }
                     }
                 }
             }
