@@ -16,15 +16,16 @@ FluContentPage {
             Item{
                 anchors.fill: parent
                 FluImage {
+                    id: cover
                     anchors.fill: parent
                     source: model.url
                     asynchronous: true
-                    fillMode: Image.PreserveAspectFit
+                    fillMode: Image.PreserveAspectCrop
                 }
                 Rectangle{
                     height: 40
                     width: parent.width
-                    anchors.bottom: parent.bottom
+                    anchors.bottom: cover.bottom
                     color: "#33000000"
                     FluText{
                         anchors.fill: parent
