@@ -185,11 +185,6 @@ FluWindow {
     }
 
     Component.onCompleted: {
-        // if (userInfo.myToken) {
-        //     agentNavView.setCurrentIndex(0)
-        // } else {
-        //     userNavView.setCurrentIndex(0)
-        // }
         userNavView.setCurrentIndex(0)
         agentNavView.setCurrentIndex((0))
     }

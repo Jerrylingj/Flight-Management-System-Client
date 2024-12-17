@@ -14,6 +14,8 @@ FluScrollablePage{
         Layout.preferredHeight: 400
         padding: 10
 
+
+
         FluPivot{
             anchors.fill: parent
             currentIndex: 2

@@ -62,6 +62,10 @@ set(RESOURCES_FILES
     figures/NailongAskYou.jpg
     figures/NailongAskYouAgain.jpg
     figures/NailongAskYouLastOne.png
+    figures/background1.jpg
+    figures/background2.jpg
+    figures/background3.jpg
+    figures/background4.jpg
 )
 
 qt_add_executable(${PROJECT_NAME}
