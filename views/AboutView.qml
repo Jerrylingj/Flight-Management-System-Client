@@ -15,7 +15,7 @@ FluScrollablePage {
 
         FluPivot {
             anchors.fill: parent
-            currentIndex: 2
+            currentIndex: 0
 
             FluPivotItem {
                 title: qsTr("团队简介")
