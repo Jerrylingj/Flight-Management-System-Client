@@ -215,7 +215,7 @@ FluFrame {
                 }
                 negativeText: qsTr("狠心拒绝")
                 onNegativeClicked: {
-                    showSuccess(qsTr("我还是喜欢你桀骜不驯的样子"))
+                    showWarning(qsTr("我还是喜欢你桀骜不驯的样子"))
                 }
 
                 positiveText: qsTr("大方支付")

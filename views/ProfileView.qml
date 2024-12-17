@@ -7,6 +7,8 @@ import FluentUI 1.0
 import QtQuick.Dialogs
 import NetworkHandler 1.0
 
+import "../components"
+
 FluContentPage {
     id: userProfilePage
     title: qsTr("个人中心")
@@ -134,12 +136,16 @@ FluContentPage {
                         }
                     }
 
+                    RechargeEntry{
+                        id: rechargeEntry1
+                    }
+
                     FluFilledButton {
                         text: qsTr("充值")
                         Layout.preferredWidth: 120
                         onClicked: {
                             console.log("跳转到充值界面");
-                            userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml")
+                            rechargeEntry1.open();
                         }
                     }
                 }

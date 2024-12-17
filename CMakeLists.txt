@@ -24,8 +24,6 @@ set(QML_FILES
     views/FlightInfoEditView.qml
     views/ClientServerView.qml
     views/AgentServerView.qml
-    views/OrderPaymentView.qml
-    views/OrderRebookingView.qml
     views/OrderDetailView.qml
     views/LoginView.qml
     views/RegisterView.qml
@@ -57,6 +55,8 @@ set(RESOURCES_FILES
     figures/avatar.jpg
     figures/nailong.jpg
     figures/user.png
+    figures/NailongAskYou.jpg
+    figures/NailongAskYouAgain.jpg
 )
 
 qt_add_executable(${PROJECT_NAME}
@@ -70,10 +70,12 @@ qt_add_qml_module(${PROJECT_NAME}
     SOURCES ${SOURCE_FILES}
     RESOURCES ${RESOURCES_FILES}
     QML_FILES ${QML_FILES}
-
+    QML_FILES components/RechargeEntry.qml
+    RESOURCES figures/NailongAskYouLastOne.png
 )
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# Qt f
+# RESOURCES figures/NailongAskYouAgain.jpg
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 set_target_properties(${PROJECT_NAME} PROPERTIES
