@@ -29,8 +29,6 @@ FluWindow {
             id: toggleSwitch
             checked: isAdmin
             Layout.alignment: Qt.AlignVCenter
-            // textOn: qsTr("管理员端")
-            // textOff: qsTr("用户端")
 
             onCheckedChanged: {
                 isAdmin = checked;
@@ -157,6 +155,15 @@ FluWindow {
                 url: "qrc:/qt/Flight_Management_System_Client/views/HomeView.qml"
                 onTap: { agentNavView.push(url) }
             }
+
+            FluPaneItem {
+                id: item_users_info
+                title: qsTr("用户列表")
+                icon: FluentIcons.ContactPresence
+                url: "qrc:/qt/Flight_Management_System_Client/views/UsersInfoView.qml"
+                onTap: { agentNavView.push(url) }
+            }
+
 
             FluPaneItem {
                 id: item_agent_flight_info
