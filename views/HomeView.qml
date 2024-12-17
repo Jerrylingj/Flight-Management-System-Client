@@ -14,11 +14,17 @@ FluContentPage {
                 anchors.fill: parent
                 source: model.url
                 asynchronous: true
-                fillMode:Image.PreserveAspectCrop
+                fillMode: Image.PreserveAspectFit
             }
         }
         Component.onCompleted: {
-            carousel.model = [{url:"qrc:/qt/Flight_Management_System_Client/figures/homepage-cover.png"},{url:"qrc:/qt/Flight_Management_System_Client/figures/background1.jpg"},{url:"qrc:/qt/Flight_Management_System_Client/figures/background2.jpg"}, {url:"qrc:/qt/Flight_Management_System_Client/figures/background3.jpg"}, {url:"qrc:/qt/Flight_Management_System_Client/figures/background4.jpg"}]
+            carousel.model = [
+                {url:"qrc:/qt/Flight_Management_System_Client/figures/homepage-cover.png"},
+                {url:"qrc:/qt/Flight_Management_System_Client/figures/background1.jpg"},
+                {url:"qrc:/qt/Flight_Management_System_Client/figures/background2.jpg"},
+                {url:"qrc:/qt/Flight_Management_System_Client/figures/background3.jpg"},
+                {url:"qrc:/qt/Flight_Management_System_Client/figures/background4.jpg"}
+            ]
         }
     }
 }

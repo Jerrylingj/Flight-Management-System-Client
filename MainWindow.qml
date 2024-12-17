@@ -186,6 +186,7 @@ FluWindow {
 
     Component.onCompleted: {
         userNavView.setCurrentIndex(0)
+        userNavView.push("qrc:/qt/Flight_Management_System_Client/views/HomeView.qml")
         agentNavView.setCurrentIndex((0))
     }
 }
