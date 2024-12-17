@@ -16,8 +16,10 @@ FluPage {
                     userInfo.myToken = data['data']['token']
                     networkHandler.curType = 'user'
                     networkHandler.request('/api/user', NetworkHandler.GET, {}, userInfo.myToken)
+                    showSuccess(qsTr("登录成功"))
                 }else{
                     console.error(data['message'])
+                    showError(qsTr(data['message']))
                 }
                 break
             }
@@ -32,8 +34,10 @@ FluPage {
                     userInfo.userName = info['username']
                     userInfo.userEmail = info['email']
                     userNavView.push("qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml")
-                }else{
+                    userNavView.setCurrentIndex(5);
+                } else{
                     console.error(data['message'])
+                    showError(qsTr(data['message']))
                 }
                 break
             }

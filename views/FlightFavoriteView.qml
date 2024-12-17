@@ -151,7 +151,7 @@ FluContentPage {
                     model: filteredData  // 使用筛选后的数据
                     width: parent.width
 
-                    FlightInfoCard {
+                    FlightFavoriteCard {
                         width: parent.width
                         height: 80 // 确保 FlightInfoCard 有固定高度
                         flightId: modelData.flightId

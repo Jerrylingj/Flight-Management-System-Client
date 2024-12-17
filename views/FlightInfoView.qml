@@ -17,9 +17,9 @@ FluContentPage {
     NetworkHandler {
         id: networkHandler
         onRequestSuccess: function(responseData) {
-            console.log("进入onRequestSuccess函数")
-            var jsonString = JSON.stringify(responseData);
-            console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+            // console.log("进入onRequestSuccess函数")
+            // var jsonString = JSON.stringify(responseData);
+            // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
             flightData = responseData.data.map(function(flight) {
                 /*** 初始化数据 ***/
                 flight.isBooked = false;
@@ -35,7 +35,44 @@ FluContentPage {
         }
     }
 
-    // 调用网络请求
+    // 在 NetworkHandler 实例外部，创建一个新的函数来查询用户已收藏的航班信息
+    NetworkHandler {
+        id: favoriteNetworkHandler
+        onRequestSuccess: function(responseData) {
+            console.log("进入onRequestSuccess函数，已收藏航班请求成功");
+
+            if (responseData.success && responseData.favorites) {
+                // 假设 favorites 是航班对象数组
+                var favoriteFlightIds = responseData.favorites.map(function(flight) {
+                    return flight.flightId;  // 提取 flightId
+                });
+
+                // 接下来，可以根据 favoriteFlightIds 更新航班的 isFaved 状态
+                flightData.forEach(function(flight) {
+                    if (favoriteFlightIds.includes(flight.flightId)) {
+                        flight.isFaved = true;  // 标记为已收藏
+                    }
+                });
+
+                // 刷新筛选后的数据
+                filteredData = flightData;
+            }
+        }
+
+        onRequestFailed: function(errorMessage) {
+            console.log("已收藏航班请求失败：", errorMessage);
+        }
+    }
+
+    // 查询收藏信息
+    function fetchFavoriteFlights() {
+        var url = "/api/favorites"; // 收藏信息 API URL
+        console.log("发送收藏航班信息请求，URL:", url);
+        console.log("token: ", userInfo.myToken)
+        favoriteNetworkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
+    }
+
+    // 查询航班
     function fetchFlightData() {
         const url = "/api/flights";  // 后端 API URL
         // console.log("发送请求，URL:", url); // 打印请求的 URL
@@ -45,6 +82,7 @@ FluContentPage {
     // 在页面初始化时调用 fetchFlightData 获取航班数据
     Component.onCompleted: {
         fetchFlightData();  // 页面加载完毕后调用 fetchFlightData 方法获取数据
+        if (userInfo.myToken) fetchFavoriteFlights(); // 只有用户登录时才调用
     }
 
     // 筛选函数

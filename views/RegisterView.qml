@@ -14,9 +14,11 @@ FluPage {
                 }else{
                     console.log(data['data'])
                     userNavView.push("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
+                    showSuccess(qsTr("注册成功"))
                 }
             }else{
                 console.error(data['message'])
+                showError(qsTr(data['message']))
             }
         }
         onRequestFailed: (data)=>{
