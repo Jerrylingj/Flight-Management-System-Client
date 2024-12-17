@@ -69,12 +69,21 @@ FluContentPage {
     function filterFlights() {
         var departureCity = departureAddressPicker.selectedCity;
         var arrivalCity = arrivalAddressPicker.selectedCity;
+        var selectedDate = datePicker.current;
 
         // 过滤航班数据
         filteredData = flightData.filter(function(flight) {
             var matchesDeparture = departureCity ? (departureCity === "全部" || flight.departureCity === departureCity) : true;
             var matchesArrival = arrivalCity ? (arrivalCity === "全部" || flight.arrivalCity === arrivalCity) : true;
-            return matchesDeparture && matchesArrival;
+
+            var flightDate = new Date(flight.departureTime);
+            var matchesDate = selectedDate ? (
+                flightDate.getFullYear() === selectedDate.getFullYear() &&
+                flightDate.getMonth() === selectedDate.getMonth() &&
+                flightDate.getDate() === selectedDate.getDate()
+            ) : true;
+
+            return matchesDeparture && matchesArrival && matchesDate;
         });
     }
 
@@ -120,18 +129,11 @@ FluContentPage {
                 FluDatePicker {
                     id: datePicker
                     Layout.preferredWidth: 180
+                    onAccepted: {
+                        console.log("选择日期:", current);
+                        filterFlights();
+                    }
                 }
-
-
-                // 决定做成实时筛选，就不单独放筛选按钮了
-                // FluFilledButton {
-                //     text: qsTr("查询")
-                //     Layout.preferredWidth: 100
-                //     onClicked: {
-                //         console.log("筛选条件: 起点=${departureInput.text}, 终点=${destinationInput.text}, 日期=${datePicker.date}");
-                //         filterFlights(); // 点击查询时也触发筛选
-                //     }
-                // }
             }
         }
 
