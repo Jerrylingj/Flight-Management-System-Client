@@ -29,6 +29,7 @@ FluWindow {
             id: toggleSwitch
             checked: isAdmin
             Layout.alignment: Qt.AlignVCenter
+            text: isAdmin ? "切换为用户端" : "切换为管理员端"
 
             onCheckedChanged: {
                 isAdmin = checked;
