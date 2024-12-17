@@ -4,27 +4,21 @@ import FluentUI 1.0
 
 FluContentPage {
     id: homeView
-    // background: Rectangle {
-    //     radius: 5
-    //     anchors.rightMargin: 10
-    // }
 
-    FluImage {
-        id: home_cover
-        source: "../figures/homepage-cover.png"
-        fillMode: Image.PreserveAspectFit
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        onStatusChanged: {
-            if (status === Image.Error) {
-                console.error("图像加载失败，请重试");
+    FluCarousel{
+        id:carousel
+        width: parent.width
+        height: 400
+        delegate: Component{
+            FluImage {
+                anchors.fill: parent
+                source: model.url
+                asynchronous: true
+                fillMode:Image.PreserveAspectCrop
             }
         }
-        clickErrorListener: function() {
-            source = "https://example.com/alternative_image.jpg";
+        Component.onCompleted: {
+            carousel.model = [{url:"qrc:/qt/Flight_Management_System_Client/figures/homepage-cover.png"},{url:"qrc:/qt/Flight_Management_System_Client/figures/background1.jpg"},{url:"qrc:/qt/Flight_Management_System_Client/figures/background2.jpg"}, {url:"qrc:/qt/Flight_Management_System_Client/figures/background3.jpg"}, {url:"qrc:/qt/Flight_Management_System_Client/figures/background4.jpg"}]
         }
     }
 }
