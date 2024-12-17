@@ -8,7 +8,6 @@ import "../components"
 FluContentPage {
     id: flightFavoriteView
     title: "我的收藏"
-    // background: Rectangle { radius: 5 }
 
     property var flightData: []   // 所有航班数据
     property var filteredData: [] // 筛选后的航班数据
@@ -18,11 +17,9 @@ FluContentPage {
         id: networkHandler
         onRequestSuccess: function(responseData) {
             try {
-                // 打印整个返回数据
-                var jsonString = JSON.stringify(responseData);
-                console.log("请求成功，返回数据：", jsonString);
+                // var jsonString = JSON.stringify(responseData);
+                // console.log("请求成功，返回数据：", jsonString);
 
-                // 验证返回结果是否成功
                 if (responseData.success && responseData.favorites) {
                     flightData = responseData.favorites.map(function(flight) {
                         /*** 初始化数据 ***/
@@ -32,21 +29,20 @@ FluContentPage {
                         return flight;
                     });
 
-                    // 设置过滤后的数据为初始航班数据
-                    filteredData = flightData;
+                    filteredData = flightData; // 初始化filteredData
                 } else {
-                    console.warn("返回数据格式错误或 success 为 false");
+                    // console.warn("返回数据格式错误或 success 为 false");
                     flightData = [];
                     filteredData = [];
                 }
             } catch (error) {
-                console.error("解析返回数据时发生错误：", error);
+                // console.error("解析返回数据时发生错误：", error);
                 flightData = [];
                 filteredData = [];
             }
         }
         onRequestFailed: function(errorMessage) {
-            console.log("请求失败：", errorMessage); // 打印失败的错误信息
+            // console.log("请求失败：", errorMessage); // 打印失败的错误信息
             flightData = [];
             filteredData = [];
         }
@@ -60,7 +56,7 @@ FluContentPage {
         networkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
-    // 页面加载完毕后调用 fetchFavoriteFlights 方法获取收藏数据
+    // 页面加载完毕后调用 fetchFavoriteFlights 获取收藏信息
     Component.onCompleted: {
         fetchFavoriteFlights();
     }
@@ -107,10 +103,9 @@ FluContentPage {
                 AddressPicker {
                     id: departureAddressPicker
                     onAccepted: {
-                        console.log("选择的省份:", selectedProvince);
-                        console.log("选择的城市:", selectedCity);
+                        // console.log("选择的省份:", selectedProvince);
+                        // console.log("选择的城市:", selectedCity);
 
-                        // 触发筛选
                         filterFlights();
                     }
                 }
@@ -118,10 +113,9 @@ FluContentPage {
                 AddressPicker {
                     id: arrivalAddressPicker
                     onAccepted: {
-                        console.log("选择的省份:", selectedProvince);
-                        console.log("选择的城市:", selectedCity);
+                        // console.log("选择的省份:", selectedProvince);
+                        // console.log("选择的城市:", selectedCity);
 
-                        // 触发筛选
                         filterFlights();
                     }
                 }
@@ -130,7 +124,7 @@ FluContentPage {
                     id: datePicker
                     Layout.preferredWidth: 180
                     onAccepted: {
-                        console.log("选择日期:", current);
+                        // console.log("选择日期:", current);
                         filterFlights();
                     }
                 }
@@ -140,7 +134,7 @@ FluContentPage {
         Flickable {
             y: filterPanel.height
             width: parent.width
-            height: parent.height
+            height: parent.height - filterPanel.height - 90
             contentWidth: parent.width
             clip: true
 
