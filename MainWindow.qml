@@ -120,6 +120,14 @@ FluWindow {
             iconVisible: false
 
             FluPaneItem {
+                id: item_about
+                title: qsTr("关于我们")
+                icon: FluentIcons.Info
+                url: "qrc:/qt/Flight_Management_System_Client/views/AboutView.qml"
+                onTap: { userNavView.navigateTo(url) }
+            }
+
+            FluPaneItem {
                 id: item_client_server
                 title: qsTr("客服")
                 icon: FluentIcons.Message

@@ -4,7 +4,7 @@ import FluentUI 1.0
 import "../components"
 
 FluPage {
-    id: ordersView
+    id: findView
     title: "发现"
     // background: Rectangle { radius: 5 }
 

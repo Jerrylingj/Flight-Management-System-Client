@@ -191,31 +191,130 @@ FluFrame {
 
                 Layout.preferredWidth: 100
                 checked: paymentStatus
+
+                RechargeEntry{
+                    id: rechargeInOrder
+                }
+
+                FluContentDialog{
+                    id: rechargeReminder
+                    title: qsTr("温馨提示：奶龙币不足")
+                    message: qsTr("您需要先充值奶龙币")
+                    positiveText: qsTr("去充值")
+                    onPositiveClicked:{
+                        rechargeInOrder.open();
+                    }
+
+                    negativeText: qsTr("取消")
+                    onNegativeClicked: {
+                        showInfo("已取消购票")
+                    }
+                }
+
                 onClicked: {
                     if(!checked){
                         checked = !checked;
                         selectionDialog.open();
                     }else{
                         checked = !checked;
-                        paymentDialog.open();
+                        if(userInfo.myMoney > price){
+                            paymentDialog.open();
+                        }else{
+                            rechargeReminder.open();
+                        }
+
                     }
                 }
             }
 
-            // 支付弹窗
-            FluContentDialog{
+            FluContentDialog {
                 id: paymentDialog
                 title: qsTr("支付")
-                message: qsTr("提反高诈意识，请勿描扫陌生二维码")
+                message: qsTr("将使用奶龙币支付")
                 buttonFlags: FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
-                contentDelegate: Component{
-                    FluText{
-                        text: "您当前资产为 "+userInfo.myMoney+" 奶龙币，本次购票将消耗您"+price+"奶龙币，余下"+(userInfo.myMoney-price)+"奶龙币，确定执行支付操作吗？"
+
+                // 为弹窗添加内边距
+                // contentMargins: Qt.point(20, 20) // 左右上下各20像素
+
+                contentDelegate: Component {
+                    ColumnLayout { // 使用 ColumnLayout 来垂直排列子项
+                        Layout.alignment: Qt.AlignHCenter // 设置水平居中对齐
+                        spacing: 15 // 行间距设为15像素
+
+                        RowLayout{
+                            Layout.alignment: Qt.AlignHCenter // 确保单个文本居中
+                            spacing: 5 // 如果需要的话，也可以设置内部组件的间距
+                            FluText {
+                                text: "您当前资产为"
+                                Layout.alignment: Qt.AlignHCenter // 确保单个文本居中
+                                Layout.topMargin: 10 // 上边距设为10像素
+                                Layout.bottomMargin: 10 // 下边距设为10像素
+                            }
+                            FluText {
+                                color: "#F3CF2A"
+                                font.bold: true
+                                text: userInfo.myMoney + "奶龙币"
+                                font.pixelSize: 26
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.topMargin: 10
+                                Layout.bottomMargin: 10
+                            }
+                        }
+
+                        RowLayout{
+                            Layout.alignment: Qt.AlignHCenter // 确保单个文本居中
+                            FluText {
+                                text: "购票将消耗您"
+                                // font.pixelSize: 26
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.topMargin: 10 // 上边距设为10像素
+                                Layout.bottomMargin: 10 // 下边距设为10像素
+                            }
+                            FluText {
+                                color: "red"
+                                font.bold: true
+                                text: price + "奶龙币"
+                                font.pixelSize: 26
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.topMargin: 10 // 上边距设为10像素
+                                Layout.bottomMargin: 10 // 下边距设为10像素
+                            }
+                        }
+
+                        RowLayout{
+                            Layout.alignment: Qt.AlignHCenter // 确保单个文本居中
+                            FluText {
+                                text: "您的余额将是"
+                                // font.pixelSize: 18
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.topMargin: 10 // 上边距设为10像素
+                                Layout.bottomMargin: 10 // 下边距设为10像素
+                            }
+                            FluText {
+                                color: "green"
+                                font.bold: true
+                                text: (userInfo.myMoney - price) + "奶龙币"
+                                font.pixelSize: 26
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.topMargin: 10 // 上边距设为10像素
+                                Layout.bottomMargin: 10 // 下边距设为10像素
+                            }
+                        }
+
+                        FluText {
+                            text: "确定执行支付操作吗？"
+                            font.pixelSize: 18
+                            font.bold: true
+                            font.italic: true
+                            Layout.alignment: Qt.AlignHCenter
+                            Layout.topMargin: 10 // 上边距设为10像素
+                            Layout.bottomMargin: 10 // 下边距设为10像素
+                        }
                     }
                 }
                 negativeText: qsTr("狠心拒绝")
                 onNegativeClicked: {
-                    showWarning(qsTr("我还是喜欢你桀骜不驯的样子"))
+                    showWarning(qsTr("已取消支付"))
                 }
 
                 positiveText: qsTr("大方支付")
@@ -232,7 +331,7 @@ FluFrame {
                 id:selectionDialog
                 title: qsTr("您希望如何操作？")
                 message: qsTr("请选择退签或改签")
-                negativeText: qsTr("☀霓🐎退💴")
+                negativeText: qsTr("退签")
                 buttonFlags: FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
                 onNegativeClicked:{
                     paymentStatus = !paymentStatus;

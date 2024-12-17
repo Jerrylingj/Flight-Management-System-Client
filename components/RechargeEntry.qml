@@ -60,10 +60,15 @@ FluContentDialog{
                     }
                 }
             }
-            positiveText: qsTr("不为五斗米折腰！")
-            negativeText: qsTr("奶龙大人我错了")
-            onPositiveClickListener:()=>{
-                showInfo("我会一直看着你哦")
+            negativeText: qsTr("不为五斗米折腰！")
+            positiveText: qsTr("奶龙大人我错了")
+            onPositiveClicked:{
+                recharge();
+                showWarning("可我还是喜欢你桀骜不驯的样子")
+            }
+
+            onNegativeClickListener:()=>{
+                showError("我会一直看着你哦")
             }
         }
 

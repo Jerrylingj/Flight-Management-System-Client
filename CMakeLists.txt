@@ -72,6 +72,7 @@ qt_add_qml_module(${PROJECT_NAME}
     QML_FILES ${QML_FILES}
     QML_FILES components/RechargeEntry.qml
     RESOURCES figures/NailongAskYouLastOne.png
+    QML_FILES views/AboutView.qml
 )
 
 # Qt f
