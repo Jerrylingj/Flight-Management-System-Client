@@ -29,6 +29,8 @@ set(QML_FILES
     views/RegisterView.qml
     views/FlightFavoriteView.qml
     views/EditPersonalInfo.qml
+    views/UsersInfoView.qml
+    views/AboutView.qml
     components/FlightInfoCard.qml
     components/NoteCard.qml
     components/NoteList.qml
@@ -36,6 +38,8 @@ set(QML_FILES
     components/TimeProgressBar.qml
     components/OrderInfoCard.qml
     components/AddressPicker.qml
+    components/RechargeEntry.qml
+    components/FlightFavoriteCard.qml
 )
 
 set(SOURCE_FILES
@@ -57,6 +61,11 @@ set(RESOURCES_FILES
     figures/user.png
     figures/NailongAskYou.jpg
     figures/NailongAskYouAgain.jpg
+    figures/NailongAskYouLastOne.png
+    figures/background1.jpg
+    figures/background2.jpg
+    figures/background3.jpg
+    figures/background4.jpg
 )
 
 qt_add_executable(${PROJECT_NAME}

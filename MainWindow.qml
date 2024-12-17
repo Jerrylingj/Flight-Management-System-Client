@@ -29,8 +29,7 @@ FluWindow {
             id: toggleSwitch
             checked: isAdmin
             Layout.alignment: Qt.AlignVCenter
-            // textOn: qsTr("管理员端")
-            // textOff: qsTr("用户端")
+            text: isAdmin ? "切换为用户端" : "切换为管理员端"
 
             onCheckedChanged: {
                 isAdmin = checked;
@@ -159,6 +158,15 @@ FluWindow {
             }
 
             FluPaneItem {
+                id: item_users_info
+                title: qsTr("用户列表")
+                icon: FluentIcons.ContactPresence
+                url: "qrc:/qt/Flight_Management_System_Client/views/UsersInfoView.qml"
+                onTap: { agentNavView.push(url) }
+            }
+
+
+            FluPaneItem {
                 id: item_agent_flight_info
                 title: qsTr("航班管理")
                 icon: FluentIcons.Airplane
@@ -178,12 +186,8 @@ FluWindow {
     }
 
     Component.onCompleted: {
-        // if (userInfo.myToken) {
-        //     agentNavView.setCurrentIndex(0)
-        // } else {
-        //     userNavView.setCurrentIndex(0)
-        // }
         userNavView.setCurrentIndex(0)
+        userNavView.push("qrc:/qt/Flight_Management_System_Client/views/HomeView.qml")
         agentNavView.setCurrentIndex((0))
     }
 }

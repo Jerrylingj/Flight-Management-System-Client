@@ -10,6 +10,7 @@ FluPage {
         // 枚举类型不知道为什么用不了，用了构建不成功
         property string curType:'login'
         onRequestSuccess:function(data){
+            console.log("函数被调用了")
             switch(networkHandler.curType){
             case 'login':{
                 if(data['code'] === 200) {
@@ -19,7 +20,7 @@ FluPage {
                     showSuccess(qsTr("登录成功"))
                 }else{
                     console.error(data['message'])
-                    showError(qsTr(data['message']))
+                    showError(data['message'])
                 }
                 break
             }

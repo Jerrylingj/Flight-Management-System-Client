@@ -13,7 +13,7 @@ FluContentPage {
     property var flightData: []   // 所有航班数据
     property var filteredData: [] // 筛选后的航班数据
 
-    // 创建 NetworkHandler 实例
+    // 用于获取航班信息
     NetworkHandler {
         id: networkHandler
         onRequestSuccess: function(responseData) {
@@ -30,31 +30,28 @@ FluContentPage {
             filteredData = flightData; // 初始化时显示所有航班数据
         }
         onRequestFailed: function(errorMessage) {
-            console.log("请求失败：", errorMessage); // 打印失败的错误信息
+            // console.log("请求失败：", errorMessage);
             flightData = []; // 在请求失败时，确保 flightData 为空数组，避免渲染问题
         }
     }
 
-    // 在 NetworkHandler 实例外部，创建一个新的函数来查询用户已收藏的航班信息
+    // 用于查询收藏信息
     NetworkHandler {
         id: favoriteNetworkHandler
         onRequestSuccess: function(responseData) {
             console.log("进入onRequestSuccess函数，已收藏航班请求成功");
 
             if (responseData.success && responseData.favorites) {
-                // 假设 favorites 是航班对象数组
                 var favoriteFlightIds = responseData.favorites.map(function(flight) {
                     return flight.flightId;  // 提取 flightId
                 });
 
-                // 接下来，可以根据 favoriteFlightIds 更新航班的 isFaved 状态
                 flightData.forEach(function(flight) {
                     if (favoriteFlightIds.includes(flight.flightId)) {
                         flight.isFaved = true;  // 标记为已收藏
                     }
                 });
 
-                // 刷新筛选后的数据
                 filteredData = flightData;
             }
         }
@@ -79,9 +76,8 @@ FluContentPage {
         networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
     }
 
-    // 在页面初始化时调用 fetchFlightData 获取航班数据
     Component.onCompleted: {
-        fetchFlightData();  // 页面加载完毕后调用 fetchFlightData 方法获取数据
+        fetchFlightData();
         if (userInfo.myToken) fetchFavoriteFlights(); // 只有用户登录时才调用
     }
 
@@ -89,12 +85,21 @@ FluContentPage {
     function filterFlights() {
         var departureCity = departureAddressPicker.selectedCity;
         var arrivalCity = arrivalAddressPicker.selectedCity;
+        var selectedDate = datePicker.current;
 
         // 过滤航班数据
         filteredData = flightData.filter(function(flight) {
             var matchesDeparture = departureCity ? (departureCity === "全部" || flight.departureCity === departureCity) : true;
             var matchesArrival = arrivalCity ? (arrivalCity === "全部" || flight.arrivalCity === arrivalCity) : true;
-            return matchesDeparture && matchesArrival;
+
+            var flightDate = new Date(flight.departureTime);
+            var matchesDate = selectedDate ? (
+                flightDate.getFullYear() === selectedDate.getFullYear() &&
+                flightDate.getMonth() === selectedDate.getMonth() &&
+                flightDate.getDate() === selectedDate.getDate()
+            ) : true;
+
+            return matchesDeparture && matchesArrival && matchesDate;
         });
     }
 
@@ -118,10 +123,8 @@ FluContentPage {
                 AddressPicker {
                     id: departureAddressPicker
                     onAccepted: {
-                        console.log("选择的省份:", selectedProvince);
-                        console.log("选择的城市:", selectedCity);
-
-                        // 触发筛选
+                        // console.log("选择的省份:", selectedProvince);
+                        // console.log("选择的城市:", selectedCity);
                         filterFlights();
                     }
                 }
@@ -129,10 +132,8 @@ FluContentPage {
                 AddressPicker {
                     id: arrivalAddressPicker
                     onAccepted: {
-                        console.log("选择的省份:", selectedProvince);
-                        console.log("选择的城市:", selectedCity);
-
-                        // 触发筛选
+                        // console.log("选择的省份:", selectedProvince);
+                        // console.log("选择的城市:", selectedCity);
                         filterFlights();
                     }
                 }
@@ -140,25 +141,18 @@ FluContentPage {
                 FluDatePicker {
                     id: datePicker
                     Layout.preferredWidth: 180
+                    onAccepted: {
+                        // console.log("选择日期:", current);
+                        filterFlights();
+                    }
                 }
-
-
-                // 决定做成实时筛选，就不单独放筛选按钮了
-                // FluFilledButton {
-                //     text: qsTr("查询")
-                //     Layout.preferredWidth: 100
-                //     onClicked: {
-                //         console.log("筛选条件: 起点=${departureInput.text}, 终点=${destinationInput.text}, 日期=${datePicker.date}");
-                //         filterFlights(); // 点击查询时也触发筛选
-                //     }
-                // }
             }
         }
 
         Flickable {
             y: filterPanel.height
             width: parent.width
-            height: parent.height
+            height: parent.height - filterPanel.height - 90
             contentWidth: parent.width
             clip: true
 
