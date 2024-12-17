@@ -459,6 +459,7 @@ FluFrame {
             // 改签弹窗
             FluContentDialog{
                 id : rebookingDialog
+                title : qsTr("航班改签")
             }
         }
     }

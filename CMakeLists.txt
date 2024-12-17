@@ -57,20 +57,23 @@ set(RESOURCES_FILES
     figures/login-flight.png
     figures/help-desk.png
     figures/avatar.jpg
+    # figures/avatar.png
     figures/nailong.jpg
     figures/user.png
     figures/NailongAskYou.jpg
     figures/NailongAskYouAgain.jpg
     figures/NailongAskYouLastOne.png
-    figures/background1.jpg
-    figures/background2.jpg
-    figures/background3.jpg
-    figures/background4.jpg
+    # figures/background1.jpg
+    # figures/background2.jpg
+    # figures/background3.jpg
+    # figures/background4.jpg
+    # figures/background5.jpg
+    # figures/background6.jpg
     figures/lgj.png
     figures/lsy.png
     figures/ypx.png
     figures/zxy.png
-    figures/personnel.png
+    # figures/personnel.png
 )
 
 qt_add_executable(${PROJECT_NAME}
@@ -84,6 +87,8 @@ qt_add_qml_module(${PROJECT_NAME}
     SOURCES ${SOURCE_FILES}
     RESOURCES ${RESOURCES_FILES}
     QML_FILES ${QML_FILES}
+    RESOURCES figures/avatar.png
+    RESOURCES figures/background1.jpg figures/background2.jpg figures/background3.jpg figures/background4.jpg figures/background5.jpg figures/background6.jpg
 )
 
 # Qt f

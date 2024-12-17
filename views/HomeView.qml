@@ -8,7 +8,7 @@ FluContentPage {
     FluCarousel{
         id:carousel
         width: parent.width
-        height: 400
+        height: parent.height
         delegate: Component{
             FluImage {
                 anchors.fill: parent
@@ -23,7 +23,9 @@ FluContentPage {
                 {url:"qrc:/qt/Flight_Management_System_Client/figures/background1.jpg"},
                 {url:"qrc:/qt/Flight_Management_System_Client/figures/background2.jpg"},
                 {url:"qrc:/qt/Flight_Management_System_Client/figures/background3.jpg"},
-                {url:"qrc:/qt/Flight_Management_System_Client/figures/background4.jpg"}
+                {url:"qrc:/qt/Flight_Management_System_Client/figures/background4.jpg"},
+                {url:"qrc:/qt/Flight_Management_System_Client/figures/background5.jpg"},
+                {url:"qrc:/qt/Flight_Management_System_Client/figures/background6.jpg"}
             ]
         }
     }
