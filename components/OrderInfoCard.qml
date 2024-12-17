@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import FluentUI 1.0
+import NetworkHandler 1.0
 
 FluFrame {
     id: orderInfoCard
@@ -32,6 +33,79 @@ FluFrame {
     property string checkInEndTime
 
     property string currentTimeValue: Qt.formatTime(new Date(), "HH:mm")
+
+    signal orderUpdated()
+
+    // 函数:创建订单
+    // function createOrder(flightId){
+    // }
+
+    // 函数:支付订单
+    function payOrder(){
+        var url = "/api/orders/pay";
+        console.log("发送支付订单信息请求,URL = ", url);
+        console.log("token: ", userInfo.myToken)
+        console.log(orderHandler.POST)
+        var payload = {
+            orderId : orderId
+        }
+
+        orderHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
+        // 如果成功,应当扣除用户余额
+        // 如果成功,应当改变前端订单信息
+    }
+
+    // 函数:退签订单
+    function deleteOrder(){
+        var url = "/api/orders/delete";
+        console.log("发送退签订单信息请求,URL = ", url);
+        console.log("token: ", userInfo.myToken)
+        console.log(orderHandler.POST)
+        var payload = {
+            orderId : orderId
+        }
+
+        orderHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
+        // 如果成功,应当返还用户余额
+        // 如果成功,应当改变前端订单信息
+    }
+
+    // 函数:改签订单
+    function rebookOrder(flightId){
+        var url = "/api/orders/rebook";
+        console.log("发送改签订单信息请求,URL = ", url);
+        console.log("token: ", userInfo.myToken)
+        console.log(orderHandler.POST)
+        var payload = {
+            orderId: orderId,
+            flightId: flightId
+        }
+        orderHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
+        // 如果成功,应当改变前端订单信息
+    }
+
+    // 订单接口的 NetworkHandler 实例
+    NetworkHandler {
+        id: orderHandler
+
+        onRequestSuccess: function (responseData) {
+            console.log("订单操作请求成功，返回数据：", JSON.stringify(responseData));
+
+            if (responseData.success) {
+                console.log("订单操作成功");
+                // 触发信号，通知父组件刷新数据
+                orderUpdated();
+
+            } else {
+                console.error("订单操作失败，错误信息：", responseData.message);
+                showError(qsTr("操作失败"))
+            }
+        }
+
+        onRequestFailed: function (errorMessage) {
+            console.error("订单请求失败：", errorMessage);
+        }
+    }
 
     // 整个Card
     RowLayout{
@@ -173,7 +247,7 @@ FluFrame {
             // 支付/退改签按钮
             FluToggleButton {
                 id: payOrRebookButton
-                text: checked ? qsTr("退改签") : qsTr("支付")
+                text: checked ? qsTr("退改签") : qsTr("立即支付")
                 normalColor: {
                     if(!checked){
                         return "#F3CF2A"
@@ -319,10 +393,12 @@ FluFrame {
 
                 positiveText: qsTr("大方支付")
                 onPositiveClicked: {
-                    showSuccess(qsTr("感谢您的信赖！"))
-                    payOrRebookButton.checked = !payOrRebookButton.checked;
-                    paymentStatus = !paymentStatus;
-                    userInfo.myMoney = userInfo.myMoney - price;
+                    // showSuccess(qsTr("感谢您的信赖！"))
+                    payOrder();
+                    // 这段代码应该在后端返回成功信息之后,在networdHandler里面执行
+                    // payOrRebookButton.checked = !payOrRebookButton.checked;
+                    // paymentStatus = !paymentStatus;
+                    // userInfo.myMoney = userInfo.myMoney - price;
                 }
             }
 
@@ -334,16 +410,19 @@ FluFrame {
                 negativeText: qsTr("退签")
                 buttonFlags: FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
                 onNegativeClicked:{
-                    paymentStatus = !paymentStatus;
-                    userInfo.myMoney = userInfo.myMoney + price;
-                    payOrRebookButton.checked = !payOrRebookButton.checked;
-                    showSuccess(qsTr("已全款退还 " + price + " 元"))
+                    deleteOrder();
+                    // 这段代码应该在后端返回成功信息之后,在networdHandler里面执行
+                    // paymentStatus = !paymentStatus;
+                    // userInfo.myMoney = userInfo.myMoney + price;
+                    // payOrRebookButton.checked = !payOrRebookButton.checked;
+                    // showSuccess(qsTr("已全款退还 " + price + " 元"))
                 }
                 positiveText: qsTr("改签")
                 onPositiveClicked:{
-                    showSuccess(qsTr("触发改签逻辑"))
-                    }
+                    showSuccess("改签逻辑")
+                    // rebookOrder(flightId);
                 }
+            }
 
             // 改签弹窗
             FluContentDialog{
@@ -351,6 +430,7 @@ FluFrame {
             }
         }
     }
+
 
     // 函数：格式化时间为 "hh:mm" 格式
     function formatTime(timeString) {

@@ -30,6 +30,7 @@ FluScrollablePage {
             // 检查responseData是否为空
             if (!responseData || !responseData.data || responseData.data.length === 0) {
                 console.log("返回数据为空");
+                orderData = []; // 确保 orderData 为空数组
                 return;
             }
 
@@ -49,8 +50,6 @@ FluScrollablePage {
             }
 
             orderData = tempOrderData; // 初始化时显示所有航班数据
-
-            // orderData = orderData; // 初始化时显示所有航班数据
         }
         onRequestFailed: function(errorMessage) {
             console.log("请求失败：", errorMessage); // 打印失败的错误信息
@@ -140,6 +139,11 @@ FluScrollablePage {
             arrivalAirport: modelData.arrivalAirport
             checkInStartTime: modelData.checkInStartTime
             checkInEndTime: modelData.checkInEndTime
+
+            onOrderUpdated: {
+                console.log("收到 orderUpdated 信号，刷新订单数据");
+                fetchOrderData();
+            }
         }
     }
 }

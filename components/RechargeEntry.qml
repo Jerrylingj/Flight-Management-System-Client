@@ -63,7 +63,7 @@ FluContentDialog{
             negativeText: qsTr("不为五斗米折腰！")
             positiveText: qsTr("奶龙大人我错了")
             onPositiveClicked:{
-                recharge();
+                recharge(1000);
                 showWarning("可我还是喜欢你桀骜不驯的样子")
             }
 
@@ -78,26 +78,21 @@ FluContentDialog{
 
         positiveText :qsTr("不是")
         onPositiveClicked: {
-            recharge();
-            showSuccess(qsTr("已到账3000奶龙币"))
+            recharge(2000);
         }
     }
     onNegativeClicked: {
         reAskDialog.open()
-        // showSuccess(qsTr("Click the Cancel Button"))
     }
     positiveText :qsTr("帅")
     onPositiveClicked: {
         recharge();
-        showSuccess(qsTr("已到账3000奶龙币"))
+
     }
 
 
-    function recharge(){
-        userInfo.myMoney += 3000;
+    function recharge(value = 3000){
+        userInfo.myMoney += value;
+        showSuccess(qsTr("已到账"+value+"奶龙币"))
     }
 }
-
-
-
-

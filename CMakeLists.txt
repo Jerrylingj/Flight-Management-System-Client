@@ -74,6 +74,8 @@ qt_add_qml_module(${PROJECT_NAME}
     RESOURCES figures/NailongAskYouLastOne.png
     QML_FILES views/AboutView.qml
     QML_FILES components/FlightFavoriteCard.qml
+    RESOURCES figures/lgj.png figures/lsy.png figures/ypx.png figures/zxy.png
+    RESOURCES figures/personnel.png
 )
 
 # Qt f

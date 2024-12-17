@@ -5,47 +5,89 @@ import QtQuick.Window 2.15
 import FluentUI 1.0
 import "../components"
 
-FluScrollablePage{
-
+FluScrollablePage {
     title: qsTr("关于我们")
 
-    FluFrame{
+    FluFrame {
         Layout.fillWidth: true
         Layout.preferredHeight: 400
         padding: 10
 
-        FluPivot{
+        FluPivot {
             anchors.fill: parent
             currentIndex: 2
 
-            FluPivotItem{
+            FluPivotItem {
                 title: qsTr("团队简介")
-                contentItem:FluText{
-                    text: qsTr("云途航班信息管理有限公司，即AltAir，总部坐落于中国广东省珠海市高新区榕园开发中心。我们引领航空业革新，以尖端技术提供无与伦比的航班管理服务，优化全球航空运营效率，树立行业新标准。")
+                contentItem: ColumnLayout {
+                    width: parent.width
+                    FluImage {
+                        id: perssonelImage
+                        Layout.preferredWidth: 250
+                        Layout.preferredHeight: 250
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                        Layout.topMargin: 20
+                        source: "qrc:/qt/Flight_Management_System_Client/figures/personnel.png"
+                    }
                 }
             }
-            FluPivotItem{
-                title: qsTr("林省煜")
-                contentItem: FluText{
-                    text: qsTr("林省煜")
-                }
-            }
-            FluPivotItem{
+            FluPivotItem {
                 title: qsTr("林国佳")
-                contentItem: FluText{
-                    text: qsTr("林国佳")
+                contentItem: ColumnLayout {
+                    width: parent.width
+                    FluImage {
+                        id: igjImage
+                        Layout.preferredWidth: 150
+                        Layout.preferredHeight: 150
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                        Layout.topMargin: 20
+                        source: "qrc:/qt/Flight_Management_System_Client/figures/lgj.png"
+                    }
                 }
             }
-            FluPivotItem{
+
+            FluPivotItem {
+                title: qsTr("林省煜")
+                contentItem: ColumnLayout {
+                    width: parent.width
+                    FluImage {
+                        id: isyImage
+                        Layout.preferredWidth: 150
+                        Layout.preferredHeight: 150
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                        Layout.topMargin: 20
+                        source: "qrc:/qt/Flight_Management_System_Client/figures/lsy.png"
+                    }
+                }
+            }
+
+            FluPivotItem {
                 title: qsTr("朱玄烨")
-                contentItem: FluText{
-                    text: qsTr("朱玄烨")
+                contentItem: ColumnLayout {
+                    width: parent.width
+                    FluImage {
+                        id: zxyImage
+                        Layout.preferredWidth: 150
+                        Layout.preferredHeight: 150
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                        Layout.topMargin: 20
+                        source: "qrc:/qt/Flight_Management_System_Client/figures/zxy.png"
+                    }
                 }
             }
-            FluPivotItem{
+
+            FluPivotItem {
                 title: qsTr("杨普旭")
-                contentItem: FluText{
-                    text: qsTr("杨普旭")
+                contentItem: ColumnLayout {
+                    width: parent.width
+                    FluImage {
+                        id: ypxImage
+                        Layout.preferredWidth: 150
+                        Layout.preferredHeight: 150
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                        Layout.topMargin: 20
+                        source: "qrc:/qt/Flight_Management_System_Client/figures/ypx.png"
+                    }
                 }
             }
         }

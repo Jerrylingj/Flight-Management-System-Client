@@ -194,9 +194,6 @@ FluFrame {
 
         }
     }
-
-
-
     // 函数：格式化时间为 "hh:mm" 格式
     function formatTime(timeString) {
         var date = new Date(timeString);
