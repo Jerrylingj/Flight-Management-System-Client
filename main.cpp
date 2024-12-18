@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     userInfo.setUserPersonalInfo("普通的旅客");
     userInfo.setMyMoney(-1);
     userInfo.setUserEmail("noname@mail2.sysu.edu.cn");
+    userInfo.setMyAvatar("qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg");
 
     // 将 UserInfo 对象暴露给 QML
     engine.rootContext()->setContextProperty("userInfo", &userInfo);

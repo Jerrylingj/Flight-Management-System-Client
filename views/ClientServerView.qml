@@ -58,7 +58,7 @@ FluContentPage {
                 delegate: MessageItem {
                     type: role
                     content: model.content
-                    avatarSource: role === 'user'?"../figures/avatar.jpg":"../figures/nailong.jpg"
+                    avatarSource: role === 'user'?userInfo.myAvatar:"../figures/nailong.jpg"
                     width: clientchatPage.width
                 }
             }
