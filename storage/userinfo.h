@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QString>
+#include <QJsonArray>
+#include <QJsonObject>
 
 class UserInfo : public QObject
 {
@@ -14,9 +16,13 @@ class UserInfo : public QObject
     Q_PROPERTY(QString userEmail READ userEmail WRITE setUserEmail NOTIFY userEmailChanged)
     Q_PROPERTY(QString myAvatar READ myAvatar WRITE setMyAvatar NOTIFY myAvatarChanged)
     Q_PROPERTY(QString myCreateTime READ myCreateTime WRITE setMyCreateTime NOTIFY myCreateTimeChanged)
+    Q_PROPERTY(QJsonArray myJsonArray READ myJsonArray NOTIFY myJsonArrayChanged)
 
 public:
-    explicit UserInfo(QObject *parent = nullptr) : QObject(parent), m_myMoney(0) {}
+    explicit UserInfo(QObject *parent = nullptr)
+        : QObject(parent), m_myMoney(0) {}
+
+    // Existing getters and setters...
 
     QString userEmail() const { return m_userEmail; }
     void setUserEmail(const QString &userEmail) {
@@ -42,9 +48,9 @@ public:
         }
     }
 
-    int myMoney() const { return m_myMoney; }
-    void setMyMoney(int myMoney) {
-        if (m_myMoney != myMoney) {
+    double myMoney() const { return m_myMoney; }
+    void setMyMoney(double myMoney) { // 修改返回类型为 double
+        if (!qFuzzyCompare(m_myMoney, myMoney)) {
             m_myMoney = myMoney;
             emit myMoneyChanged();
         }
@@ -58,7 +64,7 @@ public:
         }
     }
 
-    QString myAvatar() const {return m_myAvatar;}
+    QString myAvatar() const { return m_myAvatar; }
     void setMyAvatar(const QString &avatar){
         if(m_myAvatar != avatar){
             m_myAvatar = avatar;
@@ -66,7 +72,7 @@ public:
         }
     }
 
-    QString myCreateTime() const {return m_myCreateTime;}
+    QString myCreateTime() const { return m_myCreateTime; }
     void setMyCreateTime(const QString &createTime){
         if(m_myCreateTime != createTime){
             m_myCreateTime = createTime;
@@ -74,6 +80,15 @@ public:
         }
     }
 
+    // 新增的 QJsonArray getter
+    QJsonArray myJsonArray() const { return m_myJsonArray; }
+
+    // 新增的 Q_INVOKABLE 方法，用于在 QML 中添加元素
+    Q_INVOKABLE void appendToMyJsonArray(const QVariantMap &item) {
+        QJsonObject jsonObj = QJsonObject::fromVariantMap(item);
+        m_myJsonArray.append(jsonObj);
+        emit myJsonArrayChanged();
+    }
 
 signals:
     void userEmailChanged();
@@ -83,6 +98,7 @@ signals:
     void myTokenChanged();
     void myAvatarChanged();
     void myCreateTimeChanged();
+    void myJsonArrayChanged();
 
 private:
     QString m_userName;
@@ -94,6 +110,7 @@ private:
     QString m_userEmail;
     QString m_myAvatar;
     QString m_myCreateTime;
+    QJsonArray m_myJsonArray; // 新增的成员变量
 };
 
 #endif // USERINFO_H

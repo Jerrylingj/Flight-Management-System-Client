@@ -48,7 +48,7 @@ set(SOURCE_FILES
     api/networkhandler.h
     static/sites.js
     storage/userinfo.h
-    storage/manager.h
+    storage/message.h
 )
 
 set(RESOURCES_FILES

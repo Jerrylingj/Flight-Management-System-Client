@@ -10,8 +10,16 @@ FluContentPage {
     title: qsTr("客服")
     // background: Rectangle { radius: 5 }
     property var messages: [
-{role:"system", content:"你是一个航班信息管理系统的客服，你可以查询航班信息。你需要准确地回答客户，如果你不知道你应该直接回答不知道而不是编造一条数据"}
+        {role:"system", content:"你是一个航班信息管理系统的客服，你可以查询航班信息。你需要准确地回答客户，如果你不知道你应该直接回答不知道而不是编造一条数据"}
     ]
+
+    Component.onCompleted:  {
+        for(const item of userInfo.myJsonArray)
+        {
+            listModel.append(item)
+            messages.push(item)
+        }
+    }
 
     NetworkHandler{
         id: networkHandler
@@ -21,11 +29,8 @@ FluContentPage {
                 const msg = data.data
                 listModel.append(msg)
                 clientchatPage.messages.push(msg)
-            }else{
-                // error
+                userInfo.appendToMyJsonArray(msg)
             }
-
-
         }
         onRequestFailed: function(data){
             console.error(data.message)
@@ -34,10 +39,7 @@ FluContentPage {
 
     // 消息列表区域
     Flickable {
-        anchors.top:parent.top
-        anchors.left:parent.left
-        anchors.right: parent.right
-        anchors.bottom: inputRow.top
+        anchors.fill: parent
 
         id: messageScroll
 
@@ -52,7 +54,7 @@ FluContentPage {
             Repeater {
                 width: parent.width
                 model: ListModel{
-                    id:listModel
+                    id: listModel
                 }
 
                 delegate: MessageItem {
@@ -80,26 +82,23 @@ FluContentPage {
 
         FluFilledButton {
             text: qsTr("发送")
-            FluContentDialog{
-                id:quittextDialog
-                title: "字数过长"
-            }
             onClicked: {
                 var newMessage=inputField.text.trim()
-                if(newMessage.length>=20){
-                    quittextDialog.open()
+                if(newMessage.length>=30){
+                    showWarning("字数过长");
+                    inputField.text = ""
                 }
 
                 else if(newMessage!=="" && newMessage.length < 20){
                     // 创建一个新的消息对象
                     const msg = { role: "user", content: newMessage };
-
+                    userInfo.appendToMyJsonArray(msg)
                     listModel.append(msg)
                     clientchatPage.messages.push(msg)
 
                     inputField.text = ""; // 清空输入框
 
-                    networkHandler.request("/api/aichat", NetworkHandler.POST, {messages:clientchatPage.messages})
+                    networkHandler.request("/api/aichat", NetworkHandler.POST, {messages:messages})
                     // 滚动到底部
                     messageScroll.contentY = messageScroll.contentHeight;
                 }
@@ -111,4 +110,3 @@ FluContentPage {
     }
 
 }
-
