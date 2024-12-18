@@ -50,6 +50,10 @@ FluContentPage {
         }
     }
 
+    FluRectangle{
+
+    }
+
     // 用于查询收藏信息
     NetworkHandler {
         id: favoriteNetworkHandler
@@ -70,6 +74,9 @@ FluContentPage {
 
                 if(userInfo.myToken){
                     fetchOrderedFlights();
+                }else{
+                    showError(qsTr("出现错误"), 4000, qsTr("↙请点击左下角联系客服解决"))
+                    console.log("用户id在favoriteNetworkHandler中不为空，但在orderNetworkHandler中为空")
                 }
 
                 // filteredData = flightData;
