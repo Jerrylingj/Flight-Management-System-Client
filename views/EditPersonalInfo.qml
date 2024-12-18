@@ -68,8 +68,6 @@ FluPage {
                 }
                 else{
                     networkHandler.request("/api/user", NetworkHandler.PUT, {
-                                               balance: userInfo.balance,
-                                               avatar_url:userInfo.myAvatar,
                                                username:usernameField.text
                                            },userInfo.myToken)
                 }

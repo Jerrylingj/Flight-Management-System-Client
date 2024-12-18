@@ -2,11 +2,30 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import FluentUI 1.0
+import NetworkHandler 1.0
 
 FluContentDialog{
+    property int add_money: 0
     id: rechargeDialog
     title: qsTr("奶龙询问您")
     message: qsTr("奶龙帅不帅？")
+    NetworkHandler{
+        id: networkHandler
+        onRequestSuccess:function(data){
+            if(data['code'] === 200) {
+                userInfo.myMoney += add_money
+                showSuccess("充值成功");
+                console.log(data['data'])
+            }else{
+                console.error(data['message'])
+                showError(qsTr(data['message']))
+            }
+        }
+        onRequestFailed: (data)=>{
+                             console.log("error",JSON.stringify(data))
+                             showError(qsTr(data['message']))
+                         }
+    }
 
     contentDelegate: Component{
         Item {
@@ -63,7 +82,8 @@ FluContentDialog{
             negativeText: qsTr("不为五斗米折腰！")
             positiveText: qsTr("奶龙大人我错了")
             onPositiveClicked:{
-                recharge(1000);
+                add_money = 1000;
+                send_msg();
                 showWarning(qsTr("我原谅你了"), 7000, qsTr("可我还是喜欢你桀骜不驯的样子"))
             }
 
@@ -78,7 +98,8 @@ FluContentDialog{
 
         positiveText :qsTr("不是")
         onPositiveClicked: {
-            recharge(2000);
+            add_money = 2000;
+            send_msg();
         }
     }
     onNegativeClicked: {
@@ -86,13 +107,14 @@ FluContentDialog{
     }
     positiveText :qsTr("帅")
     onPositiveClicked: {
-        recharge();
-
+        add_money = 3000;
+        send_msg();
     }
 
 
-    function recharge(value = 3000){
-        userInfo.myMoney += value;
-        showSuccess(qsTr("已到账"+value+"奶龙币"), 4000, qsTr("我是只慷慨的奶龙，给的钱量大管饱"))
+    function send_msg(){
+        networkHandler.request("/api/user", NetworkHandler.PUT, {
+                                   balance: add_money
+                               },userInfo.myToken)
     }
 }
