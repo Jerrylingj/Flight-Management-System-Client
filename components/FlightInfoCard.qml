@@ -20,9 +20,9 @@ FluFrame {
     property double price
     property string airlineCompany
     property string status
-    property bool isBooked: false
-    property bool isFaved: false
-    property int remainingSeats: 10
+    property bool isBooked
+    property bool isFaved
+    property int remainingSeats
 
 
     // 收藏接口的 NetworkHandler 实例
@@ -40,10 +40,11 @@ FluFrame {
 
                 if (flightInfoCard.isFaved) {
                     console.log("航班 " + flightInfoCard.flightId + " 已收藏");
-                    showSuccess(qsTr("收藏成功"))
+                    showSuccess(qsTr("收藏成功"), 4000, qsTr("您可以前往“我的收藏”界面查看"))
                 }
             } else {
                 console.error("收藏/取消收藏操作失败，错误信息：", responseData.message);
+                showError(qsTr("操作失败了"), 4000, qsTr("↙请点击左下角客服界面反馈"))
             }
         }
 
@@ -60,7 +61,7 @@ FluFrame {
 
             if (responseData.success) {
                 console.log("预定操作成功");
-                isBooked = true;
+                flightInfoCard.isBooked = true;
                 showSuccess(qsTr("预定操作成功"), 4000, qsTr("您可以前往“我的订单”界面进行支付"))
             } else {
                 console.error("收藏/取消收藏操作失败，错误信息：", responseData.message);

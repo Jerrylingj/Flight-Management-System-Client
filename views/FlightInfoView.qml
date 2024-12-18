@@ -20,11 +20,17 @@ FluContentPage {
             // console.log("进入onRequestSuccess函数")
             // var jsonString = JSON.stringify(responseData);
             // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+
+            // Helper function to generate random number between min and max (inclusive)
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
             flightData = responseData.data.map(function(flight) {
                 /*** 初始化数据 ***/
                 flight.isBooked = false;
                 flight.isFaved = false;
-                flight.remainingSeats = 10;
+                flight.remainingSeats = getRandomInt(1, 30); // Generate random number between 1 and 30
                 return flight;
             });
             filteredData = flightData; // 初始化时显示所有航班数据
@@ -49,6 +55,7 @@ FluContentPage {
                 flightData.forEach(function(flight) {
                     if (favoriteFlightIds.includes(flight.flightId)) {
                         flight.isFaved = true;  // 标记为已收藏
+                        console.log("航班id为" + flight.flightId + "，name为" + flight.flightName + "的航班已被收藏")
                     }
                 });
 
@@ -61,12 +68,46 @@ FluContentPage {
         }
     }
 
+    NetworkHandler{
+        id: orderNetworkHandler
+        onRequestSuccess: function(responseData) {
+            console.log("进入onRequestSuccess函数，已预定航班请求成功");
+
+            if (responseData.success && responseData.data) {
+                var orderedFlightIds = responseData.data.map(function(order) {
+                    return order.flightId;  // 提取 flightId
+                });
+
+                flightData.forEach(function(flight) {
+                    if (orderedFlightIds.includes(flight.flightId)) {
+                        flight.isBooked = true;  // 标记为已预定
+                        console.log("航班id为" + flight.flightId + "，name为" + flight.flightName + "的航班已被预定")
+                    }
+                });
+
+                filteredData = flightData;
+            }
+        }
+
+        onRequestFailed: function(errorMessage) {
+            console.log("已预定航班请求失败：", errorMessage);
+        }
+    }
+
     // 查询收藏信息
     function fetchFavoriteFlights() {
         var url = "/api/favorites"; // 收藏信息 API URL
         console.log("发送收藏航班信息请求，URL:", url);
         console.log("token: ", userInfo.myToken)
         favoriteNetworkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
+    }
+
+    // 查询预定信息
+    function fetchOrderedFlights(){
+        var url = "/api/orders"; // 订单信息 API URL
+        console.log("发送订单信息请求，URL:" ,url);
+        console.log("token: ", userInfo.myToken)
+        orderNetworkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
     // 查询航班
@@ -78,7 +119,11 @@ FluContentPage {
 
     Component.onCompleted: {
         fetchFlightData();
-        if (userInfo.myToken) fetchFavoriteFlights(); // 只有用户登录时才调用
+        // 只有用户登录后才调用
+        if (userInfo.myToken){
+            fetchFavoriteFlights();
+            fetchOrderedFlights();
+        }
     }
 
     // 筛选函数
