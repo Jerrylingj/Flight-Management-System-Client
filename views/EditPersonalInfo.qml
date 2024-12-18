@@ -1,9 +1,28 @@
 import QtQuick 2.15
 import FluentUI 1.0
+import NetworkHandler 1.0
 
 FluPage {
     id: editPersonalInfoPage
-
+    NetworkHandler{
+        id: networkHandler
+        onRequestSuccess:function(data){
+            if(data['code'] === 200) {
+                console.log(data['data'])
+                userInfo.userName=usernameField.text
+                userInfo.userPersonalInfo=personlinfoField.text
+                showSuccess(qsTr("修改个人信息成功"))
+                userNavView.push("qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml")
+            }else{
+                console.error(data['message'])
+                showError(qsTr(data['message']))
+            }
+        }
+        onRequestFailed: (data)=>{
+                             console.log("error",JSON.stringify(data))
+                             showError(qsTr(data['message']))
+                         }
+    }
 
     width: parent.width
     height:parent.height
@@ -15,7 +34,6 @@ FluPage {
         height:parent.height
 
         Rectangle{
-            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
             width:150
             height:150
             radius: 15
@@ -43,16 +61,17 @@ FluPage {
             anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
             text: "确认更改"
             width: parent.width * 0.8
-            enabled: usernameField.text>0 && personlinfoField.text>0
+            enabled: usernameField.text>0
             onClicked: {
                 if(userInfo.myToken.length<=1){
                     showWarning("请先登录")
                 }
                 else{
-                    userInfo.userName=usernameField.text
-                    userInfo.userPersonalInfo=personlinfoField.text
-                    showSuccess("更改个人信息成功")
-                    userNavView.push("qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml")
+                    networkHandler.request("/api/user", NetworkHandler.PUT, {
+                                               balance: userInfo.balance,
+                                               avatar_url:userInfo.myAvatar,
+                                               username:usernameField.text
+                                           },userInfo.myToken)
                 }
             }
         }
