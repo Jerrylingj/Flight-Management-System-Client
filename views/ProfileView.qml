@@ -58,6 +58,7 @@ FluContentPage {
                                 avatar_url = userInfo.myAvatar
                             }else{
                                 avatar_url = "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
+
                             }
                         }
                         MouseArea{
