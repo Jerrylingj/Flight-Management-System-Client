@@ -188,9 +188,24 @@ Item{
             isLoading = false
         }
 
+        // 定义 Timer 用于防抖
+        Timer {
+            id: debounceTimer
+            interval: 200  // 设置防抖的延迟时间（200 毫秒）
+            running: false
+            repeat: false
+
+            onTriggered: {
+                flickableContainer.reset()  // 防抖后调用 reset
+            }
+        }
+
+        // 监听宽度变化
         onWidthChanged: {
-            // 可能要考虑做个防抖，但是好像又没啥必要，也就电脑用鼠标移动边框的时候性能有问题
-            reset()
+            if (debounceTimer.running) {
+                debounceTimer.stop();  // 如果 Timer 正在运行，则停止它
+            }
+            debounceTimer.start();  // 启动新的定时器
         }
     }
 
