@@ -5,6 +5,7 @@
 #include <QString>
 #include <QJsonArray>
 #include <QJsonObject>
+#include "api\networkhandler.h"
 
 class UserInfo : public QObject
 {
@@ -19,10 +20,17 @@ class UserInfo : public QObject
     Q_PROPERTY(QJsonArray myJsonArray READ myJsonArray NOTIFY myJsonArrayChanged)
 
 public:
-    explicit UserInfo(QObject *parent = nullptr)
-        : QObject(parent), m_myMoney(0) {}
+    // 构造函数增加 NetworkHandler 参数
+    explicit UserInfo(NetworkHandler* networkHandler, QObject *parent = nullptr)
+        : QObject(parent), m_myMoney(0), m_networkHandler(networkHandler)
+    {
+        // 连接网络请求的信号到槽函数
+        connect(m_networkHandler, &NetworkHandler::requestSuccess, this, &UserInfo::onRequestSuccess);
+        connect(m_networkHandler, &NetworkHandler::requestFailed, this, &UserInfo::onRequestFailed);
+    }
 
-    // Existing getters and setters...
+    // 声明 updateUserInfo 函数
+    Q_INVOKABLE void updateUserInfo();
 
     QString userEmail() const { return m_userEmail; }
     void setUserEmail(const QString &userEmail) {
@@ -100,7 +108,15 @@ signals:
     void myCreateTimeChanged();
     void myJsonArrayChanged();
 
+private slots:
+    // 槽函数用于处理网络请求成功
+    void onRequestSuccess(const QJsonObject &response);
+
+    // 槽函数用于处理网络请求失败
+    void onRequestFailed(const QString &error);
+
 private:
+    NetworkHandler* m_networkHandler; // 新增的 NetworkHandler 成员变量
     QString m_userName;
     QString m_userPersonalInfo;
     double m_myMoney;
@@ -112,5 +128,78 @@ private:
     QString m_myCreateTime;
     QJsonArray m_myJsonArray; // 新增的成员变量
 };
+
+inline void UserInfo::updateUserInfo() {
+    QJsonObject requestData;
+    // 根据API需求添加必要的参数，例如用户ID等
+    // requestData.insert("userId", m_userId);
+
+    // 定义用于获取用户信息的API端点
+    QString url = "/api/user"; // 替换为实际的API端点
+    qDebug() << "已发送更新用户信息的请求";
+
+    // 发送GET请求，假设获取用户信息的API使用GET方法
+    m_networkHandler->request(url, NetworkHandler::GET, requestData, m_myToken);
+}
+
+inline void UserInfo::onRequestSuccess(const QJsonObject &response) {
+    // 将 response 转换为格式化的 JSON 字符串并输出
+    QJsonDocument doc(response);
+    QString jsonString = doc.toJson(QJsonDocument::Indented);
+    qDebug() << "Received response:" << jsonString;
+
+    // 检查响应码是否为 200
+    if (response.contains("code") && response["code"].toInt() == 200) {
+        // 获取 data 对象
+        QJsonObject data = response["data"].toObject();
+
+        // 更新用户名
+        // if (data.contains("username")) {
+        //     qDebug() << "更新用户姓名";
+        //     setUserName(data["username"].toString());
+        // }
+
+        // 更新用户邮箱
+        // if (data.contains("email")) {
+        //     qDebug() << "更新用户邮箱";
+        //     setUserEmail(data["email"].toString());
+        // }
+
+        // 更新用户余额
+        if (data.contains("balance")) {
+            qDebug() << "更新用户余额";
+            setMyMoney(data["balance"].toDouble());
+        }
+
+        // 更新用户创建时间
+        // if (data.contains("created_at")) {
+        //     qDebug() << "更新用户创建时间";
+        //     setMyCreateTime(data["created_at"].toString());
+        // }
+
+        // 更新用户头像（暂时注释掉）
+        /*
+        if (data.contains("avatar_url")) {
+            qDebug() << "更新用户头像";
+            setMyAvatar(data["avatar_url"].toString());
+        }
+        */
+    } else {
+        // 如果响应码不是 200，输出错误信息
+        if (response.contains("message")) {
+            qWarning() << "更新用户信息失败:" << response["message"].toString();
+        } else {
+            qWarning() << "更新用户信息失败: 未知错误";
+        }
+        return; // 早期返回，避免继续执行
+    }
+
+    qDebug() << "已成功更新用户信息";
+}
+
+
+inline void UserInfo::onRequestFailed(const QString &error) {
+    qWarning() << "Failed to update user info:" << error;
+}
 
 #endif // USERINFO_H

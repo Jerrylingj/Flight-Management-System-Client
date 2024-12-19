@@ -11,7 +11,11 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
 
-    UserInfo userInfo;
+    // 初始化 NetworkHandler
+    NetworkHandler networkHandler(nullptr);
+
+    // 初始化 UserInfo 并传递 NetworkHandler
+    UserInfo userInfo(&networkHandler);
     userInfo.setUserName("旅客");
     userInfo.setUserPersonalInfo("普通的旅客");
     userInfo.setMyMoney(-1);
@@ -29,7 +33,6 @@ int main(int argc, char *argv[])
                      }, Qt::QueuedConnection);
     engine.load(url);
     qmlRegisterType<NetworkHandler>("NetworkHandler", 1, 0, "NetworkHandler");
-
 
     return app.exec();
 }

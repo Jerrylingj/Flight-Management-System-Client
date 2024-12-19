@@ -36,7 +36,6 @@ FluFrame {
     property string currentTimeValue: Qt.formatTime(new Date(), "HH:mm");
 
     signal orderUpdated()
-    signal userUpdated()
 
     QtObject {
         id: rebookingFlightInfo
@@ -122,7 +121,7 @@ FluFrame {
                 showSuccess(qsTr("操作成功！"), 3000, qsTr("感谢您对云途公司的信赖！"))
                 // 触发信号，通知父组件刷新数据
                 orderUpdated();
-                userUpdated();
+                userInfo.updateUserInfo();
 
             } else {
                 console.error("订单操作失败，错误信息：", responseData.message);
