@@ -6,7 +6,7 @@ import NetworkHandler 1.0
 import "../components"
 
 FluContentPage {
-    id: flightInfoPage
+    id: flightInfoEditView
     title: qsTr("航班信息")
 
     property var flightData: []   // 所有航班数据
@@ -37,7 +37,24 @@ FluContentPage {
 
     // 筛选航班数据
     function filterFlights() {
-        filteredData = flightData; // 默认不过滤所有数据
+        var departureCity = departureAddressPicker.selectedCity;
+        var arrivalCity = arrivalAddressPicker.selectedCity;
+        var selectedDate = datePicker.current;
+
+        // 过滤航班数据
+        filteredData = flightData.filter(function(flight) {
+            var matchesDeparture = departureCity ? (departureCity === "全部" || flight.departureCity === departureCity) : true;
+            var matchesArrival = arrivalCity ? (arrivalCity === "全部" || flight.arrivalCity === arrivalCity) : true;
+
+            var flightDate = new Date(flight.departureTime);
+            var matchesDate = selectedDate ? (
+                flightDate.getFullYear() === selectedDate.getFullYear() &&
+                flightDate.getMonth() === selectedDate.getMonth() &&
+                flightDate.getDate() === selectedDate.getDate()
+            ) : true;
+
+            return matchesDeparture && matchesArrival && matchesDate;
+        });
     }
 
     ColumnLayout {
@@ -68,6 +85,7 @@ FluContentPage {
                 FluDatePicker {
                     id: datePicker
                     Layout.preferredWidth: 180
+                    onAccepted: filterFlights();
                 }
             }
         }
@@ -76,37 +94,56 @@ FluContentPage {
             id: flightTable
             Layout.fillWidth: true
             Layout.fillHeight: true
-            // rowHeight: 60 // 增加行高
 
             columnSource: [
-                { title: qsTr("选择"), dataIndex: "checkbox", width: 80, editDelegate: checkboxDelegate },
-                { title: qsTr("航班号"), dataIndex: "flightNumber" },
-                { title: qsTr("起飞时间"), dataIndex: "departureTime" },
-                { title: qsTr("到达时间"), dataIndex: "arrivalTime" },
-                { title: qsTr("起点机场"), dataIndex: "departureAirport" },
-                { title: qsTr("终点机场"), dataIndex: "arrivalAirport" },
-                { title: qsTr("价格"), dataIndex: "price" },
-                { title: qsTr("航空公司"), dataIndex: "airlineCompany" },
-                { title: qsTr("状态"), dataIndex: "status" },
-                { title: qsTr("操作"), dataIndex: "action", width: 200, editDelegate: actionDelegate }
+                {
+                    title: qsTr("航班号"),
+                    dataIndex: "flightNumber",
+                    readOnly: true,
+                    frozen: true
+                },
+                {
+                    title: qsTr("起飞时间"),
+                    dataIndex: "departureTime",
+                },
+                {
+                    title: qsTr("到达时间"),
+                    dataIndex: "arrivalTime"
+                },
+                {
+                    title: qsTr("起点机场"),
+                    dataIndex: "departureAirport",
+                    readOnly: true
+                },
+                {
+                    title: qsTr("终点机场"),
+                    dataIndex: "arrivalAirport",
+                    readOnly: true
+                },
+                {
+                    title: qsTr("价格"),
+                    dataIndex: "price"
+                },
+                {
+                    title: qsTr("航空公司"),
+                    dataIndex: "airlineCompany",
+                    readOnly: true
+                },
+                {
+                    title: qsTr("状态"),
+                    dataIndex: "status"
+                },
+                {
+                    title: qsTr("操作"),
+                    dataIndex: "action",
+                    width: 1,
+                    frozen:true,
+                    readOnly: true,
+                    editDelegate: actionDelegate
+                }
             ]
 
             dataSource: filteredData
-
-            // 复选框组件
-            Component {
-                id: checkboxDelegate
-                Item {
-                    FluCheckBox {
-                        anchors.centerIn: parent
-                        checked: modelData.checked
-                        onClicked: {
-                            modelData.checked = !modelData.checked;
-                            console.log("复选框状态:", modelData.checked);
-                        }
-                    }
-                }
-            }
 
             // 操作按钮组件
             Component {
@@ -117,11 +154,11 @@ FluContentPage {
                         anchors.centerIn: parent
 
                         FluFilledButton {
-                            text: qsTr("编辑")
+                            text: qsTr("保存")
                             Layout.preferredWidth: 60
                             onClicked: {
-                                console.log("编辑航班:", modelData.flightNumber);
-                                // 这里添加编辑逻辑
+                                console.log("更新航班:", modelData.flightNumber);
+                                // 这里添加更新逻辑
                             }
                         }
 

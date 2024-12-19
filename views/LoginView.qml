@@ -3,7 +3,7 @@ import FluentUI 1.0
 import NetworkHandler 1.0
 
 FluPage {
-    id: loginPage
+    id: loginView
 
     NetworkHandler{
         id: networkHandler

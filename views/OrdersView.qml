@@ -14,7 +14,7 @@ import "../components"
 // 【 】第七步：整体美化
 
 FluScrollablePage {
-    id: ordersViewPage
+    id: ordersView
     title: qsTr("全部订单")
     // background: Rectangle { radius: 5 }
 

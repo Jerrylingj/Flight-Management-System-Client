@@ -6,7 +6,7 @@ import NetworkHandler 1.0
 import "../components"
 
 FluContentPage {
-    id: flightInfoPage
+    id: flightInfoView
     title: qsTr("航班信息")
     // background: FluRectangle { radius: 5 }
 
@@ -138,13 +138,9 @@ FluContentPage {
         networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
     }
 
+    // 页面加载完毕后获取航班信息
     Component.onCompleted: {
         fetchFlightData();
-        // 只有用户登录后才调用
-        // if (userInfo.myToken){
-        //     fetchFavoriteFlights();
-        //     fetchOrderedFlights();
-        // }
     }
 
     // 筛选函数

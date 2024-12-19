@@ -14,7 +14,7 @@ import "../components"
 // 第七步：整体美化
 
 FluContentPage {
-    id: ordersDetailPage
+    id: ordersDetailView
     title: "订单详情"
     background: Rectangle { radius: 5 }
 

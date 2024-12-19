@@ -10,7 +10,7 @@ import NetworkHandler 1.0
 import "../components"
 
 FluContentPage {
-    id: userProfilePage
+    id: userProfileView
     title: qsTr("个人中心")
 
     NetworkHandler{

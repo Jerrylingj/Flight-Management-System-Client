@@ -3,14 +3,14 @@ import FluentUI 1.0
 import NetworkHandler 1.0
 
 FluPage {
-    id: registrationPage
+    id: registrationView
 
     NetworkHandler{
         id: networkHandler
         onRequestSuccess:function(data){
             if(data['code'] === 200) {
                 if(data['data'].length>10){
-                    registrationPage.value = data['data']
+                    registrationView.value = data['data']
                 }else{
                     console.log(data['data'])
                     userNavView.push("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
@@ -104,7 +104,7 @@ FluPage {
 
             text: "注册"
             width: parent.width * 0.8
-            enabled: usernameField.text.length>0&&emailField.text.length>0&&passwordField.text.length>0&&confirmPasswordField.text.length>0&&captchaField.text.length>0&&registrationPage.value.length>0
+            enabled: usernameField.text.length>0&&emailField.text.length>0&&passwordField.text.length>0&&confirmPasswordField.text.length>0&&captchaField.text.length>0&&registrationView.value.length>0
             onClicked: {
                 // 模拟注册
                 networkHandler.request("/api/register", NetworkHandler.POST, {
@@ -112,7 +112,7 @@ FluPage {
                                            username:usernameField.text,
                                            password:passwordField.text,
                                            code:captchaField.text,
-                                           value:registrationPage.value
+                                           value:registrationView.value
                                        })
             }
         }

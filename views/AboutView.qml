@@ -6,6 +6,7 @@ import FluentUI 1.0
 import "../components"
 
 FluScrollablePage {
+    id: aboutView
     title: qsTr("关于我们")
 
     FluFrame {
