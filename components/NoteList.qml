@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import NetworkHandler 1.0
 import FluentUI 1.0
+import QtQuick.Layouts
+import QtQuick.Effects
+
 // import "../static/sites.js" as Site
 
 Item{
@@ -209,115 +212,128 @@ Item{
         }
     }
 
-    FluRectangle{
+
+    FluFrame{
         visible: selectedCity !== null
         width: parent.width
         height: parent.height
-        opacity: 0.7
-        color:"black"
+        opacity: 0.8
+        // color: "black"
         z:2
         Flickable{
             width: parent.width * 0.7
             height: parent.height - closeButton.height
             anchors.horizontalCenter: parent.horizontalCenter
             contentHeight: userInfo.height + articleContent.implicitHeight + imageContainer.height
+            clip: true
+
             FluRectangle{
                 height: parent.height
                 width: parent.width
-                color: "white"
+                // color: "white"
             }
-            Column{
-                width:parent.width
-                Row { // 头像跟名字
-                    id: userInfo
-                    spacing: 20
-                    width:parent.width
-                    height: Math.max(avatarRect.height,userNameRect.height)
 
-                    Rectangle {
-                        id: avatarRect
-                        width: 50
-                        height: 50
-                        radius: width/2
-                        color:"transparent"
-                        FluImage {
-                            id: avatar
-                            anchors.fill: parent
-                            source: selectedCity === null ? '':selectedCity.author.coverImage.dynamicUrl
-                            fillMode: Image.PreserveAspectCrop
-                        }
-                    }
-
-                    Rectangle {
-                        id: userNameRect
-                        width: parent.width - avatarRect.width - 10
-                        height: Math.max(userName.implicitHeight,avatarRect.height) // 统一高度
-                        color:"transparent"
-                        z:-1
-                        FluText {
-                            id: userName
-                            text: qsTr(selectedCity === null ? '':selectedCity.author.nickName)
-                            wrapMode: Text.WordWrap
-                            width: parent.width
-                        }
-                    }
-                }
-                FluText{
-                    id:articleContent
-                    width:parent.width
-                    text: selectedCity === null ? '':selectedCity.content
-                    wrapMode: Text.WordWrap
-                }
-
-                // Repeater {
-                //     id: imageContainer
-                //     height: 0
-                //     model: selectedCity === null ? [] : selectedCity.images
-                //     delegate: Rectangle {
-                //         height: 300
-                //         width: parent.width
-                //         Image {
-                //             id: articleImage
-                //             height: parent.height
-                //             width: parent.width
-                //             source: modelData.dynamicUrl
-                //         }
-                //         Component.onCompleted: {
-                //             imageContainer.height += height
-                //         }
-                //     }
-                // }
-
-                FluCarousel{
+            Column {
+                width: parent.width
+                height: parent.height
+                spacing: 20
+                // 轮播图
+                FluCarousel {
                     id: imageContainer
                     width: parent.width
-                    height: 200
+                    height: 300
                     loopTime: 3000
                     model: selectedCity === null ? [] : selectedCity.images
                     anchors.horizontalCenter: parent.horizontalCenter
-                    delegate: Component{
-                        Item{
+                    delegate: Component {
+                        Item {
                             anchors.fill: parent
                             FluImage {
                                 anchors.fill: parent
                                 source: model.dynamicUrl
-                                fillMode: Image.Stretch
+                                fillMode: Image.PreserveAspectCrop
                             }
                         }
                     }
                 }
 
+                // 头像和用户名
+                Row {
+                    id: userInfo
+                    spacing: 15
+                    width: parent.width
+                    height: Math.max(avatarRect.height, userNameRect.height)
 
+                    // 用户头像
+                    Rectangle {
+                        id: avatarRect
+                        width: 50
+                        height: 50
+                        color: "transparent"
+                        FluImage {
+                            id: avatar
+                            anchors.fill: parent
+                            source: selectedCity === null ? '' : selectedCity.author.coverImage.dynamicUrl
+                            fillMode: Image.PreserveAspectCrop
+                            layer.enabled: true
+                            layer.effect: MultiEffect {
+                                maskEnabled: true
+                                maskSource: ShaderEffectSource {
+                                    sourceItem: Rectangle {
+                                        width: avatar.width
+                                        height: avatar.height
+                                        radius: width/2
+                                        color: "black"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // 用户名
+                    Rectangle {
+                        id: userNameRect
+                        width: parent.width - avatarRect.width - 15
+                        height: Math.max(userName.implicitHeight, avatarRect.height)
+                        color: "transparent"
+                        FluText {
+                            id: userName
+                            text: qsTr(selectedCity === null ? '匿名用户' : selectedCity.author.nickName)
+                            wrapMode: Text.WordWrap
+                            width: parent.width
+                            color: "black"
+                            font.pixelSize: 20
+                            font.bold: true
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                }
+
+                // 文章内容
+                FluText {
+                    id: articleContent
+                    width: parent.width
+                    text: selectedCity === null ? '暂无内容' : selectedCity.content
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 18
+                    font.family: "Arial"
+                    font.bold: true
+                    color: "black"
+                    anchors.topMargin: 10
+                    anchors.leftMargin: 10
+                    anchors.rightMargin: 10
+                }
             }
+
         }
-        FluButton{
+        FluIconButton{
             id:closeButton
+            iconSource:FluentIcons.ChromeCloseContrast
             onClicked: {
                 selectedCity = null
             }
         }
     }
-
 
 }
 
