@@ -36,6 +36,7 @@ FluFrame {
     property string currentTimeValue: Qt.formatTime(new Date(), "HH:mm");
 
     signal orderUpdated()
+    signal userUpdated()
 
     QtObject {
         id: rebookingFlightInfo
@@ -109,7 +110,7 @@ FluFrame {
         searchHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
     }
 
-    // 订单接口的 NetworkHandler 实例
+    // 订单接口的 NetworkHandler 实例，处理支付、退签和改签的请求
     NetworkHandler {
         id: orderHandler
 
@@ -121,6 +122,7 @@ FluFrame {
                 showSuccess(qsTr("操作成功！"), 3000, qsTr("感谢您对云途公司的信赖！"))
                 // 触发信号，通知父组件刷新数据
                 orderUpdated();
+                userUpdated();
 
             } else {
                 console.error("订单操作失败，错误信息：", responseData.message);
