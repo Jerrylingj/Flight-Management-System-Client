@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.15
 import NetworkHandler 1.0
 import "../components"
 
-FluContentPage {
+FluScrollablePage {
     id: flightInfoView
     title: qsTr("航班信息")
     // background: FluRectangle { radius: 5 }
@@ -165,88 +165,68 @@ FluContentPage {
         });
     }
 
-    ColumnLayout {
-        anchors.fill: parent
-        spacing: 16
+    FluFrame{
+        z: 10
+        id: filterPanel
+        Layout.fillWidth: true
+        Layout.preferredHeight: 80
+        padding: 10
+        clip: true
 
-        FluFrame{
-            z: 10
-            id: filterPanel
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            padding: 10
-            clip: true
+        // RowLayout {
+        //     anchors.fill: parent
+        //     anchors.margins: 10
+        //     spacing: 20
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 20
+        //     AddressPicker {
+        //         id: departureAddressPicker
+        //         onAccepted: {
+        //             // console.log("选择的省份:", selectedProvince);
+        //             // console.log("选择的城市:", selectedCity);
+        //             filterFlights();
+        //         }
+        //     }
 
-                AddressPicker {
-                    id: departureAddressPicker
-                    onAccepted: {
-                        // console.log("选择的省份:", selectedProvince);
-                        // console.log("选择的城市:", selectedCity);
-                        filterFlights();
-                    }
-                }
+        //     AddressPicker {
+        //         id: arrivalAddressPicker
+        //         onAccepted: {
+        //             // console.log("选择的省份:", selectedProvince);
+        //             // console.log("选择的城市:", selectedCity);
+        //             filterFlights();
+        //         }
+        //     }
 
-                AddressPicker {
-                    id: arrivalAddressPicker
-                    onAccepted: {
-                        // console.log("选择的省份:", selectedProvince);
-                        // console.log("选择的城市:", selectedCity);
-                        filterFlights();
-                    }
-                }
+        //     FluDatePicker {
+        //         id: datePicker
+        //         Layout.preferredWidth: 180
+        //         onAccepted: {
+        //             // console.log("选择日期:", current);
+        //             filterFlights();
+        //         }
+        //     }
+        // }
+    }
 
-                FluDatePicker {
-                    id: datePicker
-                    Layout.preferredWidth: 180
-                    onAccepted: {
-                        // console.log("选择日期:", current);
-                        filterFlights();
-                    }
-                }
-            }
-        }
+    Repeater {
+        model: filteredData.length > 0 ? filteredData : []  // 如果 filteredData 为空，避免空数组导致的问题
+        width: parent.width
 
-        Flickable {
-            y: filterPanel.height
+        FlightInfoCard {
             width: parent.width
-            height: parent.height - filterPanel.height - 90
-            contentWidth: parent.width
-            clip: true
-
-            ColumnLayout {
-                id: columnLayout
-                width: parent.width
-                spacing: 10
-
-                Repeater {
-                    model: filteredData.length > 0 ? filteredData : []  // 如果 filteredData 为空，避免空数组导致的问题
-                    width: parent.width
-
-                    FlightInfoCard {
-                        width: parent.width
-                        height: 80
-                        flightId: modelData.flightId
-                        flightNumber: modelData.flightNumber
-                        departureTime: modelData.departureTime
-                        arrivalTime: modelData.arrivalTime
-                        departureAirport: modelData.departureAirport
-                        arrivalAirport: modelData.arrivalAirport
-                        price: modelData.price
-                        airlineCompany: modelData.airlineCompany
-                        status: modelData.status
-                        isBooked: modelData.isBooked
-                        isFaved: modelData.isFaved
-                        remainingSeats: modelData.remainingSeats
-                    }
-                }
-            }
-
-            contentHeight: columnLayout.height
+            height: 80
+            flightId: modelData.flightId
+            flightNumber: modelData.flightNumber
+            departureTime: modelData.departureTime
+            arrivalTime: modelData.arrivalTime
+            departureAirport: modelData.departureAirport
+            arrivalAirport: modelData.arrivalAirport
+            price: modelData.price
+            airlineCompany: modelData.airlineCompany
+            status: modelData.status
+            isBooked: modelData.isBooked
+            isFaved: modelData.isFaved
+            remainingSeats: modelData.remainingSeats
         }
     }
+
 }

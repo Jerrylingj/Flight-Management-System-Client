@@ -45,6 +45,8 @@ FluFrame {
         property string arrivalCity: ""
         property string departureTime: ""
         property string arrivalTime: ""
+        property string arrivalAirport: ""
+        property string departureAirport: ""
         property double price: 0.0
         property string airlineCompany: ""
         property string status: ""
@@ -69,9 +71,24 @@ FluFrame {
         // 如果成功,应当改变前端订单信息
     }
 
-    // 函数:退签订单
+    // 函数:删除订单
     function deleteOrder(){
         var url = "/api/orders/delete";
+        console.log("发送删除订单信息请求,URL = ", url);
+        console.log("token: ", userInfo.myToken)
+        console.log(orderHandler.POST)
+        var payload = {
+            orderId : orderId
+        }
+
+        orderHandler.request(url, NetworkHandler.POST, payload, userInfo.myToken);
+        // 如果成功,应当返还用户余额
+        // 如果成功,应当改变前端订单信息
+    }
+
+    // 函数:退签订单
+    function unpayOrder(){
+        var url = "/api/orders/unpay";
         console.log("发送退签订单信息请求,URL = ", url);
         console.log("token: ", userInfo.myToken)
         console.log(orderHandler.POST)
@@ -150,6 +167,8 @@ FluFrame {
                     rebookingFlightInfo.arrivalCity = responseData.data[0].arrivalCity;
                     rebookingFlightInfo.departureTime = responseData.data[0].departureTime;
                     rebookingFlightInfo.arrivalTime = responseData.data[0].arrivalTime;
+                    rebookingFlightInfo.departureAirport = responseData.data[0].departureAirport;
+                    rebookingFlightInfo.arrivalAirport = responseData.data[0].arrivalAirport;
                     rebookingFlightInfo.price = responseData.data[0].price;
                     rebookingFlightInfo.airlineCompany = responseData.data[0].airlineCompany;
                     rebookingFlightInfo.status = responseData.data[0].status;
@@ -185,28 +204,24 @@ FluFrame {
         id : rebookingDialog
         title : qsTr("航班改签")
         message: qsTr("您的航班将被改签至下一个从"+departure+"到"+destination+"的航班")
+        width : 600
 
         contentDelegate: Component{
             Item{
                 implicitWidth: parent.width
-                implicitHeight: 300
-                ColumnLayout {
-                    spacing: 10
-                    FluText {
-                        text: "航班号：" + rebookingFlightInfo.flightNumber
-                    }
-                    FluText {
-                        text: "出发时间：" + Qt.formatDateTime(new Date(rebookingFlightInfo.departureTime), "yyyy-MM-dd hh:mm:ss")
-                    }
-                    FluText {
-                        text: "到达时间：" + Qt.formatDateTime(new Date(rebookingFlightInfo.arrivalTime), "yyyy-MM-dd hh:mm:ss")
-                    }
-                    FluText {
-                        text: "航空公司：" + rebookingFlightInfo.airlineCompany
-                    }
-                    FluText {
-                        text: "航班状态：" + rebookingFlightInfo.status
-                    }
+                implicitHeight: 200
+
+                RebookFlightInfoCard {
+                    anchors.centerIn: parent
+                    flightId: rebookingFlightInfo.flightId
+                    flightNumber: rebookingFlightInfo.flightNumber
+                    departureTime: rebookingFlightInfo.departureTime
+                    arrivalTime: rebookingFlightInfo.arrivalTime
+                    departureAirport: rebookingFlightInfo.departureAirport
+                    arrivalAirport: rebookingFlightInfo.arrivalAirport
+                    price: rebookingFlightInfo.price
+                    airlineCompany: rebookingFlightInfo.airlineCompany
+                    status: rebookingFlightInfo.status
                 }
             }
         }
@@ -222,6 +237,7 @@ FluFrame {
             rebookOrder(rebookingFlightInfo.flightId);
         }
     }
+
 
     // 整个Card
     RowLayout{
@@ -415,7 +431,7 @@ FluFrame {
                     buttonFlags: FluContentDialogType.NeutralButton | FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
 
                     onNegativeClicked:{
-                        deleteOrder();
+                        unpayOrder();
                     }
                     positiveText: qsTr("改签")
                     onPositiveClicked:{
@@ -536,7 +552,7 @@ FluFrame {
                     }
                     negativeText: qsTr("狠心拒绝")
                     onNegativeClicked: {
-                        showWarning(qsTr("已取消支付"), 0, qsTr("您真的不考虑考虑吗？"))
+                        showWarning(qsTr("已取消支付"), 3000, qsTr("您真的不考虑考虑吗？"))
                     }
 
                     positiveText: qsTr("大方支付")

@@ -20,16 +20,13 @@ FluFrame {
     property double price
     property string airlineCompany
     property string status
-    property bool isBooked
-    property bool isFaved
-    property int remainingSeats
 
     RowLayout {
         anchors.fill: parent
         spacing: 30
         // 航空公司信息
         ColumnLayout {
-            Layout.preferredWidth: 150
+            Layout.preferredWidth: 80
             spacing: 5
 
             FluText {
@@ -89,15 +86,15 @@ FluFrame {
 
         // 价格和状态
         ColumnLayout {
-            Layout.preferredWidth: 150
+            Layout.preferredWidth: 100
             spacing: 5
 
-            FluText {
-                text: qsTr("￥") + price.toFixed(2)
-                font.pixelSize: 18
-                font.bold: true
-                color: "#F39C12"
-            }
+            // FluText {
+            //     text: qsTr("￥") + price.toFixed(2)
+            //     font.pixelSize: 18
+            //     font.bold: true
+            //     color: "#F39C12"
+            // }
 
             Rectangle {
                 id: statusBadge
