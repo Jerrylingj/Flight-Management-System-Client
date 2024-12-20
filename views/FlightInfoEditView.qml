@@ -11,6 +11,20 @@ FluContentPage {
 
     property var flightData: []   // 所有航班数据
     property var filteredData: [] // 筛选后的航班数据
+    property var newFlightData: ({
+       flightNumber: "",
+       departureCity: "",
+       arrivalCity: "",
+       departureTime: "",
+       arrivalTime: "",
+       price: 0,
+       departureAirport: "",
+       arrivalAirport: "",
+       airlineCompany: "",
+       checkinStartTime: "",
+       checkinEndTime: "",
+       status: "On Time"
+   })
 
     NetworkHandler {
         id: networkHandler
@@ -89,9 +103,6 @@ FluContentPage {
             checkinEndTime: flight.checkinEndTime,
             status: flight.status
         };
-
-
-
         addHandler.request(url, NetworkHandler.POST, body);
     }
 
@@ -154,6 +165,19 @@ FluContentPage {
         });
     }
 
+
+    function updateFlightData(rowIndex, field, value) {
+        // 更新航班数据
+        if (rowIndex >= 0 && rowIndex < flightData.length) {
+            flightData[rowIndex][field] = value;
+            // 拷贝
+            const flightCopy = Object.assign({}, flightData[rowIndex]);
+            delete flightCopy.action;
+            // 更新 action 列的内容
+            flightData[rowIndex]["action"] = table_view.customItem(com_action, {flight: JSON.stringify(flightCopy)});
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 16
@@ -188,7 +212,7 @@ FluContentPage {
                 FluFilledButton {
                     text: qsTr("添加航班")
                     onClicked: {
-                        // showAddFlightDialog();
+                        addFlightDialog.open();
                         console.log("添加航班")
                     }
                 }
@@ -256,10 +280,9 @@ FluContentPage {
         id: com_depDateBox
         FluTextBox {
             anchors.fill: parent
-            text: String(modelData.departureTime) // 显示价格
+            text: String(JSON.parse(options.flight).departureTime) // 显示价格
             onTextChanged: {
-                // 双向绑定到 flight 对象
-                editTextChanged(text);
+                updateFlightData(modelIndex, "departureTime", text);
             }
             onEditingFinished: {
                 table_view.closeEditor();
@@ -272,10 +295,9 @@ FluContentPage {
         id: com_arrDateBox
         FluTextBox {
             anchors.fill: parent
-            text: String(modelData.arrivalTime) // 显示价格
+            text: String(JSON.parse(options.flight).arrivalTime) // 显示价格
             onTextChanged: {
-                // 双向绑定到 flight 对象
-                editTextChanged(text);
+                updateFlightData(modelIndex, "arrivalTime", text);
             }
             onEditingFinished: {
                 table_view.closeEditor();
@@ -288,11 +310,9 @@ FluContentPage {
         id: com_priceBox
         FluTextBox {
             anchors.fill: parent
-            text: String(modelData.price) // 显示价格
-
+            text: String(JSON.parse(options.flight).price) // 显示价格
             onTextChanged: {
-                modelData.price = parseFloat(text); // 双向绑定到 flight 对象
-                editTextChanged(text);
+                updateFlightData(modelIndex, "price", text);
             }
             onEditingFinished: {
                 table_view.closeEditor();
@@ -342,5 +362,105 @@ FluContentPage {
         }
     }
 
+    // 添加航班的弹窗
+    FluContentDialog {
+        id: addFlightDialog
+        title: qsTr("添加航班")
+        contentWidth: 400
+        contentHeight: 600
+        // closeButtonVisible: true
+
+        contentDelegate: Component{
+            Item {
+                implicitWidth: parent.width
+                implicitHeight: 300
+                anchors.alignWhenCentered: parent.Center
+
+                ColumnLayout {
+                    spacing: 20
+                    anchors.fill: parent
+                    anchors.margins: 16
+
+                    RowLayout {
+                        spacing: 10
+                        Layout.fillWidth: true
+
+                        FluTextBox {
+                            id: flightNumberInput
+                            placeholderText: qsTr("航班号")
+                            Layout.fillWidth: true
+                            text: newFlightData.flightNumber
+                            onTextChanged: newFlightData.flightNumber = text;
+                        }
+
+                        FluTextBox {
+                            id: departureCityInput
+                            placeholderText: qsTr("出发城市")
+                            Layout.fillWidth: true
+                            text: newFlightData.departureCity
+                            onTextChanged: newFlightData.departureCity = text;
+                        }
+
+                        FluTextBox {
+                            id: arrivalCityInput
+                            placeholderText: qsTr("到达城市")
+                            Layout.fillWidth: true
+                            text: newFlightData.arrivalCity
+                            onTextChanged: newFlightData.arrivalCity = text;
+                        }
+                    }
+
+                    RowLayout {
+                        spacing: 10
+                        Layout.fillWidth: true
+
+                        FluTimePicker {
+                            id: departureTimeInput
+                            Layout.fillWidth: true
+                            // title: qsTr("出发时间")
+                            // onTimeSelected: newFlightData.departureTime = time.toString("hh:mm");
+                        }
+
+                        FluTimePicker {
+                            id: arrivalTimeInput
+                            Layout.fillWidth: true
+                            // title: qsTr("到达时间")
+                            // onTimeSelected: newFlightData.arrivalTime = time.toString("hh:mm");
+                        }
+                    }
+
+                    RowLayout {
+                        spacing: 10
+                        Layout.fillWidth: true
+                        FluTextBox {
+                            id: priceInput
+                            placeholderText: qsTr("价格")
+                            text: String(newFlightData.price)
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            onTextChanged: newFlightData.price = parseFloat(text);
+                        }
+
+                        FluTextBox {
+                            id: airlineInput
+                            placeholderText: qsTr("航空公司")
+                            text: newFlightData.airlineCompany
+                            onTextChanged: newFlightData.airlineCompany = text;
+                        }
+
+                        FluComboBox {
+                            id: statusInput
+                            model: ["On Time", "Delayed", "Cancelled"]
+                            currentIndex: 0
+                            onCurrentIndexChanged: newFlightData.status = model[currentIndex];
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        onPositiveClicked: addFlight(newFlightData);
+    }
 
 }
