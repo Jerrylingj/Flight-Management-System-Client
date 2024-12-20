@@ -100,20 +100,10 @@ property var newFlightData: ({
         }
     }
 
-
+    // 获取航班信息
     function fetchFlightData() {
         const url = "/api/flights";
         networkHandler.request(url, NetworkHandler.GET);
-    }
-
-    // 一个辅助格式化函数
-    function formatDateString(dateString) {
-        // 如果日期字符串包含 'GMT'，去掉从 'GMT' 开始的部分
-        const gmtIndex = dateString.indexOf("GMT");
-        if (gmtIndex !== -1) {
-            return dateString.substring(0, gmtIndex).trim();
-        }
-        return dateString; // 如果不包含 'GMT'，返回原始字符串
     }
 
     // 添加航班逻辑
@@ -174,7 +164,7 @@ property var newFlightData: ({
         delHandler.request(url, NetworkHandler.POST, body);
     }
 
-    Component.onCompleted: fetchFlightData();
+
 
     // 筛选航班数据
     function filterFlights() {
@@ -198,6 +188,66 @@ property var newFlightData: ({
         });
     }
 
+    /*** 添加航班 ***/
+    // 辅助函数：格式化时间
+    function formatDateString(dateString) {
+        // 如果日期字符串包含 'GMT'，去掉从 'GMT' 开始的部分
+        const gmtIndex = dateString.indexOf("GMT");
+        if (gmtIndex !== -1) {
+            return dateString.substring(0, gmtIndex).trim();
+        }
+        return dateString; // 如果不包含 'GMT'，返回原始字符串
+    }
+    // 辅助函数：更新日期
+    function combineDate(date, time) {
+
+        if (date === "") return Date(time).toString();
+
+        const dateObj = new Date(date);
+        const timeObj = new Date(time);
+
+        dateObj.setFullYear(timeObj.getFullYear());
+        dateObj.setMonth(timeObj.getMonth());
+        dateObj.setDate(timeObj.getDate());
+
+        return dateObj.toString();
+    }
+    // 辅助函数：更新时刻
+    function combineTime(date, time) {
+        if (date === "") return Date(time).toString();
+
+        const dateObj = new Date(date);
+        const timeObj = new Date(time);
+
+        dateObj.setHours(timeObj.getHours());
+        dateObj.setMinutes(timeObj.getMinutes());
+        dateObj.setSeconds(timeObj.getSeconds());
+
+        return dateObj.toString();
+    }
+    // 验证航班填写是否有效
+    function validateFlight(flight) {
+        const required = ["flightNumber", "departureCity", "arrivalCity", "departureTime", "arrivalTime", "price", "departureAirport", "arrivalAirport", "airlineCompany"];
+        for (const key of required) {
+            if (!flight[key]) {
+                console.error(`缺少字段：${key}`);
+                return false;
+            }
+        }
+        return true;
+    }
+    // 计算检票开始时间
+    function calcCheckinStart(depTime) {
+        let t = new Date(depTime);
+        t.setHours(t.getHours() - 2);
+        return t.toString();
+    }
+    // 计算检票结束时间
+    function calcCheckinEnd(depTime) {
+        let t = new Date(depTime);
+        t.setMinutes(t.getMinutes() - 30);
+        return t.toString();
+    }
 
     function updateFlightData(rowIndex, field, value) {
         // 更新航班数据
@@ -210,6 +260,8 @@ property var newFlightData: ({
             flightData[rowIndex]["action"] = table_view.customItem(com_action, {flight: JSON.stringify(flightCopy)});
         }
     }
+
+    Component.onCompleted: fetchFlightData();
 
     ColumnLayout {
         anchors.fill: parent
@@ -578,56 +630,4 @@ property var newFlightData: ({
             // addFlightDialog.close();
         }
     }
-
-    function combineDate(date, time) {
-
-        if (date === "") return Date(time).toString();
-
-        const dateObj = new Date(date);
-        const timeObj = new Date(time);
-
-        dateObj.setFullYear(timeObj.getFullYear());
-        dateObj.setMonth(timeObj.getMonth());
-        dateObj.setDate(timeObj.getDate());
-
-        return dateObj.toString();
-    }
-
-    function combineTime(date, time) {
-        if (date === "") return Date(time).toString();
-
-        const dateObj = new Date(date);
-        const timeObj = new Date(time);
-
-        dateObj.setHours(timeObj.getHours());
-        dateObj.setMinutes(timeObj.getMinutes());
-        dateObj.setSeconds(timeObj.getSeconds());
-
-        return dateObj.toString();
-    }
-
-
-    function validateFlight(flight) {
-        const required = ["flightNumber", "departureCity", "arrivalCity", "departureTime", "arrivalTime", "price", "departureAirport", "arrivalAirport", "airlineCompany"];
-        for (const key of required) {
-            if (!flight[key]) {
-                console.error(`缺少字段：${key}`);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    function calcCheckinStart(depTime) {
-        let t = new Date(depTime);
-        t.setHours(t.getHours() - 2);
-        return t.toString();
-    }
-
-    function calcCheckinEnd(depTime) {
-        let t = new Date(depTime);
-        t.setMinutes(t.getMinutes() - 30);
-        return t.toString();
-    }
-
 }
