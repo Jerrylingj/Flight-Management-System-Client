@@ -49,19 +49,37 @@ FluButton {
     property string cityText: qsTr("城市")
     property string cancelText: qsTr("取消")
     property string okText: qsTr("确定")
+    property var currentCity     // 默认城市
     signal accepted()
     id: control
     implicitHeight: 30
     implicitWidth: 180
     Component.onCompleted: {
-        if(selectedProvince === "") {
-            selectedProvince = provinces[0] // 默认省份
+        if (currentCity) {
+            // 遍历 provinces 和 cities，找到包含 currentCity 的省份
+            for (var province in cities) {
+                if (cities[province].indexOf(currentCity) !== -1) {
+                    selectedProvince = province;
+                    break;
+                }
+            }
+            // 如果未找到匹配省份，设置为默认值
+            if (!selectedProvince) {
+                selectedProvince = provinces[0]; // 默认省份
+            }
+        } else {
+            // 默认值
+            selectedProvince = provinces[0]; // 默认省份
         }
-        if(selectedCity === "" && cities[selectedProvince]) {
-            selectedCity = cities[selectedProvince][0] // 默认省份
+
+        // 更新城市选择
+        if (!selectedCity) {
+            selectedCity = currentCity || cities[selectedProvince][0]; // 默认城市
         }
-        text_province.text = selectedProvince
-        text_city.text = selectedCity
+
+        // 更新文本显示
+        text_province.text = selectedProvince;
+        text_city.text = selectedCity;
     }
 
     Item {

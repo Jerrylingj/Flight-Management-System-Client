@@ -9,10 +9,10 @@ FluContentPage {
     id: flightInfoEditView
     title: qsTr("航班信息")
 
-    property var flightData: []   // 所有航班数据
-    property var filteredData: [] // 筛选后的航班数据
+    property var flightData: []                 // 所有航班数据
+    property var filteredData: []               // 筛选后的航班数据
 
-property var newFlightData: ({
+    property var newFlightData: ({              // 待添加的航班
          flightNumber: "MU100",
          departureCity: "",
          arrivalCity: "",
@@ -26,6 +26,8 @@ property var newFlightData: ({
          checkinEndTime: "",
          status: "On Time"
    })
+
+    property var editingFlight: ({})            // 待编辑航班
 
     NetworkHandler {
         id: networkHandler
@@ -92,8 +94,12 @@ property var newFlightData: ({
         id: updateHandler
         onRequestSuccess: function(response) {
             console.log("返回信息:", JSON.stringify(response));
-            showSuccess("保存成功!");
-            fetchFlightData();
+            if (response.success === true) {
+                showSuccess("保存成功!");
+                updateFlightDialog.close();
+                fetchFlightData();
+            }
+            else showError("航班信息有误，请重新输入！");
         }
         onRequestFailed: function(errorMessage) {
             console.error("更新航班失败:", errorMessage);
@@ -132,24 +138,24 @@ property var newFlightData: ({
     // 更新航班逻辑
     function updateFlight(flight) {
         const url = "/api/flights/update";
-        console.log("flightId", flight.flightId);
+        // console.log("flightId", flight.flightId);
         const body = {
             authCode: "123",
             flightId: flight.flightId,
             flightNumber: flight.flightNumber,
             departureCity: flight.departureCity,
             arrivalCity: flight.arrivalCity,
-            departureTime: flight.departureTime,
-            arrivalTime: flight.arrivalTime,
+            departureTime: formatDateString(flight.departureTime),
+            arrivalTime: formatDateString(flight.arrivalTime),
             price: flight.price,
             departureAirport: flight.departureAirport,
             arrivalAirport: flight.arrivalAirport,
             airlineCompany: flight.airlineCompany,
-            checkinStartTime: flight.checkinStartTime,
-            checkinEndTime: flight.checkinEndTime,
+            checkinStartTime: formatDateString(flight.checkinStartTime),
+            checkinEndTime: formatDateString(flight.checkinEndTime),
             status: flight.status
         };
-        console.log("body",JSON.stringify(body))
+        // console.log("body",JSON.stringify(body))
         updateHandler.request(url, NetworkHandler.POST, body);
     }
 
@@ -227,6 +233,8 @@ property var newFlightData: ({
     }
     // 验证航班填写是否有效
     function validateFlight(flight) {
+        if (flight.departureCity === "全部") flight.departureCity = "";
+        if (flight.arrivalCity === "全部") flight.arrivalCity = "";
         const required = ["flightNumber", "departureCity", "arrivalCity", "departureTime", "arrivalTime", "price", "departureAirport", "arrivalAirport", "airlineCompany"];
         for (const key of required) {
             if (!flight[key]) {
@@ -248,18 +256,18 @@ property var newFlightData: ({
         t.setMinutes(t.getMinutes() - 30);
         return t.toString();
     }
-
-    function updateFlightData(rowIndex, field, value) {
-        // 更新航班数据
-        if (rowIndex >= 0 && rowIndex < flightData.length) {
-            flightData[rowIndex][field] = value;
-            // 拷贝
-            const flightCopy = Object.assign({}, flightData[rowIndex]);
-            delete flightCopy.action;
-            // 更新 action 列的内容
-            flightData[rowIndex]["action"] = table_view.customItem(com_action, {flight: JSON.stringify(flightCopy)});
-        }
-    }
+    // // 更新行
+    // function updateFlightData(rowIndex, field, value) {
+    //     // 更新航班数据
+    //     if (rowIndex >= 0 && rowIndex < flightData.length) {
+    //         flightData[rowIndex][field] = value;
+    //         // 拷贝
+    //         const flightCopy = Object.assign({}, flightData[rowIndex]);
+    //         delete flightCopy.action;
+    //         // 更新 action 列的内容
+    //         flightData[rowIndex]["action"] = table_view.customItem(com_action, {flight: JSON.stringify(flightCopy)});
+    //     }
+    // }
 
     Component.onCompleted: fetchFlightData();
 
@@ -323,19 +331,29 @@ property var newFlightData: ({
                     frozen: true
                 },
                 {
+                    title: qsTr("出发城市"),
+                    dataIndex: "departureCity",
+                    readOnly: true
+                },
+                {
+                    title: qsTr("到达城市"),
+                    dataIndex: "arrivalCity",
+                    readOnly: true
+                },
+                {
                     title: qsTr("起飞时间"),
                     dataIndex: "departureTime",
-                    editDelegate: com_depDateBox
+                    readOnly: true
                 },
                 {
                     title: qsTr("到达时间"),
                     dataIndex: "arrivalTime",
-                    editDelegate: com_arrDateBox
+                    readOnly: true
                 },
                 {
                     title: qsTr("价格"),
                     dataIndex: "price",
-                    editDelegate: com_priceBox
+                    readOnly: true
                 },
                 {
                     title: qsTr("航空公司"),
@@ -345,7 +363,7 @@ property var newFlightData: ({
                 {
                     title: qsTr("状态"),
                     dataIndex: "status",
-                    editDelegate: com_comboBox
+                    readOnly: true
                 },
                 {
                     title: qsTr("操作"),
@@ -358,66 +376,6 @@ property var newFlightData: ({
         }
     }
 
-
-    // 出发时间
-    Component {
-        id: com_depDateBox
-        FluTextBox {
-            anchors.fill: parent
-            text: String(JSON.parse(options.flight).departureTime) // 显示价格
-            onTextChanged: {
-                updateFlightData(modelIndex, "departureTime", text);
-            }
-            onEditingFinished: {
-                table_view.closeEditor();
-            }
-        }
-    }
-
-    // 到达时间
-    Component {
-        id: com_arrDateBox
-        FluTextBox {
-            anchors.fill: parent
-            text: String(JSON.parse(options.flight).arrivalTime) // 显示价格
-            onTextChanged: {
-                updateFlightData(modelIndex, "arrivalTime", text);
-            }
-            onEditingFinished: {
-                table_view.closeEditor();
-            }
-        }
-    }
-
-    // 价格
-    Component {
-        id: com_priceBox
-        FluTextBox {
-            anchors.fill: parent
-            text: String(JSON.parse(options.flight).price) // 显示价格
-            onTextChanged: {
-                updateFlightData(modelIndex, "price", text);
-            }
-            onEditingFinished: {
-                table_view.closeEditor();
-            }
-        }
-    }
-
-    // 状态下拉框组件
-    Component {
-        id: com_comboBox
-        FluComboBox {
-            anchors.fill: parent
-            model: ["On Time", "Delayed", "Cancelled"]
-            currentIndex: model.indexOf(options.flight[dataIndex]) // 显示初始值
-            onCurrentIndexChanged: {
-                options.flight[dataIndex] = model[currentIndex]; // 实时更新 flight 对象
-            }
-        }
-    }
-
-
     Component {
         id: com_action
         Item {
@@ -426,11 +384,12 @@ property var newFlightData: ({
                 anchors.centerIn: parent
 
                 FluFilledButton {
-                    text: qsTr("保存")
+                    text: qsTr("编辑")
                     Layout.preferredWidth: 60
                     onClicked: {
-                        console.log("保存航班:", options.flight);
-                        updateFlight(JSON.parse(options.flight));
+                        console.log("编辑航班:", options.flight);
+                        editingFlight = JSON.parse(options.flight); // 深拷贝当前航班数据
+                        updateFlightDialog.open();
                     }
                 }
 
@@ -486,6 +445,18 @@ property var newFlightData: ({
                             {
                                 newFlightData.flightNumber = text;
                                 console.log("航班号:", text);
+                            }
+                        }
+
+                        FluTextBox {
+                            placeholderText: qsTr("价格")
+                            Layout.fillWidth: true
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            text: String(newFlightData.price)
+                            onTextChanged:
+                            {
+                                newFlightData.price = parseFloat(text);
+                                console.log("价格:", parseFloat(text));
                             }
                         }
                     }
@@ -544,17 +515,7 @@ property var newFlightData: ({
                         spacing: 10
                         Layout.fillWidth: true
 
-                        FluTextBox {
-                            placeholderText: qsTr("价格")
-                            Layout.fillWidth: true
-                            inputMethodHints: Qt.ImhDigitsOnly
-                            text: String(newFlightData.price)
-                            onTextChanged:
-                            {
-                                newFlightData.price = parseFloat(text);
-                                console.log("价格:", parseFloat(text));
-                            }
-                        }
+
 
                         FluComboBox {
                             Layout.fillWidth: true
@@ -589,9 +550,7 @@ property var newFlightData: ({
                                 // 更新出发时间的时刻
                                 newFlightData.departureTime = combineTime(newFlightData.departureTime, current);
                                 // console.log("出发时间:", newFlightData.departureTime);
-
                             }
-
                         }
 
                         FluTimePicker {
@@ -628,6 +587,196 @@ property var newFlightData: ({
             console.log("添加航班:", JSON.stringify(newFlightData));
             addFlight(newFlightData);
             // addFlightDialog.close();
+        }
+    }
+
+    // 修改航班的弹窗
+    FluContentDialog {
+        id: updateFlightDialog
+        title: qsTr("修改航班")
+        contentWidth: 600
+        contentHeight: 600
+
+        contentDelegate: Component {
+            Item {
+                implicitWidth: parent.width
+                implicitHeight: 300
+
+                ColumnLayout {
+                    spacing: 20
+                    anchors.fill: parent
+                    anchors.margins: 16
+
+                    RowLayout {
+                        spacing: 10
+                        Layout.fillWidth: true
+
+                        FluTextBox {
+                            placeholderText: qsTr("航空公司")
+                            Layout.fillWidth: true
+                            text: editingFlight.airlineCompany
+                            onTextChanged:
+                            {
+                                editingFlight.airlineCompany = text;
+                                console.log("航空公司：", text);
+                            }
+                        }
+
+                        FluTextBox {
+                            placeholderText: qsTr("航班号")
+                            Layout.fillWidth: true
+                            text: editingFlight.flightNumber
+                            onTextChanged:
+                            {
+                                editingFlight.flightNumber = text;
+                                console.log("航班号:", text);
+                            }
+                        }
+
+                        FluTextBox {
+                            placeholderText: qsTr("价格")
+                            Layout.fillWidth: true
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            text: String(editingFlight.price)
+                            onTextChanged:
+                            {
+                                editingFlight.price = parseFloat(text);
+                                console.log("价格:", parseFloat(text));
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        spacing: 10
+                        Layout.fillWidth: true
+
+                        AddressPicker {
+                            Layout.fillWidth: true
+                            currentCity: editingFlight.departureCity
+                            onAccepted:
+                            {
+                                editingFlight.departureCity = selectedCity;
+                                console.log("出发城市:", selectedCity);
+                            }
+                        }
+
+                        AddressPicker {
+                            Layout.fillWidth: true
+                            currentCity: editingFlight.arrivalCity
+                            onAccepted:
+                            {
+                                editingFlight.arrivalCity = selectedCity;
+                                console.log("到达城市:", selectedCity);
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        spacing: 10
+                        Layout.fillWidth: true
+
+                        FluTextBox {
+                            placeholderText: qsTr("起飞机场")
+                            Layout.fillWidth: true
+                            text: editingFlight.departureAirport
+                            onTextChanged:
+                            {
+                                editingFlight.departureAirport = text;
+                                console.log("起飞机场:", text);
+                            }
+                        }
+
+                        FluTextBox {
+                            placeholderText: qsTr("到达机场")
+                            Layout.fillWidth: true
+                            text: editingFlight.arrivalAirport
+                            onTextChanged:
+                            {
+                                editingFlight.arrivalAirport = text;
+                                console.log("到达机场:", text);
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        spacing: 10
+                        Layout.fillWidth: true
+
+                        FluComboBox {
+                            Layout.fillWidth: true
+                            model: ["On Time", "Delayed", "Cancelled"]
+                            currentIndex: 0
+                            onCurrentIndexChanged:
+                            {
+                                editingFlight.status = model[currentIndex];
+                                console.log("状态:", currentIndex);
+                            }
+                        }
+
+                        FluDatePicker {
+                            Layout.fillWidth: true
+                            current: editingFlight.departureTime ? new Date(editingFlight.departureTime) : new Date()
+                            onAccepted: {
+                                // 初始化出发时间, 到达时间
+                                editingFlight.departureTime = combineDate(editingFlight.departureTime, current);
+                                editingFlight.arrivalTime = combineDate(editingFlight.arrivalTime, current);
+                                // console.log("出发日期:", editingFlight.departureTime);
+                                // console.log("到达日期:", editingFlight.arrivalTime);
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        spacing: 10
+                        Layout.fillWidth: true
+
+                        FluTimePicker {
+                            Layout.fillWidth: true
+                            current: editingFlight.departureTime ? new Date(editingFlight.departureTime) : new Date()
+                            onAccepted: {
+                                // 更新出发时间的时刻
+                                editingFlight.departureTime = combineTime(editingFlight.departureTime, current);
+                                // console.log("出发时间:", editingFlight.departureTime);
+
+                            }
+
+                        }
+
+                        FluTimePicker {
+                            Layout.fillWidth: true
+                            current: editingFlight.arrivalTime ? new Date(editingFlight.arrivalTime) : new Date()
+                            onAccepted: {
+                                editingFlight.arrivalTime = combineTime(editingFlight.arrivalTime, current);
+                                // console.log("到达时间:", editingFlight.arrivalTime);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        positiveText: qsTr("保存")
+        onPositiveClickListener: ()=> {
+            const dep = editingFlight.departureTime;
+            const arr = editingFlight.arrivalTime;
+
+            console.log("验证航班");
+            if (new Date(dep) >= new Date(arr)) {
+                showError("到达时间早于起飞时间");
+                return;
+            }
+
+
+            editingFlight.checkinStartTime = calcCheckinStart(dep);
+            editingFlight.checkinEndTime = calcCheckinEnd(dep);
+
+            if (!validateFlight(editingFlight)) {
+                showError("航班信息不全！");
+                return;
+            }
+
+            console.log("更新航班:", JSON.stringify(editingFlight));
+            updateFlight(editingFlight);
         }
     }
 }
