@@ -1,36 +1,130 @@
-# Flight Management System Client
+# 🌍 AltAir - Frontend Repository
 
-## Overview
-The **Flight Management System Client** is a desktop application designed for managing flight-related tasks such as booking, user management, order handling, and flight favorites. The application is built using **FluentUI** to ensure a modern and intuitive user experience.
+[English Version](README.md) | [简体中文](README-zh.md)
 
-## Features
-### User Module
-- **User Registration and Login**: Secure user authentication system.
-- **Profile Management**: Edit user information such as username, password, and avatar.
+---
 
-### Flight Module
-- **Flight Search and Listing**: Display flights with filters for time, price, and destination.
-- **Flight Details**: View detailed information about a selected flight.
+<div align="center">
+  <img src="./favicon.jpg" alt="AltAir Logo" style="border-radius: 8px;"/>
+</div>
 
-### Order Module
-- **Order Creation**: Book tickets and generate orders.
-- **Order History**: View past and upcoming orders.
-- **Order Details**: View comprehensive details of an order.
+---
 
-### Flight Favorites
-- **Add to Favorites**: Mark flights as favorites for quick access.
-- **Manage Favorites**: View and remove favorite flights.
+## 🚀 **Introduction**
+**AltAir** originated from the primary practical training course of the School of Software Engineering of Sun Yat-sen University and was developed by the **Terminal Terrace Team**. This a **QML-based frontend project** designed for efficient and intuitive user interaction. The system supports both **user** and **administrator** functionalities, including:
+- **Flight search and filtering**.
+- **Order management**.
+- **Personal center**.
+- **Travel notes display**.
 
-### Payment Module
-- **Virtual Token Payments**: Use in-app tokens to pay for bookings.
-- **Balance Management**: View and recharge virtual token balance.
+---
 
-## Technology Stack
-- **Frontend Framework**: QML (based on FluentUI for modern UI components).
-- **Programming Language**: C++
-- **Backend Communication**: RESTful APIs
-- **Database**: MySQL
+## 🖂 **Project Structure**
+```plaintext
+├── components/              # Reusable components
+├── views/                   # Feature pages
+├── figures/                 # Static resources
+├── api/                     # Utility modules
+├── storage/				 # Global variables
+├── Main.qml                 # Application entry point
+└── README.md                # Project documentation
+```
 
-## Notice
-- Try to use the relevant elements of this component library as much as possible
+---
 
+## ✨ **Features**
+
+### User Side
+- 🔎 **Flight Search**: Real-time search and filtering by time, city, or price.
+- 📋 **Order Management**: View, filter, and manage orders; support for refunds and rescheduling.
+- 🌟 **Personal Center**: Manage profile information and favorite flights.
+- 🗒 **Travel Notes**: Discover and interact with travel notes and guides.
+
+### Admin Side
+- 🛨 **Flight Management**: Add, edit, and delete flight data with real-time updates.
+- 👥 **User Management**: View and manage user accounts.
+
+---
+
+## ⚙️ **Development Environment**
+
+| Requirement          | Details |
+| -------------------- | ------- |
+| **Qt Version**       | 6.5.3   |
+| **Build Tool**       | CMake   |
+| **Operating System** | Windows |
+
+---
+
+## 🛠️ **Getting Started**
+
+### 1. Clone the Repository
+```bash
+git clone git@github.com:Jerrylingj/Flight-Management-System-Client.git
+```
+
+### 2. Build and Run
+```bash
+mkdir build && cd build
+cmake ..
+cmake --build .
+```
+
+---
+
+## 📋 **Screenshots**
+<div align="center">
+  <img src="./figures/readme/cover-1.png" alt="Screenshot 1" width="45%"/>
+  <img src="./figures/readme/cover-2.png" alt="Screenshot 2" width="45%"/>
+</div>
+
+<div align="center">
+  <img src="./figures/readme/cover-3.png" alt="Screenshot 3" width="45%"/>
+  <img src="./figures/readme/cover-4.png" alt="Screenshot 4" width="45%"/>
+</div>
+
+<div align="center">
+  <img src="./figures/readme/cover-5.png" alt="Screenshot 5" width="45%"/>
+  <img src="./figures/readme/cover-6.png" alt="Screenshot 6" width="45%"/>
+</div>
+
+---
+
+## 🤝 **Contributions**
+
+We welcome contributions from everyone! Follow these steps:
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature-name`.
+3. Commit your changes: `git commit -m "Add feature-name"`.
+4. Push to the branch: `git push origin feature-name`.
+5. Create a pull request.
+
+---
+
+## 📞 **Contact**
+
+For questions or suggestions, please contact:
+- **Jerrylingj**：lingj28@mail2.sysu.edu.cn
+- **water2027**：linshy76@mail2.sysu.edu.cn
+- **math-zhuxy**：zhuxy255@mail2.sysu.edu.cn
+
+- **YANGPuxyu**：yangpx26@mail2.sysu.edu.cn
+
+---
+
+## ⚡ **Future Plans**
+
+### Short-Term Goals
+- Complete front-end UI/UX enhancements.
+- Implement detailed error handling for all user actions.
+
+### Long-Term Goals
+- Integrate AI-based flight recommendations for users.
+- Add multi-language support for global users.
+- Explore mobile platform compatibility with Android/iOS.
+
+---
+
+<div align="center">
+  <p>&copy; 2024 AltAir. All Rights Reserved.</p>
+</div>
