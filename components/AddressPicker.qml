@@ -274,7 +274,6 @@ FluButton {
                         left: parent.left
                         leftMargin: 20
                         rightMargin: 10
-                        right: divider.left
                         verticalCenter: parent.verticalCenter
                     }
                     text: control.cancelText
@@ -286,7 +285,6 @@ FluButton {
                 FluFilledButton {
                     anchors {
                         right: parent.right
-                        left: divider.right
                         rightMargin: 20
                         leftMargin: 10
                         verticalCenter: parent.verticalCenter
