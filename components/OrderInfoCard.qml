@@ -250,15 +250,26 @@ FluFrame {
                     Layout.preferredWidth: 150
                     spacing: 5
 
-                    FluText {
-                        text: airlineCompany // 航空公司名称
-                        font.pixelSize: 14
+                    FluRectangle {
+                        color: "#409EFF"
+                        radius: [10, 10, 10, 10]
+                        height: 32
+                        width : 100
+                        FluText {
+                            text: flightNumber // 航班号
+                            font.pixelSize: 18
+                            font.bold: true
+                            color: "white"
+                            anchors.centerIn: parent
+                        }
                     }
 
                     FluText {
-                        text: flightNumber // 航班号
+                        text: airlineCompany // 航空公司名称
                         font.pixelSize: 12
                     }
+
+
                 }
 
                 ColumnLayout{
@@ -315,11 +326,11 @@ FluFrame {
                         width: 80
                         height: 24
                         radius: 5
-                        color: status === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
+                        color: flightStatus === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
 
                         FluText {
                             anchors.centerIn: parent
-                            text: status
+                            text: flightStatus
                             color: "white"
                             font.pixelSize: 14
                             font.bold: true
@@ -328,11 +339,47 @@ FluFrame {
                 }
             }
 
-            // 进度条
-            TimeProgressBar {
-                id: progressBar
-                indeterminate: false
+
+            
+            Timer {
+                id: checkInTimer
+                interval: 1000
+                running: true
+                repeat: true
+
+                function formatTimeDiff(diffMillis) {
+                    var totalSec = Math.floor(diffMillis / 1000)
+                    var h = Math.floor(totalSec / 3600)
+                    var m = Math.floor((totalSec % 3600) / 60)
+                    var s = totalSec % 60
+                    return (h < 10 ? "0"+h : h) + ":" + (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s)
+                }
+
+                onTriggered: {
+                    var now = new Date()
+                    var start = new Date(checkInStartTime)
+                    var end = new Date(checkInEndTime)
+                    if (now < start) {
+                        checkInCountdown.color = FluTheme.dark ? "#90EE90" : "#006400" // 浅绿色 : 深绿色
+                        checkInCountdown.text = "检票开始剩余：" + formatTimeDiff(start - now)
+                    } else if (now >= start && now < end) {
+                        checkInCountdown.color = "#FFA500" // 橙色
+                        checkInCountdown.text = "检票结束剩余：" + formatTimeDiff(end - now)
+                    } else {
+                        checkInCountdown.color = FluTheme.dark ? "#FF7F7F" : "#FF0000" // 浅红色 : 红色
+                        checkInCountdown.text = paymentStatus ? "检票已结束，您可以退改签" : "检票已结束，您可以取消支付"
+                    }
+                }
             }
+
+            FluText {
+                id: checkInCountdown
+                font.pixelSize: 20
+                font.bold: true
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+
         }
 
         // Card的右半边（按钮部分）
@@ -407,6 +454,7 @@ FluFrame {
                 text: checked ? qsTr("退改签") : qsTr("立即支付")
                 Layout.preferredWidth: 100
                 checked: paymentStatus
+                disabled: new Date() > new Date(checkInEndTime) && !paymentStatus
                 normalColor: {
                     if(!checked){
                         return "#F3CF2A"
@@ -420,7 +468,10 @@ FluFrame {
                     // }else{
                     //     return FluTheme.dark ? Qt.rgba(68/255,68/255,68/255,1) : Qt.rgba(246/255,246/255,246/255,1)
                     // }
-                    }
+                }
+                disableColor: {
+                    return FluTheme.dark ? "#FFFFE0" : "#FFFFE0"
+                }
 
                 // 选择弹窗
                 FluContentDialog{
@@ -431,6 +482,7 @@ FluFrame {
                     buttonFlags: FluContentDialogType.NeutralButton | FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
 
                     onNegativeClicked:{
+                        
                         unpayOrder();
                     }
                     positiveText: qsTr("改签")

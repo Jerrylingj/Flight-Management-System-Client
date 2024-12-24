@@ -14,7 +14,13 @@ FluContentDialog{
         onRequestSuccess:function(data){
             if(data['code'] === 200) {
                 userInfo.myMoney += add_money
-                showSuccess("充值成功");
+                if(add_money>0){
+                    showSuccess("已到账"+add_money+"奶龙币", 7000, "我是一只慷慨的奶龙，给的钱量大管饱");
+                }else{
+                    showError("已扣除"+(-add_money)+"奶龙币", 7000, "我会一直看着你哦
+NAILONG IS WATCHING YOU")
+                }
+
                 console.log(data['data'])
             }else{
                 console.error(data['message'])
@@ -88,7 +94,9 @@ FluContentDialog{
             }
 
             onNegativeClickListener:()=>{
-                showError(qsTr("我会一直看着你哦"), 2000, qsTr("奶龙 IS WATCHING YOU!"))
+                add_money = -100;
+                send_msg();
+                // showError(qsTr("我会一直看着你哦"), 2000, qsTr("奶龙 IS WATCHING YOU!"))
             }
         }
 
