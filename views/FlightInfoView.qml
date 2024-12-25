@@ -18,42 +18,9 @@ FluContentPage {
     property bool isLoading: false // 是否正在加载数据
     property bool hasMore: true    // 是否还有更多数据
 
-    // // 用于获取航班信息
-    // NetworkHandler {
-    //     id: networkHandler
-    //     onRequestSuccess: function(responseData) {
-    //         console.log("进入onRequestSuccess函数，所有航班信息请求成功")
-    //         var jsonString = JSON.stringify(responseData);
-    //         console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
-
-    //         // Helper function to generate random number between min and max (inclusive)
-    //         function getRandomInt(min, max) {
-    //             return Math.floor(Math.random() * (max - min + 1)) + min;
-    //         }
-
-    //         flightData = responseData.data.map(function(flight) {
-    //             /*** 初始化数据 ***/
-    //             flight.isBooked = false;
-    //             flight.isFaved = false;
-    //             flight.remainingSeats = getRandomInt(1, 30); // Generate random number between 1 and 30
-    //             return flight;
-    //         });
-
-    //         if (userInfo.myToken){
-    //             fetchFavoriteFlights();
-    //         }else{
-    //             // 如果用户没有登录，初始化时直接显示所有航班数据
-    //             filteredData = flightData;
-    //         }
-
-
-    //     }
-    //     onRequestFailed: function(errorMessage) {
-    //         // console.log("请求失败：", errorMessage);
-    //         flightData = []; // 在请求失败时，确保 flightData 为空数组，避免渲染问题
-    //         filteredData = flightData;
-    //     }
-    // }
+    // 防抖时间（冷却时间）
+    property bool isCooldown: false
+    property int cooldownTime: 500  // 冷却时间（毫秒）
 
     // 用于获取航班信息
     NetworkHandler {
@@ -64,28 +31,30 @@ FluContentPage {
                 return;
             }
 
-            flightData = responseData.data.map(function(flight) {
+            flightData = flightData.concat(responseData.data.map(function(flight) {
                 /*** 初始化数据 ***/
                 flight.isBooked = false;
                 flight.isFaved = false;
                 return flight;
-            });
-
-            isLoading = false;
+            }));
 
             if (userInfo.myToken){
                 fetchFavoriteFlights();
             }else{
                 // 如果用户没有登录，初始化时直接显示所有航班数据
-                filteredData = flightData;
+                filterFlights();
             }
 
-
+            offset += batchSize; // 更新偏移量
+            isLoading = false;
+            isCooldown = false; // 冷却结束
         }
         onRequestFailed: function(errorMessage) {
             // console.log("请求失败：", errorMessage);
             flightData = []; // 在请求失败时，确保 flightData 为空数组，避免渲染问题
             filteredData = flightData;
+            isLoading = false;
+            isCooldown = false;
         }
     }
 
@@ -114,8 +83,6 @@ FluContentPage {
                     showError(qsTr("出现错误"), 4000, qsTr("↙请点击左下角联系客服解决"))
                     console.log("用户id在favoriteNetworkHandler中不为空，但在orderNetworkHandler中为空")
                 }
-
-                // filteredData = flightData;
             }
         }
 
@@ -142,7 +109,7 @@ FluContentPage {
                     }
                 });
 
-                filteredData = flightData;
+                filterFlights();
             }
         }
 
@@ -167,16 +134,15 @@ FluContentPage {
         orderNetworkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
-    // // 查询航班
-    // function fetchFlightData() {
-    //     const url = "/api/flights";  // 后端 API URL
-    //     // console.log("发送请求，URL:", url); // 打印请求的 URL
-    //     networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
-    // }
-
     // 查询航班
     function fetchFlightData() {
-        if (isLoading || !hasMore) return; // 如果正在加载或没有更多数据，不发起请求
+        if (isLoading || !hasMore || isCooldown) return; // 正在加载或没有更多数据或处于冷却时间时，不发起请求
+        if (flightData.length > 300) return; // 前端最多保留300条信息
+        isLoading = true;
+        isCooldown = true;
+
+        // 开启冷却计时器
+        cooldownTimer.restart();
 
         console.log("查询航班：", offset, " ", batchSize);
         const url = "/api/flights"; // 简化后的 URL
@@ -186,7 +152,16 @@ FluContentPage {
         };
 
         networkHandler.request(url, NetworkHandler.POST, body);
-        offset += batchSize;
+    }
+
+    Timer {
+        id: cooldownTimer
+        interval: flightInfoView.cooldownTime
+        running: false
+        repeat: false
+        onTriggered: {
+            flightInfoView.isCooldown = false; // 冷却时间结束
+        }
     }
 
     // 页面加载完毕后获取航班信息
@@ -215,29 +190,6 @@ FluContentPage {
             return matchesDeparture && matchesArrival && matchesDate;
         });
     }
-
-
-
-    // Repeater {
-    //     model: filteredData.length > 0 ? filteredData : []  // 如果 filteredData 为空，避免空数组导致的问题
-    //     width: parent.width
-
-    //     FlightInfoCard {
-    //         width: parent.width
-    //         height: 80
-    //         flightId: modelData.flightId
-    //         flightNumber: modelData.flightNumber
-    //         departureTime: modelData.departureTime
-    //         arrivalTime: modelData.arrivalTime
-    //         departureAirport: modelData.departureAirport
-    //         arrivalAirport: modelData.arrivalAirport
-    //         price: modelData.price
-    //         airlineCompany: modelData.airlineCompany
-    //         status: modelData.status
-    //         isBooked: modelData.isBooked
-    //         isFaved: modelData.isFaved
-    //     }
-    // }
 
     ColumnLayout {
         anchors.fill: parent
