@@ -34,6 +34,7 @@ FluPage {
         height:parent.height
 
         Rectangle{
+            anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
             width:150
             height:150
             radius: 15
