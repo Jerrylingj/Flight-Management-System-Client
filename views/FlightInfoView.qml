@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.15
 import NetworkHandler 1.0
 import "../components"
 
-FluScrollablePage {
+FluContentPage {
     id: flightInfoView
     title: qsTr("航班信息")
     // background: FluRectangle { radius: 5 }
@@ -13,26 +13,65 @@ FluScrollablePage {
     property var flightData: []   // 所有航班数据
     property var filteredData: [] // 筛选后的航班数据
 
+    property int offset: 0         // 当前偏移量
+    property int batchSize: 20     // 每次加载的数据量
+    property bool isLoading: false // 是否正在加载数据
+    property bool hasMore: true    // 是否还有更多数据
+
+    // // 用于获取航班信息
+    // NetworkHandler {
+    //     id: networkHandler
+    //     onRequestSuccess: function(responseData) {
+    //         console.log("进入onRequestSuccess函数，所有航班信息请求成功")
+    //         var jsonString = JSON.stringify(responseData);
+    //         console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+
+    //         // Helper function to generate random number between min and max (inclusive)
+    //         function getRandomInt(min, max) {
+    //             return Math.floor(Math.random() * (max - min + 1)) + min;
+    //         }
+
+    //         flightData = responseData.data.map(function(flight) {
+    //             /*** 初始化数据 ***/
+    //             flight.isBooked = false;
+    //             flight.isFaved = false;
+    //             flight.remainingSeats = getRandomInt(1, 30); // Generate random number between 1 and 30
+    //             return flight;
+    //         });
+
+    //         if (userInfo.myToken){
+    //             fetchFavoriteFlights();
+    //         }else{
+    //             // 如果用户没有登录，初始化时直接显示所有航班数据
+    //             filteredData = flightData;
+    //         }
+
+
+    //     }
+    //     onRequestFailed: function(errorMessage) {
+    //         // console.log("请求失败：", errorMessage);
+    //         flightData = []; // 在请求失败时，确保 flightData 为空数组，避免渲染问题
+    //         filteredData = flightData;
+    //     }
+    // }
+
     // 用于获取航班信息
     NetworkHandler {
         id: networkHandler
         onRequestSuccess: function(responseData) {
-            console.log("进入onRequestSuccess函数，所有航班信息请求成功")
-            var jsonString = JSON.stringify(responseData);
-            console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
-
-            // Helper function to generate random number between min and max (inclusive)
-            function getRandomInt(min, max) {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
+            if (!responseData.data || responseData.data.length === 0) {
+                hasMore = false; // 没有更多数据了
+                return;
             }
 
             flightData = responseData.data.map(function(flight) {
                 /*** 初始化数据 ***/
                 flight.isBooked = false;
                 flight.isFaved = false;
-                flight.remainingSeats = getRandomInt(1, 30); // Generate random number between 1 and 30
                 return flight;
             });
+
+            isLoading = false;
 
             if (userInfo.myToken){
                 fetchFavoriteFlights();
@@ -50,9 +89,6 @@ FluScrollablePage {
         }
     }
 
-    FluRectangle{
-
-    }
 
     // 用于查询收藏信息
     NetworkHandler {
@@ -131,11 +167,26 @@ FluScrollablePage {
         orderNetworkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
+    // // 查询航班
+    // function fetchFlightData() {
+    //     const url = "/api/flights";  // 后端 API URL
+    //     // console.log("发送请求，URL:", url); // 打印请求的 URL
+    //     networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
+    // }
+
     // 查询航班
     function fetchFlightData() {
-        const url = "/api/flights";  // 后端 API URL
-        // console.log("发送请求，URL:", url); // 打印请求的 URL
-        networkHandler.request(url, NetworkHandler.GET);  // 发送 GET 请求
+        if (isLoading || !hasMore) return; // 如果正在加载或没有更多数据，不发起请求
+
+        console.log("查询航班：", offset, " ", batchSize);
+        const url = "/api/flights"; // 简化后的 URL
+        const body = {
+            offset: offset, // 分页参数放到 Body 中
+            limit: batchSize,
+        };
+
+        networkHandler.request(url, NetworkHandler.POST, body);
+        offset += batchSize;
     }
 
     // 页面加载完毕后获取航班信息
@@ -165,68 +216,118 @@ FluScrollablePage {
         });
     }
 
-    FluFrame{
-        z: 10
-        id: filterPanel
-        Layout.fillWidth: true
-        Layout.preferredHeight: 80
-        padding: 10
-        clip: true
 
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: 10
-            spacing: 20
 
-            AddressPicker {
-                id: departureAddressPicker
-                onAccepted: {
-                    // console.log("选择的省份:", selectedProvince);
-                    // console.log("选择的城市:", selectedCity);
-                    filterFlights();
+    // Repeater {
+    //     model: filteredData.length > 0 ? filteredData : []  // 如果 filteredData 为空，避免空数组导致的问题
+    //     width: parent.width
+
+    //     FlightInfoCard {
+    //         width: parent.width
+    //         height: 80
+    //         flightId: modelData.flightId
+    //         flightNumber: modelData.flightNumber
+    //         departureTime: modelData.departureTime
+    //         arrivalTime: modelData.arrivalTime
+    //         departureAirport: modelData.departureAirport
+    //         arrivalAirport: modelData.arrivalAirport
+    //         price: modelData.price
+    //         airlineCompany: modelData.airlineCompany
+    //         status: modelData.status
+    //         isBooked: modelData.isBooked
+    //         isFaved: modelData.isFaved
+    //     }
+    // }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 16
+
+        FluFrame{
+            z: 10
+            id: filterPanel
+            Layout.fillWidth: true
+            Layout.preferredHeight: 80
+            padding: 10
+            clip: true
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 20
+
+                AddressPicker {
+                    id: departureAddressPicker
+                    onAccepted: {
+                        // console.log("选择的省份:", selectedProvince);
+                        // console.log("选择的城市:", selectedCity);
+                        filterFlights();
+                    }
                 }
-            }
 
-            AddressPicker {
-                id: arrivalAddressPicker
-                onAccepted: {
-                    // console.log("选择的省份:", selectedProvince);
-                    // console.log("选择的城市:", selectedCity);
-                    filterFlights();
+                AddressPicker {
+                    id: arrivalAddressPicker
+                    onAccepted: {
+                        // console.log("选择的省份:", selectedProvince);
+                        // console.log("选择的城市:", selectedCity);
+                        filterFlights();
+                    }
                 }
-            }
 
-            FluDatePicker {
-                id: datePicker
-                Layout.preferredWidth: 180
-                onAccepted: {
-                    // console.log("选择日期:", current);
-                    filterFlights();
+                FluDatePicker {
+                    id: datePicker
+                    Layout.preferredWidth: 180
+                    onAccepted: {
+                        // console.log("选择日期:", current);
+                        filterFlights();
+                    }
                 }
             }
         }
-    }
 
-    Repeater {
-        model: filteredData.length > 0 ? filteredData : []  // 如果 filteredData 为空，避免空数组导致的问题
-        width: parent.width
-
-        FlightInfoCard {
+        Flickable {
+            id: flickableContainer
+            y: filterPanel.height
             width: parent.width
-            height: 80
-            flightId: modelData.flightId
-            flightNumber: modelData.flightNumber
-            departureTime: modelData.departureTime
-            arrivalTime: modelData.arrivalTime
-            departureAirport: modelData.departureAirport
-            arrivalAirport: modelData.arrivalAirport
-            price: modelData.price
-            airlineCompany: modelData.airlineCompany
-            status: modelData.status
-            isBooked: modelData.isBooked
-            isFaved: modelData.isFaved
-            remainingSeats: modelData.remainingSeats
+            height: parent.height - filterPanel.height - 90
+            contentWidth: parent.width
+            clip: true
+
+            ColumnLayout {
+                id: columnLayout
+                width: parent.width
+                spacing: 10
+
+                Repeater {
+                   model: filteredData.length > 0 ? filteredData : []  // 如果 filteredData 为空，避免空数组导致的问题
+                   width: parent.width
+
+                   FlightInfoCard {
+                       width: parent.width
+                       height: 80
+                       flightId: modelData.flightId
+                       flightNumber: modelData.flightNumber
+                       departureTime: modelData.departureTime
+                       arrivalTime: modelData.arrivalTime
+                       departureAirport: modelData.departureAirport
+                       arrivalAirport: modelData.arrivalAirport
+                       price: modelData.price
+                       airlineCompany: modelData.airlineCompany
+                       status: modelData.status
+                       isBooked: modelData.isBooked
+                       isFaved: modelData.isFaved
+                   }
+               }
+            }
+
+            contentHeight: columnLayout.height
+
+            // 滑到底部时触发加载更多
+            onContentYChanged: {
+                if ((contentY + height) >= contentHeight - 50 && !isLoading && hasMore) {
+                    fetchFlightData();
+                }
+            }
         }
     }
-
 }

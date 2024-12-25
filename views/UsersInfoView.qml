@@ -10,8 +10,8 @@ FluContentPage {
     id: usersInfoView
     title: qsTr("用户列表")
 
-    // property var userData: [] // 用户信息
-    property var userData: []
+    property var userData: []       // 用户信息
+    property var editingUser: []    // 待编辑的用户信息
 
     NetworkHandler {
         id: networkHandler
@@ -131,6 +131,8 @@ FluContentPage {
                     text: qsTr("编辑")
                     Layout.preferredWidth: 60
                     onClicked: {
+                        editingUser = JSON.parse(options.user);
+                        updateUserDialog.open();
                     }
                 }
 
@@ -138,11 +140,35 @@ FluContentPage {
                     text: qsTr("删除")
                     Layout.preferredWidth: 60
                     onClicked: {
+
                     }
                 }
             }
         }
     }
 
+
+    // 修改用户信息的弹窗
+    FluContentDialog {
+        id: updateUserDialog
+        title: qsTr("编辑用户信息")
+        contentWidth: 600
+        contentHeight: 600
+
+        contentDelegate: Component {
+            Item {
+                implicitWidth: parent.width
+                implicitHeight: 300
+
+
+
+            }
+        }
+
+        positiveText: qsTr("保存")
+        onPositiveClickListener: ()=> {
+            // 编辑用户信息请求
+        }
+    }
 
 }
