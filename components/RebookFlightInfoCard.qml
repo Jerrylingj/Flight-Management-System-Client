@@ -20,6 +20,29 @@ FluFrame {
     property double price
     property string airlineCompany
     property string status
+    property bool isSelected: false  // 添加选择状态属性
+    property bool enabled: true
+
+    signal flightSelected(int flightId)  // 定义flightSelected信号
+
+    border.color: isSelected ? "#409EFF" : "gray"
+    border.width: isSelected ? 5 : 1
+    color: isSelected ? "#f0f0f0" : "white"
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: parent.enabled  // 根据enabled属性控制是否可点击
+        onClicked: {
+            if (!isSelected) {
+                isSelected = true
+                flightSelected(flightId)  // 发出flightSelected信号
+            } else {
+                isSelected = false
+                // 可选：发出取消选择的信号
+            }
+        }
+    }
+
 
     RowLayout {
         anchors.fill: parent

@@ -5,14 +5,6 @@ import QtQuick.Layouts 1.15
 import NetworkHandler 1.0
 import "../components"
 
-// 【√】第一步：获取当前用户的订单
-// 【 】第二步：将基本的订单卡片列表展示出来
-// 【 】第三步：点击“查看按钮”弹出弹窗
-// 【 】第四步：点击“退改签”显示界面，点击“检票二维码”显示弹窗
-// 【 】第五步：出发到达城市 + 时间段复合筛选
-// 【 】第六步：“退改签”界面和相应功能
-// 【 】第七步：整体美化
-
 FluScrollablePage {
     id: ordersView
     title: qsTr("全部订单")

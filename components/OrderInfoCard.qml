@@ -39,17 +39,37 @@ FluFrame {
 
     QtObject {
         id: rebookingFlightInfo
-        property int flightId: 0
-        property string flightNumber: ""
-        property string departureCity: ""
-        property string arrivalCity: ""
-        property string departureTime: ""
-        property string arrivalTime: ""
-        property string arrivalAirport: ""
-        property string departureAirport: ""
-        property double price: 0.0
-        property string airlineCompany: ""
-        property string status: ""
+        // Store all flights in a single array (or use a ListModel if preferred)
+        property var flightList: []
+
+        // Optional: track selected index or items
+        property int selectedIndex: -1
+
+        // Update the entire list at once
+        function setFlights(flights) {
+            flightList = flights
+        }
+    }
+
+    NetworkHandler {
+        id: searchHandler
+        onRequestSuccess: function (responseData) {
+            console.log("获取可供改签的航班成功:", JSON.stringify(responseData))
+            if(responseData.success) {
+                if(responseData.data && responseData.data.length) {
+                    rebookingFlightInfo.setFlights(responseData.data)
+                    rebookingDialog.open()
+                } else {
+                    rebookingFailDialog.open()
+                }
+            } else {
+                console.error("错误信息:", responseData.message)
+                showError(qsTr("获取航班信息失败"), 5000)
+            }
+        }
+        onRequestFailed: function (errorMessage) {
+            console.error("请求失败:", errorMessage)
+        }
     }
 
     // 函数:创建订单
@@ -151,47 +171,13 @@ FluFrame {
         }
     }
 
-    // 处理 “获取下一条同样出发地的航班” 的 NetworkHandler
-    NetworkHandler{
-        id: searchHandler
-        onRequestSuccess: function (responseData) {
-            console.log("获取下一条同样出发地的航班成功，返回数据：", JSON.stringify(responseData));
-
-            if (responseData.success) {
-                console.log("获取下一条同样出发地的航班成功");
-                if(responseData.data && responseData.data.length){
-                    // 直接赋值给结构体属性
-                    rebookingFlightInfo.flightId = responseData.data[0].flightId;
-                    rebookingFlightInfo.flightNumber = responseData.data[0].flightNumber;
-                    rebookingFlightInfo.departureCity = responseData.data[0].departureCity;
-                    rebookingFlightInfo.arrivalCity = responseData.data[0].arrivalCity;
-                    rebookingFlightInfo.departureTime = responseData.data[0].departureTime;
-                    rebookingFlightInfo.arrivalTime = responseData.data[0].arrivalTime;
-                    rebookingFlightInfo.departureAirport = responseData.data[0].departureAirport;
-                    rebookingFlightInfo.arrivalAirport = responseData.data[0].arrivalAirport;
-                    rebookingFlightInfo.price = responseData.data[0].price;
-                    rebookingFlightInfo.airlineCompany = responseData.data[0].airlineCompany;
-                    rebookingFlightInfo.status = responseData.data[0].status;
-                    rebookingDialog.open();
-                } else {
-                    rebookingFailDialog.open();
-                }
-            } else {
-                console.error("获取下一条同样出发地的航班失败，错误信息：", responseData.message);
-                showError(qsTr("获取最新航班信息失败"), 5000, qsTr("↙请点击左下角“客服”询问"))
-            }
-        }
-
-        onRequestFailed: function (errorMessage) {
-            console.error("获取下一条同样出发地的航班失败：", errorMessage);
-        }
-    }
+    
 
     // 改签失败弹窗
     FluContentDialog{
         id : rebookingFailDialog
         title: qsTr("非常抱歉")
-        message: qsTr("目前没有从" + departure + "到"+ destination + "的航班");
+        message: qsTr("目前没有从" + departure + "到"+ destination + "的航班，您可以选择退签，我们将会全款返回"+price+"奶龙币");
         buttonFlags: FluContentDialogType.PositiveButton
         positiveText : qsTr("确定")
         onPositiveClicked:{
@@ -202,41 +188,89 @@ FluFrame {
     // 改签弹窗
     FluContentDialog{
         id : rebookingDialog
-        title : qsTr("航班改签")
-        message: qsTr("您的航班将被改签至下一个从"+departure+"到"+destination+"的航班")
+        title : qsTr("您希望改签至哪一个航班？")
+        message: qsTr("请点击对应的卡片")
         width : 600
+
+        // 添加选中航班属性
+        property var selectedFlightId: null
+
+        // 定义信号以处理航班选择
+        signal flightSelected(var flightId)
 
         contentDelegate: Component{
             Item{
                 implicitWidth: parent.width
-                implicitHeight: 200
+                implicitHeight: 420
 
-                RebookFlightInfoCard {
-                    anchors.centerIn: parent
-                    flightId: rebookingFlightInfo.flightId
-                    flightNumber: rebookingFlightInfo.flightNumber
-                    departureTime: rebookingFlightInfo.departureTime
-                    arrivalTime: rebookingFlightInfo.arrivalTime
-                    departureAirport: rebookingFlightInfo.departureAirport
-                    arrivalAirport: rebookingFlightInfo.arrivalAirport
-                    price: rebookingFlightInfo.price
-                    airlineCompany: rebookingFlightInfo.airlineCompany
-                    status: rebookingFlightInfo.status
+                Flickable {
+                    // id: flightListFlickable
+                    width: parent.width
+                    height: parent.height
+                    clip: true
+                    contentWidth: parent.width
+                    contentHeight: rebookingColumnLayout.height
+
+                    ColumnLayout {
+                        id: rebookingColumnLayout
+                        width: parent.width
+                        spacing: 10
+
+                        Repeater {
+                            model: rebookingFlightInfo.flightList
+                            RebookFlightInfoCard {
+                                width: parent.width
+                                height: 80
+                                flightId: modelData.flightId
+                                flightNumber: modelData.flightNumber
+                                departureTime: modelData.departureTime
+                                arrivalTime: modelData.arrivalTime
+                                departureAirport: modelData.departureAirport
+                                arrivalAirport: modelData.arrivalAirport
+                                price: modelData.price
+                                airlineCompany: modelData.airlineCompany
+                                status: modelData.status
+
+                                // 接收选中状态
+                                enabled: rebookingDialog.selectedFlightId === null || rebookingDialog.selectedFlightId === flightId
+
+                                // 当卡片被选中时发出信号
+                                onIsSelectedChanged: {
+                                    if (isSelected) {
+                                        rebookingDialog.flightSelected(flightId)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        negativeText:qsTr("取消")
+
+        // 连接flightSelected信号
+        onFlightSelected: {
+            selectedFlightId = flightId
+        }
+
+        negativeText: qsTr("取消")
         onNegativeClicked: {
             showWarning("操作已取消", 4000);
         }
 
-        positiveText:(qsTr("确认改签"))
-        onPositiveClicked:{
-            console.log("即将改签为航班id为"+rebookingFlightInfo.flightId+"，航班Name为"+rebookingFlightInfo.flightNumber+"的航班");
-            rebookOrder(rebookingFlightInfo.flightId);
+        positiveText: qsTr("确认改签")
+        onPositiveClickListener: () => {
+            if (selectedFlightId === null) {
+                // 如果未作选择，不执行改签操作
+                console.log("未选择任何卡片，改签操作不执行")
+            } else {
+                // 执行改签操作，并关闭弹窗
+                showSuccess("将改签至第"+selectedFlightId+"个航班");
+                showSuccess("改签成功", 4000, "祝您旅途愉快！");
+            }
         }
     }
+    
 
 
     // 整个Card
