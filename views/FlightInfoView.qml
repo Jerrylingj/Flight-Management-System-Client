@@ -8,8 +8,6 @@ import "../components"
 FluContentPage {
     id: flightInfoView
     title: qsTr("航班信息")
-    // background: FluRectangle { radius: 5 }
-
     property var flightData: []   // 所有航班数据
     property var filteredData: [] // 筛选后的航班数据
 
@@ -45,13 +43,13 @@ FluContentPage {
                 filterFlights();
             }
 
-            offset += batchSize; // 更新偏移量
+            offset += batchSize;        // 更新偏移量
             isLoading = false;
-            isCooldown = false; // 冷却结束
+            isCooldown = false;         // 冷却结束
         }
         onRequestFailed: function(errorMessage) {
-            // console.log("请求失败：", errorMessage);
-            flightData = []; // 在请求失败时，确保 flightData 为空数组，避免渲染问题
+            console.log("请求失败：", errorMessage);
+            flightData = [];                // 在请求失败时，确保 flightData 为空数组，避免渲染问题
             filteredData = flightData;
             isLoading = false;
             isCooldown = false;
@@ -63,8 +61,6 @@ FluContentPage {
     NetworkHandler {
         id: favoriteNetworkHandler
         onRequestSuccess: function(responseData) {
-            console.log("进入onRequestSuccess函数，已收藏航班请求成功");
-
             if (responseData.success && responseData.favorites) {
                 var favoriteFlightIds = responseData.favorites.map(function(flight) {
                     return flight.flightId;  // 提取 flightId
@@ -95,8 +91,6 @@ FluContentPage {
     NetworkHandler{
         id: orderNetworkHandler
         onRequestSuccess: function(responseData) {
-            console.log("进入onRequestSuccess函数，已预定航班请求成功");
-
             if (responseData.success && responseData.data) {
                 var orderedFlightIds = responseData.data.map(function(order) {
                     return order.flightId;  // 提取 flightId
@@ -121,23 +115,21 @@ FluContentPage {
     // 查询收藏信息
     function fetchFavoriteFlights() {
         var url = "/api/favorites"; // 收藏信息 API URL
-        console.log("发送收藏航班信息请求，URL:", url);
-        console.log("token: ", userInfo.myToken)
+        // console.log("发送收藏航班信息请求，URL:", url);
         favoriteNetworkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
     // 查询预定信息
     function fetchOrderedFlights(){
         var url = "/api/orders"; // 订单信息 API URL
-        console.log("发送订单信息请求，URL:" ,url);
-        console.log("token: ", userInfo.myToken)
+        // console.log("发送订单信息请求，URL:" ,url);
         orderNetworkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
     // 查询航班
     function fetchFlightData() {
-        if (isLoading || !hasMore || isCooldown) return; // 正在加载或没有更多数据或处于冷却时间时，不发起请求
-        if (flightData.length > 300) return; // 前端最多保留300条信息
+        if (isLoading || !hasMore || isCooldown) return;    // 正在加载或没有更多数据或处于冷却时间时，不发起请求
+        if (flightData.length > 300) return;                // 前端最多保留300条信息
         isLoading = true;
         isCooldown = true;
 
@@ -145,9 +137,9 @@ FluContentPage {
         cooldownTimer.restart();
 
         console.log("查询航班：", offset, " ", batchSize);
-        const url = "/api/flights"; // 简化后的 URL
+        const url = "/api/flights";
         const body = {
-            offset: offset, // 分页参数放到 Body 中
+            offset: offset,
             limit: batchSize,
         };
 
