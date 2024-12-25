@@ -22,7 +22,6 @@ FluFrame {
     property string status
     property bool isBooked
     property bool isFaved
-    property int remainingSeats
 
 
     // 收藏接口的 NetworkHandler 实例
@@ -183,7 +182,7 @@ FluFrame {
                 width: 80
                 height: 24
                 radius: 5
-                color: status === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
+                color: status === "on Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
 
                 FluText {
                     anchors.centerIn: parent
