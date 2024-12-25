@@ -49,12 +49,12 @@ FluFrame {
 
     // 当卡片被选中时，发射信号
     onCardSelected: {
-        // rebookFlightInfoCard.cardSelected()
+        rebookFlightInfoCard.cardSelected()
     }
 
     // 当卡片被取消选中时，发射信号
     onCardDeselected: {
-        // rebookFlightInfoCard.cardDeselected()
+        rebookFlightInfoCard.cardDeselected()
     }
 
     border.color: isSelected ? "#409EFF" : "gray"

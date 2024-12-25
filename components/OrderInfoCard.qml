@@ -378,7 +378,7 @@ FluFrame {
                         width: 80
                         height: 24
                         radius: 5
-                        color: flightStatus === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
+                        color: flightStatus === "on Time" ? "#27AE60" : (status === "delayed" ? "#F39C12" : "#C0392B")
 
                         FluText {
                             anchors.centerIn: parent
