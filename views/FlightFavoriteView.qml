@@ -17,15 +17,11 @@ FluContentPage {
         id: networkHandler
         onRequestSuccess: function(responseData) {
             try {
-                // var jsonString = JSON.stringify(responseData);
-                // console.log("请求成功，返回数据：", jsonString);
-
                 if (responseData.success && responseData.favorites) {
                     flightData = responseData.favorites.map(function(flight) {
                         /*** 初始化数据 ***/
                         flight.isBooked = false;  // 初始化是否预订状态
                         flight.isFaved = true;    // 标记为已收藏
-                        flight.remainingSeats = 10; // 假设每个航班有 10 个余票
                         return flight;
                     });
 
@@ -56,7 +52,7 @@ FluContentPage {
         networkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
-    // 页面加载完毕后调用 fetchFavoriteFlights 获取收藏信息
+    // 获取收藏信息
     Component.onCompleted: {
         fetchFavoriteFlights();
     }
@@ -161,7 +157,6 @@ FluContentPage {
                         status: modelData.status
                         isBooked: modelData.isBooked
                         isFaved: modelData.isFaved
-                        remainingSeats: modelData.remainingSeats
                     }
                 }
             }

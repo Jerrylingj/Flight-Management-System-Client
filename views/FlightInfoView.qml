@@ -38,7 +38,7 @@ FluContentPage {
 
             if (userInfo.myToken){
                 fetchFavoriteFlights();
-            }else{
+            } else{
                 // 如果用户没有登录，初始化时直接显示所有航班数据
                 filterFlights();
             }
