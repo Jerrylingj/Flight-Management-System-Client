@@ -186,38 +186,50 @@ FluFrame {
     }
 
     // 改签弹窗
-    FluContentDialog{
-        id : rebookingDialog
-        title : qsTr("您希望改签至哪一个航班？")
+    FluContentDialog {
+        id: rebookingDialog
+        title: qsTr("您希望改签至哪一个航班？")
         message: qsTr("请点击对应的卡片")
-        width : 600
-
-        // 添加选中航班属性
+        width: 600
+    
+        // 选中航班的flightId，null表示未选中任何航班
         property var selectedFlightId: null
 
-        // 定义信号以处理航班选择
-        signal flightSelected(var flightId)
+            // 处理改签航班信息卡片选择的函数
+        function handleFlightSelection(flightId = null) {
+            rebookingDialog.selectedFlightId = flightId;
+            rebookingFlightInfo.flightList = rebookingFlightInfo.flightList; // Trigger Repeater refresh
+        }
 
-        contentDelegate: Component{
-            Item{
+        // 定义一个JavaScript函数来处理信号
+        function handleFlightSelectionSignal(flightId) {
+            handleFlightSelection(flightId);
+        }
+    
+        contentDelegate: Component {
+            Item {
                 implicitWidth: parent.width
                 implicitHeight: 420
-
+    
                 Flickable {
-                    // id: flightListFlickable
+                    id: rebookingFlickable
                     width: parent.width
                     height: parent.height
                     clip: true
                     contentWidth: parent.width
                     contentHeight: rebookingColumnLayout.height
-
+                    property int selectedFlightId: -1;
+    
                     ColumnLayout {
                         id: rebookingColumnLayout
                         width: parent.width
                         spacing: 10
-
+                        
+    
                         Repeater {
+                            id: rebookingRepeater
                             model: rebookingFlightInfo.flightList
+
                             RebookFlightInfoCard {
                                 width: parent.width
                                 height: 80
@@ -230,43 +242,49 @@ FluFrame {
                                 price: modelData.price
                                 airlineCompany: modelData.airlineCompany
                                 status: modelData.status
+                                currentSelectedFlightId: rebookingFlickable.selectedFlightId
 
-                                // 接收选中状态
-                                enabled: rebookingDialog.selectedFlightId === null || rebookingDialog.selectedFlightId === flightId
-
-                                // 当卡片被选中时发出信号
-                                onIsSelectedChanged: {
-                                    if (isSelected) {
-                                        rebookingDialog.flightSelected(flightId)
+                                onCardSelected: {
+                                    if (rebookingFlickable.selectedFlightId === flightId) {
+                                        rebookingFlickable.selectedFlightId = -1  // 取消选择
+                                    } else {
+                                        rebookingFlickable.selectedFlightId = flightId  // 选择当前卡片
                                     }
+                                }
+
+                                onCardDeselected: {
+                                    rebookingFlickable.selectedFlightId = -1  // 取消选择
                                 }
                             }
                         }
                     }
+
+                    // 监听 selectedFlightId 的变化
+                    onSelectedFlightIdChanged: {
+                        showInfo(
+                            "选择已变更",
+                            4000,
+                            selectedFlightId === -1
+                                ? "当前未选择"
+                                : "当前选择航班编号为 " + selectedFlightId + " 的航班"
+                        )
+                    }
                 }
             }
         }
-
-
-        // 连接flightSelected信号
-        onFlightSelected: {
-            selectedFlightId = flightId
-        }
-
+    
         negativeText: qsTr("取消")
         onNegativeClicked: {
             showWarning("操作已取消", 4000);
         }
-
+    
         positiveText: qsTr("确认改签")
         onPositiveClickListener: () => {
             if (selectedFlightId === null) {
-                // 如果未作选择，不执行改签操作
                 console.log("未选择任何卡片，改签操作不执行")
             } else {
-                // 执行改签操作，并关闭弹窗
-                showSuccess("将改签至第"+selectedFlightId+"个航班");
-                showSuccess("改签成功", 4000, "祝您旅途愉快！");
+                showSuccess("将改签至第" + selectedFlightId + "个航班")
+                showSuccess("改签成功", 4000, "祝您旅途愉快！")
             }
         }
     }
