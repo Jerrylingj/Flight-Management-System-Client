@@ -256,18 +256,6 @@ FluContentPage {
         t.setMinutes(t.getMinutes() - 30);
         return t.toString();
     }
-    // // 更新行
-    // function updateFlightData(rowIndex, field, value) {
-    //     // 更新航班数据
-    //     if (rowIndex >= 0 && rowIndex < flightData.length) {
-    //         flightData[rowIndex][field] = value;
-    //         // 拷贝
-    //         const flightCopy = Object.assign({}, flightData[rowIndex]);
-    //         delete flightCopy.action;
-    //         // 更新 action 列的内容
-    //         flightData[rowIndex]["action"] = table_view.customItem(com_action, {flight: JSON.stringify(flightCopy)});
-    //     }
-    // }
 
     Component.onCompleted: fetchFlightData();
 
@@ -373,6 +361,10 @@ FluContentPage {
                 }
             ]
             dataSource: filteredData
+
+            Component.onCompleted: {
+                console.log("航班信息:", JSON.stringify(dataSource));
+            }
         }
     }
 

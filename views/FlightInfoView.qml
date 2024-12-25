@@ -173,38 +173,38 @@ FluScrollablePage {
         padding: 10
         clip: true
 
-        // RowLayout {
-        //     anchors.fill: parent
-        //     anchors.margins: 10
-        //     spacing: 20
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: 10
+            spacing: 20
 
-        //     AddressPicker {
-        //         id: departureAddressPicker
-        //         onAccepted: {
-        //             // console.log("选择的省份:", selectedProvince);
-        //             // console.log("选择的城市:", selectedCity);
-        //             filterFlights();
-        //         }
-        //     }
+            AddressPicker {
+                id: departureAddressPicker
+                onAccepted: {
+                    // console.log("选择的省份:", selectedProvince);
+                    // console.log("选择的城市:", selectedCity);
+                    filterFlights();
+                }
+            }
 
-        //     AddressPicker {
-        //         id: arrivalAddressPicker
-        //         onAccepted: {
-        //             // console.log("选择的省份:", selectedProvince);
-        //             // console.log("选择的城市:", selectedCity);
-        //             filterFlights();
-        //         }
-        //     }
+            AddressPicker {
+                id: arrivalAddressPicker
+                onAccepted: {
+                    // console.log("选择的省份:", selectedProvince);
+                    // console.log("选择的城市:", selectedCity);
+                    filterFlights();
+                }
+            }
 
-        //     FluDatePicker {
-        //         id: datePicker
-        //         Layout.preferredWidth: 180
-        //         onAccepted: {
-        //             // console.log("选择日期:", current);
-        //             filterFlights();
-        //         }
-        //     }
-        // }
+            FluDatePicker {
+                id: datePicker
+                Layout.preferredWidth: 180
+                onAccepted: {
+                    // console.log("选择日期:", current);
+                    filterFlights();
+                }
+            }
+        }
     }
 
     Repeater {
