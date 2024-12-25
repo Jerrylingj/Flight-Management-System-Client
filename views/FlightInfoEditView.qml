@@ -24,7 +24,7 @@ FluContentPage {
          airlineCompany: "东方航空",
          checkinStartTime: "",
          checkinEndTime: "",
-         status: "On Time"
+         status: "on Time"
    })
 
     property var editingFlight: ({})            // 待编辑航班
@@ -77,7 +77,7 @@ FluContentPage {
                      airlineCompany: "东方航空",
                      checkinStartTime: "",
                      checkinEndTime: "",
-                     status: "On Time"
+                     status: "on Time"
                 });
                 addFlightDialog.close();
             }
@@ -511,7 +511,7 @@ FluContentPage {
 
                         FluComboBox {
                             Layout.fillWidth: true
-                            model: ["On Time", "Delayed", "Cancelled"]
+                            model: ["on Time", "Delayed", "Cancelled"]
                             currentIndex: 0
                             onCurrentIndexChanged:
                             {
@@ -696,7 +696,7 @@ FluContentPage {
 
                         FluComboBox {
                             Layout.fillWidth: true
-                            model: ["On Time", "Delayed", "Cancelled"]
+                            model: ["on Time", "Delayed", "Cancelled"]
                             currentIndex: 0
                             onCurrentIndexChanged:
                             {

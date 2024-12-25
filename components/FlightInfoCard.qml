@@ -29,16 +29,13 @@ FluFrame {
         id: favoriteHandler
 
         onRequestSuccess: function (responseData) {
-            console.log("收藏/取消收藏请求成功，返回数据：", JSON.stringify(responseData));
-
             if (responseData.success) {
                 console.log("收藏操作成功");
 
-                // 更新 UI 中的 isFaved 状态
-                flightInfoCard.isFaved = !flightInfoCard.isFaved;
+                isFaved = !isFaved;
 
-                if (flightInfoCard.isFaved) {
-                    console.log("航班 " + flightInfoCard.flightId + " 已收藏");
+                if (isFaved) {
+                    console.log("航班 " + flightId + " 已收藏");
                     showSuccess(qsTr("收藏成功"), 4000, qsTr("您可以前往“我的收藏”界面查看"))
                 }
             } else {
@@ -56,11 +53,9 @@ FluFrame {
         id: orderHandler
 
         onRequestSuccess: function (responseData) {
-            console.log("预定请求成功，返回数据：", JSON.stringify(responseData));
-
             if (responseData.success) {
                 console.log("预定操作成功");
-                flightInfoCard.isBooked = true;
+                isBooked = true;
                 showSuccess(qsTr("预定操作成功"), 4000, qsTr("您可以前往“我的订单”界面进行支付"))
             } else {
                 console.error("收藏/取消收藏操作失败，错误信息：", responseData.message);
@@ -75,8 +70,7 @@ FluFrame {
     }
 
     // 收藏的函数
-    // 其实不需要传入参数的吧？flightId和isFaved是可以直接调用的
-    function toggleFavorite(flightId, isFaved) {
+    function toggleFavorite() {
         var url = "/api/favorites/add"; // 收藏接口
 
         var payload = {
