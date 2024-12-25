@@ -30,6 +30,7 @@ FluContentPage {
                 listModel.append(msg)
                 clientchatPage.messages.push(msg)
                 userInfo.appendToMyJsonArray(msg)
+                messageScroll.contentY = messageScroll.contentHeight;
             }
         }
         onRequestFailed: function(data){
@@ -39,10 +40,11 @@ FluContentPage {
 
     // 消息列表区域
     Flickable {
-        anchors.fill: parent
-
+        // anchors.fill: parent
         id: messageScroll
-
+        anchors.top:parent.top
+        width:parent.width
+        height: parent.height - inputRow.height
         contentHeight: messageList.height
         clip: true
 
