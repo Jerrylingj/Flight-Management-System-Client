@@ -14,13 +14,13 @@ FluContentPage {
 
     property var newFlightData: ({              // 待添加的航班
          flightNumber: "MU100",
-         departureCity: "",
-         arrivalCity: "",
+         departureCity: "珠海",
+         arrivalCity: "上海",
          departureTime: "",
          arrivalTime: "",
          price: 1500.0,
-         departureAirport: "北京首都国际机场",
-         arrivalAirport: "上海虹桥国际机场",
+         departureAirport: "金湾机场",
+         arrivalAirport: "虹桥国际机场",
          airlineCompany: "东方航空",
          checkinStartTime: "",
          checkinEndTime: "",
@@ -67,13 +67,13 @@ FluContentPage {
                 showSuccess("添加成功！");
                 newFlightData = ({
                      flightNumber: "MU100",
-                     departureCity: "",
-                     arrivalCity: "",
+                     departureCity: "珠海",
+                     arrivalCity: "上海",
                      departureTime: "",
                      arrivalTime: "",
                      price: 1500.0,
-                     departureAirport: "北京首都国际机场",
-                     arrivalAirport: "上海虹桥国际机场",
+                     departureAirport: "金湾机场",
+                     arrivalAirport: "虹桥国际机场",
                      airlineCompany: "东方航空",
                      checkinStartTime: "",
                      checkinEndTime: "",
@@ -95,9 +95,7 @@ FluContentPage {
         onRequestSuccess: function(response) {
             console.log("返回信息:", JSON.stringify(response));
             if (response.success === true) {
-                showSuccess("保存成功!");
-                updateFlightDialog.close();
-                fetchFlightData();
+
             }
             else showError("航班信息有误，请重新输入！");
         }
@@ -235,15 +233,147 @@ FluContentPage {
     function validateFlight(flight) {
         if (flight.departureCity === "全部") flight.departureCity = "";
         if (flight.arrivalCity === "全部") flight.arrivalCity = "";
+
+        const airportCityMap = new Map([
+            ["首都国际机场", "北京"],
+            ["大兴国际机场", "北京"],
+            ["虹桥国际机场", "上海"],
+            ["浦东国际机场", "上海"],
+            ["白云国际机场", "广州"],
+            ["宝安国际机场", "深圳"],
+            ["双流国际机场", "成都"],
+            ["天府国际机场", "成都"],
+            ["萧山国际机场", "杭州"],
+            ["咸阳国际机场", "西安"],
+            ["江北国际机场", "重庆"],
+            ["禄口国际机场", "南京"],
+            ["天河国际机场", "武汉"],
+            ["滨海国际机场", "天津"],
+            ["长水国际机场", "昆明"],
+            ["黄花国际机场", "长沙"],
+            ["周水子国际机场", "大连"],
+            ["胶东国际机场", "青岛"],
+            ["高崎国际机场", "厦门"],
+            ["长乐国际机场", "福州"],
+            ["美兰国际机场", "海口"],
+            ["凤凰国际机场", "三亚"],
+            ["地窝堡国际机场", "乌鲁木齐"],
+            ["龙洞堡国际机场", "贵阳"],
+            ["吴圩国际机场", "南宁"],
+            ["太平国际机场", "哈尔滨"],
+            ["龙嘉国际机场", "长春"],
+            ["桃仙国际机场", "沈阳"],
+            ["新郑国际机场", "郑州"],
+            ["遥墙国际机场", "济南"],
+            ["新桥国际机场", "合肥"],
+            ["武宿国际机场", "太原"],
+            ["正定国际机场", "石家庄"],
+            ["昌北国际机场", "南昌"],
+            ["贡嘎国际机场", "拉萨"],
+            ["河东国际机场", "银川"],
+            ["白塔国际机场", "呼和浩特"],
+            ["中川国际机场", "兰州"],
+            ["曹家堡国际机场", "西宁"],
+            ["南泥湾机场", "延安"],
+            ["金湾机场", "珠海"],
+            ["龙湾国际机场", "温州"],
+            ["栎社国际机场", "宁波"],
+            ["晋江国际机场", "泉州"],
+            ["两江国际机场", "桂林"],
+            ["香格里拉机场", "香格里拉"],
+            ["嘎洒国际机场", "西双版纳"],
+            ["二里半机场", "包头"],
+            ["鄂尔多斯机场", "鄂尔多斯"],
+            ["白莲机场", "柳州"],
+            ["三峡机场", "宜昌"],
+            ["屯溪国际机场", "黄山"],
+            ["大水泊机场", "威海"],
+            ["蓬莱国际机场", "烟台"],
+            ["荷花机场", "张家界"],
+            ["福成机场", "北海"],
+            ["奔牛国际机场", "常州"],
+            ["北郊机场", "洛阳"],
+            ["兴东国际机场", "南通"],
+            ["湛江机场", "湛江"],
+            ["浪头国际机场", "丹东"],
+            ["南郊机场", "绵阳"],
+            ["恩阳机场", "巴中"],
+            ["五粮液机场", "宜宾"],
+            ["荒草坝机场", "大理"],
+            ["驼峰机场", "腾冲"],
+            ["甘州机场", "张掖"]
+        ]);
+
+        // 必填字段检查
         const required = ["flightNumber", "departureCity", "arrivalCity", "departureTime", "arrivalTime", "price", "departureAirport", "arrivalAirport", "airlineCompany"];
         for (const key of required) {
             if (!flight[key]) {
-                console.error(`缺少字段：${key}`);
+                const errorMessage = `缺少字段：${key}`;
+                console.error(errorMessage);
+                showError(errorMessage);
                 return false;
             }
         }
+
+        // 起点和终点不能相同
+        if (flight.departureCity === flight.arrivalCity) {
+            const errorMessage = "出发城市和到达城市不能相同";
+            console.error(errorMessage);
+            showError(errorMessage);
+            return false;
+        }
+
+        // 起点机场和起点城市是否匹配
+        const departureCity = airportCityMap.get(flight.departureAirport);
+        if (!departureCity || departureCity !== flight.departureCity) {
+            const errorMessage = `起点机场与起点城市不匹配：${flight.departureCity} - ${flight.departureAirport}`;
+            console.error(errorMessage);
+            showError(errorMessage);
+            return false;
+        }
+
+        // 终点机场和终点城市是否匹配
+        const arrivalCity = airportCityMap.get(flight.arrivalAirport);
+        if (!arrivalCity || arrivalCity !== flight.arrivalCity) {
+            const errorMessage = `终点机场与终点城市不匹配：${flight.arrivalCity} - ${flight.arrivalAirport}`;
+            console.error(errorMessage);
+            showError(errorMessage);
+            return false;
+        }
+
+        // 航班时间逻辑验证
+        const departureTime = new Date(flight.departureTime);
+        const arrivalTime = new Date(flight.arrivalTime);
+        const currentTime = new Date();
+
+        if (departureTime <= currentTime) {
+            const errorMessage = "起飞时间不能早于当前时间";
+            console.error(errorMessage);
+            showError(errorMessage);
+            return false;
+        }
+
+        const flightDuration = (arrivalTime - departureTime) / (1000 * 60 * 60); // 以小时为单位
+        if (flightDuration <= 0.5 || flightDuration > 6) {
+            const errorMessage = `飞行时长不合理：${flightDuration.toFixed(1)}小时`;
+            console.error(errorMessage);
+            showError(errorMessage);
+            return false;
+        }
+
+        // 航班价格范围检查
+        const minPrice = 100;
+        const maxPrice = 5000;
+        if (flight.price < minPrice || flight.price > maxPrice) {
+            const errorMessage = `航班价格不合理：${flight.price}元，范围应为 ${minPrice}-${maxPrice} 元`;
+            console.error(errorMessage);
+            showError(errorMessage);
+            return false;
+        }
+
         return true;
     }
+
     // 计算检票开始时间
     function calcCheckinStart(depTime) {
         let t = new Date(depTime);
@@ -459,6 +589,7 @@ FluContentPage {
 
                         AddressPicker {
                             Layout.fillWidth: true
+                            currentCity: newFlightData.departureCity
                             onAccepted:
                             {
                                 newFlightData.departureCity = selectedCity;
@@ -468,6 +599,7 @@ FluContentPage {
 
                         AddressPicker {
                             Layout.fillWidth: true
+                            currentCity: newFlightData.arrivalCity
                             onAccepted:
                             {
                                 newFlightData.arrivalCity = selectedCity;
@@ -572,7 +704,6 @@ FluContentPage {
             newFlightData.checkinEndTime = calcCheckinEnd(dep);
 
             if (!validateFlight(newFlightData)) {
-                showError("航班信息不全！");
                 return;
             }
 
@@ -763,7 +894,6 @@ FluContentPage {
             editingFlight.checkinEndTime = calcCheckinEnd(dep);
 
             if (!validateFlight(editingFlight)) {
-                showError("航班信息不全！");
                 return;
             }
 
