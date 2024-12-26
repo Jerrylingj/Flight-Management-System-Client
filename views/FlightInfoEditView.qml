@@ -95,7 +95,8 @@ FluContentPage {
         onRequestSuccess: function(response) {
             console.log("返回信息:", JSON.stringify(response));
             if (response.success === true) {
-
+                showSuccess("更新成功！");
+                updateFlightDialog.close();
             }
             else showError("航班信息有误，请重新输入！");
         }
@@ -348,9 +349,22 @@ FluContentPage {
 
         if (departureTime <= currentTime) {
             const errorMessage = "起飞时间不能早于当前时间";
+            console.log("当前时间 ", currentTime, " 起飞时间 ", departureTime);
             console.error(errorMessage);
             showError(errorMessage);
             return false;
+        }
+
+        const departureHours = departureTime.getHours(), arrivalHours = arrivalTime.getHours();
+        const departureMinutes = departureTime.getMinutes(), arrivalMinutes = arrivalTime.getMinutes();
+        const isCrossDay = (arrivalHours < departureHours) ||
+                           (arrivalHours === departureHours && arrivalMinutes < departureMinutes);
+
+        if (isCrossDay) {
+            console.log("检测到跨天航班（基于时刻判断）");
+            arrivalTime.setDate(arrivalTime.getDate() + 1);
+            flight.arrivalTime = arrivalTime.toString();
+            console.log("到达时间：", arrivalTime);
         }
 
         const flightDuration = (arrivalTime - departureTime) / (1000 * 60 * 60); // 以小时为单位
@@ -694,10 +708,10 @@ FluContentPage {
             const arr = newFlightData.arrivalTime;
 
             console.log("验证航班");
-            if (new Date(dep) >= new Date(arr)) {
-                showError("到达时间早于起飞时间");
-                return;
-            }
+            // if (new Date(dep) >= new Date(arr)) {
+            //     showError("到达时间早于起飞时间");
+            //     return;
+            // }
 
 
             newFlightData.checkinStartTime = calcCheckinStart(dep);
@@ -884,10 +898,10 @@ FluContentPage {
             const arr = editingFlight.arrivalTime;
 
             console.log("验证航班");
-            if (new Date(dep) >= new Date(arr)) {
-                showError("到达时间早于起飞时间");
-                return;
-            }
+            // if (new Date(dep) >= new Date(arr)) {
+            //     showError("到达时间早于起飞时间");
+            //     return;
+            // }
 
 
             editingFlight.checkinStartTime = calcCheckinStart(dep);
