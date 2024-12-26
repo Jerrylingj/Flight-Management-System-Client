@@ -26,19 +26,14 @@ Item {
         return totalWidth + 10; // 最小100，最大为父宽度的70%
     }
 
-
     // Agent消息布局
     RowLayout {
         id: agentRow
-        spacing: 10
+        spacing: 1
         visible: type === "assistant"
         anchors.left: parent.left
-        //anchors.margins: 5 // 左右边距设置
-        width: parent.width
-        Component.onCompleted: {
-            console.log("raw layout",x,y,height,width)
-        }
-        //width:parent.width
+        anchors.margins: 5 // 左右边距设置
+        width:parent.width
         FluClip {
             id:assistantAvatar
             width: 50
@@ -49,15 +44,11 @@ Item {
                 anchors.fill: parent
                 source: avatarSource
             }
-            Component.onCompleted: {
-                console.log("clip",x,y,height,width)
-            }
         }
         Rectangle {
             radius: 10
-            //anchors.left: assistantAvatar.right + 5
             width:(agentRow.width - assistantAvatar.width) * 0.5
-            height: text.implicitHeight + 20 // 根据文本高度动态调整
+            height: text.implicitHeight + 20
             color: "#F5F5F5"
             border.color: "#DDDDDD"
             border.width: 1
@@ -70,9 +61,6 @@ Item {
                 wrapMode: Text.Wrap
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
-            }
-            Component.onCompleted: {
-                console.log("rectangle",x,y,height,width)
             }
         }
     }
