@@ -131,13 +131,14 @@ FluContentPage {
                     height: parent.height
                     width: parent.width/2
                     spacing: 20
-                    FluRectangle{
-                        Layout.preferredWidth: 130
+                    FluFrame{
+                        //Layout.preferredWidth: 140
                         Layout.preferredHeight: parent.height /2 -10
                         FluClip{
-                            height: 30
+                            height: parent.height
                             width: 30
                             anchors.left: parent.left
+                            anchors.leftMargin: 5
                             Image {
                                 anchors.fill: parent
                                 source: "qrc:/qt/Flight_Management_System_Client/figures/love.png"
@@ -146,9 +147,9 @@ FluContentPage {
                         FluFilledButton{
                             text: qsTr("收藏")
                             width: 100
-                            height: 30
+                            height: parent.height
                             anchors.left: parent.left
-                            anchors.leftMargin: 30
+                            anchors.leftMargin: 38
                             onClicked: {
                                 if(!userInfo.myToken)  {
                                     showWarning(qsTr("请先登录！"))
@@ -160,13 +161,14 @@ FluContentPage {
                             }
                         }
                     }
-                    FluRectangle{
-                        Layout.preferredWidth: 130
+                    FluFrame{
+                        //Layout.preferredWidth: 140
                         Layout.preferredHeight: parent.height /2 -10
                         FluClip{
                             height: 30
-                            width: 30
+                            width: parent.height
                             anchors.left: parent.left
+                            anchors.leftMargin: 5
                             Image {
                                 anchors.fill: parent
                                 source: "qrc:/qt/Flight_Management_System_Client/figures/shopping-list.png"
@@ -175,9 +177,9 @@ FluContentPage {
                         FluFilledButton {
                             text: qsTr("全部订单")
                             width: 100
-                            height: 30
+                            height: parent.height
                             anchors.left: parent.left
-                            anchors.leftMargin: 30
+                            anchors.leftMargin: 38
                             onClicked: {
                                 if(!userInfo.myToken)  {
                                     showWarning(qsTr("请先登录！"))
@@ -195,13 +197,15 @@ FluContentPage {
                     height: parent.height
                     width: parent.width/2
                     spacing: 20
-                    FluRectangle{
-                        Layout.preferredWidth: 130
-                        Layout.preferredHeight: parent.height /2 -10
+                    FluFrame{
+                        //Layout.preferredWidth: 160
+                        Layout.preferredHeight: parent.height /2 - 10
                         FluClip{
-                            height: 30
+                            height: parent.height
                             width: 30
                             anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 5
                             Image {
                                 anchors.fill: parent
                                 source: "qrc:/qt/Flight_Management_System_Client/figures/edit.png"
@@ -210,9 +214,10 @@ FluContentPage {
                         FluFilledButton {
                             text: qsTr("编辑个人信息")
                             width: 120
-                            height: 30
+                            height: parent.height
                             anchors.left: parent.left
-                            anchors.leftMargin: 30
+                            anchors.leftMargin: 38
+                            anchors.verticalCenter: parent.verticalCenter
                             onClicked: {
                                 if(!userInfo.myToken)  {
                                     showWarning(qsTr("请先登录！"))
@@ -223,13 +228,15 @@ FluContentPage {
                             }
                         }
                     }
-                    FluRectangle{
-                        Layout.preferredWidth: 130
-                        Layout.preferredHeight: parent.height /2 -10
+                    FluFrame{
+                        //Layout.preferredWidth: 160
+                        Layout.preferredHeight: parent.height /2 - 10
                         FluClip{
-                            height: 30
+                            height: parent.height
                             width: 30
                             anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 5
                             Image {
                                 anchors.fill: parent
                                 source: "qrc:/qt/Flight_Management_System_Client/figures/money.png"
@@ -241,10 +248,11 @@ FluContentPage {
 
                         FluFilledButton {
                             text: qsTr("充值")
+                            anchors.verticalCenter: parent.verticalCenter
                             width: 120
-                            height: 30
+                            height: parent.height
                             anchors.left: parent.left
-                            anchors.leftMargin: 30
+                            anchors.leftMargin: 38
                             onClicked: {
                                 if(userInfo.myToken.length<=1){
                                     showWarning("请先登录")
@@ -272,13 +280,91 @@ FluContentPage {
                 anchors.margins: 20
                 spacing: 20
 
-                FluFilledButton {
+                // FluFrame{
+                //     FluClip{
+                //         width: 60
+                //         height: 60
+                //         anchors.top: parent.top
+                //         anchors.horizontalCenter: parent.horizontalCenter
+                //         Image{
+                //             anchors.fill: parent
+                //             source: "qrc:/qt/Flight_Management_System_Client/figures/money.png"
+                //         }
+                //     }
+
+                //     FluFilledButton{
+                //         text: qsTr("登录")
+                //         anchors.top: parent.top
+                //         anchors.topMargin: 65
+                //         anchors.horizontalCenter: parent.horizontalCenter
+                //         width: 60
+                //         onClicked: {
+                //             userNavView.push("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
+                //             console.log("登录按钮点击");
+                //         }
+                //     }
+
+                // }
+
+                // FluFrame{
+                //     FluClip{
+                //         width: 60
+                //         height: 60
+                //         anchors.top: parent.top
+                //         anchors.horizontalCenter: parent.horizontalCenter
+                //         Image{
+                //             anchors.fill: parent
+                //             source: "qrc:/qt/Flight_Management_System_Client/figures/money.png"
+                //         }
+                //     }
+
+                //     FluFilledButton{
+                //         text: qsTr("登录")
+                //         anchors.top: parent.top
+                //         anchors.topMargin: 65
+                //         anchors.horizontalCenter: parent.horizontalCenter
+                //         width: 60
+                //         onClicked: {
+                //             userNavView.push("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
+                //             console.log("登录按钮点击");
+                //         }
+                //     }
+
+                // }
+
+                // FluFrame{
+                //     FluClip{
+                //         width: 60
+                //         height: 60
+                //         anchors.top: parent.top
+                //         anchors.horizontalCenter: parent.horizontalCenter
+                //         Image{
+                //             anchors.fill: parent
+                //             source: "qrc:/qt/Flight_Management_System_Client/figures/money.png"
+                //         }
+                //     }
+
+                //     FluFilledButton{
+                //         text: qsTr("登录")
+                //         anchors.top: parent.top
+                //         anchors.topMargin: 65
+                //         anchors.horizontalCenter: parent.horizontalCenter
+                //         width: 60
+                //         onClicked: {
+                //             userNavView.push("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
+                //             console.log("登录按钮点击");
+                //         }
+                //     }
+
+                // }
+
+                FluFilledButton{
                     text: qsTr("登录")
                     Layout.preferredWidth: 100
+                    width: 60
                     onClicked: {
                         userNavView.push("qrc:/qt/Flight_Management_System_Client/views/LoginView.qml")
                         console.log("登录按钮点击");
-                        // 登录逻辑
                     }
                 }
 
