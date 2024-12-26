@@ -26,11 +26,10 @@ Item {
         return totalWidth + 10; // 最小100，最大为父宽度的70%
     }
 
-
     // Agent消息布局
     Row {
         id: agentRow
-        spacing: 10
+        spacing: 1
         visible: type === "assistant"
         //anchors.margins: 5 // 左右边距设置
         width: parent.width
@@ -49,7 +48,7 @@ Item {
         Rectangle {
             radius: 10
             width:(agentRow.width - assistantAvatar.width) * 0.5
-            height: text.implicitHeight + 20 // 根据文本高度动态调整
+            height: text.implicitHeight + 20
             color: "#F5F5F5"
             border.color: "#DDDDDD"
             border.width: 1
