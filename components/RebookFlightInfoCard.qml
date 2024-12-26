@@ -33,21 +33,21 @@ FluFrame {
     signal cardSelected()
 
     // 在父组件中自动水平居中
-    anchors.horizontalCenter: parent.horizontalCenter
+    // anchors.horizontalCenter: parent.horizontalCenter
 
 
     onEnabledChanged: {
-        console.log("代表着航班号"+flightNumber+"的卡片"+(enabled?"被启用":"被禁用"));
+        // console.log("代表着航班号"+flightNumber+"的卡片"+(enabled?"被启用":"被禁用"));
     }
 
     onIsSelectedChanged: {
-        console.log("代表着航班号"+flightNumber+"的卡片"+(isSelected?"被选中":"被取消选中"));
+        // console.log("代表着航班号"+flightNumber+"的卡片"+(isSelected?"被选中":"被取消选中"));
     }
 
     // 处理外部 selectedFlightId 的变化
     onCurrentSelectedFlightIdChanged: {
         // 自动更新 isSelected
-        console.log("当前改签航班信息的currentSelectedFlightId已经发生了改变，现在是"+currentSelectedFlightId);
+        // console.log("当前改签航班信息的currentSelectedFlightId已经发生了改变，现在是"+currentSelectedFlightId);
         isSelected = (currentSelectedFlightId === flightId);
     }
 
@@ -63,7 +63,7 @@ FluFrame {
 
     border.color: isSelected ? "#409EFF" : "gray"
     border.width: isSelected ? 5 : 1
-    color: isSelected ? "#f0f0f0" : "white"
+    color: isSelected ? (FluTheme.dark ? "#555555" : "#f0f0f0") : (FluTheme.dark ? "#333333" : "white")
 
     MouseArea {
         id : mouseArea
@@ -71,9 +71,9 @@ FluFrame {
         onClicked: {
             if(rebookFlightInfoCard.enabled){
                 cardSelected()
-                console.log("当前改签航班信息的currentSelectedFlightId是"+currentSelectedFlightId+"，请检查改签窗口的currentId是否改变");
+                // console.log("当前改签航班信息的currentSelectedFlightId是"+currentSelectedFlightId+"，请检查改签窗口的currentId是否改变");
             }else{
-                console.log("抱歉，当前卡片非可选择卡片")
+                // console.log("抱歉，当前卡片非可选择卡片")
             }
         }
     }
@@ -81,92 +81,133 @@ FluFrame {
     RowLayout {
         anchors.fill: parent
         spacing: 30
-        // 航空公司信息
+
+
         ColumnLayout {
-            Layout.preferredWidth: 80
+            Layout.preferredWidth: 150
             spacing: 5
 
-            FluText {
-                text: airlineCompany
-                font.pixelSize: 14
-            }
-
+            // 航班号
             FluText {
                 text: flightNumber
+                font.bold: true
+                font.pixelSize: 20
+                color: FluTheme.dark ? "#FFFF00" : "#409EFF"
+            }
+
+            // 航空公司信息
+            FluText {
+                text: airlineCompany
                 font.pixelSize: 12
             }
         }
 
         // 时间和机场信息
-        RowLayout {
+        ColumnLayout {
             Layout.fillWidth: true
-            spacing: 20
+            spacing: 5
 
-            ColumnLayout {
-                Layout.fillWidth: true
+            // 时刻与航班
+            RowLayout {
+               spacing: 20
 
-                FluText {
-                    id: departure
-                    text: formatTime(departureTime)
-                    font.pixelSize: 24
-                    font.bold: true
+                ColumnLayout {
+                    FluText {
+                        Layout.alignment: Qt.AlignRight // 右对齐
+                        text: formatTime(departureTime)
+                        font.pixelSize: 24
+                        font.bold: true
+                    }
+
+                    FluText {
+                        Layout.alignment: Qt.AlignRight // 右对齐
+                        text: departure + departureAirport
+                        font.pixelSize: 12
+                        font.bold: departureAirport !== originalDepAirport
+                        color: departureAirport !== originalDepAirport ? (FluTheme.dark ? "#FF6666" : "red") : "black"
+                    }
+
+                    FluText {
+                        Layout.alignment: Qt.AlignRight // 右对齐
+                        visible: isCrossDay()
+                        text: formatDate(departureTime)
+                        font.pixelSize: 14
+                    }
                 }
 
                 FluText {
-                    text: departureAirport
-                    font.pixelSize: 12
+                    text: "→"
+                    font.pixelSize: 20
+                    font.bold: true
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ColumnLayout {
+                    // 默认左对齐
+                    FluText {
+                        text: formatTime(arrivalTime)
+                        font.pixelSize: 24
+                        font.bold: true
+                    }
+
+                    FluText {
+                        text: destination + arrivalAirport
+                        font.pixelSize: 12
+                    }
+
+                    FluText {
+                        visible: isCrossDay()
+                        text: formatDate(arrivalTime)
+                        font.pixelSize: 14
+                    }
                 }
             }
 
+            // 日期显示
             FluText {
-                text: "→"
-                font.bold: true
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            ColumnLayout {
-                Layout.fillWidth: true
-
-                FluText {
-                    id: arrival
-                    text: formatTime(arrivalTime)
-                    font.pixelSize: 24
-                    font.bold: true
-                }
-
-                FluText {
-                    text: arrivalAirport
-                    font.pixelSize: 12
-                }
+                Layout.alignment: Qt.AlignHCenter
+                visible: !isCrossDay()
+                text: formatDate(departureTime)
+                font.pixelSize: 14
             }
         }
 
         // 价格和状态
-        ColumnLayout {
-            Layout.preferredWidth: 100
-            spacing: 5
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter
+            spacing: 10
 
-            // FluText {
-            //     text: qsTr("￥") + price.toFixed(2)
-            //     font.pixelSize: 18
-            //     font.bold: true
-            //     color: "#F39C12"
-            // }
+            ColumnLayout {
+                Layout.alignment: Qt.AlignVCenter
+                Layout.preferredWidth: 150
+                spacing: 10
 
-            Rectangle {
-                id: statusBadge
-                Layout.alignment: Qt.AlignHCenter
-                width: 80
-                height: 24
-                radius: 5
-                color: status === "on Time" ? "#27AE60" : (status === "delayed" ? "#F39C12" : "#C0392B")
-
+                // 差价
                 FluText {
-                    anchors.centerIn: parent
-                    text: status
-                    color: "white"
-                    font.pixelSize: 14
+                    text: price === originalPrice ? qsTr("价格不变") : (price > originalPrice ? qsTr("另付￥") + (price - originalPrice).toFixed(2) : qsTr("退还￥") + (originalPrice - price).toFixed(2))
+                    font.pixelSize: 16
                     font.bold: true
+                    color: price === originalPrice ? "green" : (price > originalPrice ? (FluTheme.dark ? "#FF6666" : "red") : "#F39C12")
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                // 状态徽章
+                Rectangle {
+                    id: statusBadge
+                    width: 80
+                    height: 24
+                    radius: 5
+                    color: status === "on Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
+
+                    FluText {
+                        anchors.centerIn: parent
+                        text: status
+                        color: "white"
+                        font.pixelSize: 14
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                    }
                 }
             }
         }
