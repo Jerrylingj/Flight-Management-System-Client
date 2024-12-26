@@ -103,6 +103,7 @@ FluWindow {
                             id: authCodeBox
                             Layout.fillWidth: true
                             Layout.maximumWidth: 180
+                            echoMode: TextInput.Password
                             onTextChanged: {
                                 adminCode = text;
                                 console.log("adminCode: ", adminCode);
@@ -252,14 +253,20 @@ FluWindow {
                 url: "qrc:/qt/Flight_Management_System_Client/views/FlightInfoEditView.qml"
                 onTap: { agentNavView.push(url) }
             }
+        }
+
+        footerItems: FluPaneItemExpander {
+            title: qsTr("主菜单")
+            iconVisible: false
 
             FluPaneItem {
-                id: item_agent_server
-                title: qsTr("用户咨询")
-                icon: FluentIcons.Message
-                url: "qrc:/qt/Flight_Management_System_Client/views/AgentServerView.qml"
-                onTap: { agentNavView.push(url) }
+                id: item_agent_about
+                title: qsTr("关于我们")
+                icon: FluentIcons.Info
+                url: "qrc:/qt/Flight_Management_System_Client/views/AboutView.qml"
+                onTap: { agentNavView.navigateTo(url) }
             }
+
         }
 
     }

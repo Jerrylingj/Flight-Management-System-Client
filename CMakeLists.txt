@@ -24,7 +24,6 @@ set(QML_FILES
     views/FindView.qml
     views/FlightInfoEditView.qml
     views/ClientServerView.qml
-    views/AgentServerView.qml
     views/OrderDetailView.qml
     views/LoginView.qml
     views/RegisterView.qml
