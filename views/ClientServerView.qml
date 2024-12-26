@@ -7,6 +7,7 @@ import "../components"
 
 FluContentPage {
     id: clientchatPage
+    property bool button_enable: true
     title: qsTr("客服")
     // background: Rectangle { radius: 5 }
     property var messages: [
@@ -24,6 +25,7 @@ FluContentPage {
     NetworkHandler{
         id: networkHandler
         onRequestSuccess: function(data){
+            button_enable=true
             console.log(JSON.stringify(data.data))
             if(data['code'] === 200){
                 const msg = data.data
@@ -34,6 +36,7 @@ FluContentPage {
             }
         }
         onRequestFailed: function(data){
+            button_enable=true
             console.error(data.message)
         }
     }
@@ -84,6 +87,7 @@ FluContentPage {
 
         FluFilledButton {
             text: qsTr("发送")
+            enabled: button_enable
             onClicked: {
                 var newMessage=inputField.text.trim()
                 if(newMessage.length>=30){
@@ -92,6 +96,7 @@ FluContentPage {
                 }
 
                 else if(newMessage!=="" && newMessage.length < 20){
+                    button_enable = false
                     // 创建一个新的消息对象
                     const msg = { role: "user", content: newMessage };
                     userInfo.appendToMyJsonArray(msg)

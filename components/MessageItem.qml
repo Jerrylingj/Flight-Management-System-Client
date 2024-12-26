@@ -27,13 +27,13 @@ Item {
     }
 
     // Agent消息布局
-    RowLayout {
+    Row {
         id: agentRow
         spacing: 1
         visible: type === "assistant"
-        anchors.left: parent.left
-        anchors.margins: 5 // 左右边距设置
-        width:parent.width
+        //anchors.margins: 5 // 左右边距设置
+        width: parent.width
+        //width:parent.width
         FluClip {
             id:assistantAvatar
             width: 50
@@ -48,7 +48,7 @@ Item {
         Rectangle {
             radius: 10
             width:(agentRow.width - assistantAvatar.width) * 0.5
-            height: text.height * 1.25
+            height: text.implicitHeight + 20
             color: "#F5F5F5"
             border.color: "#DDDDDD"
             border.width: 1
