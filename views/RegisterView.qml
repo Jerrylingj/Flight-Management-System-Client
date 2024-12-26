@@ -105,15 +105,21 @@ FluPage {
             text: "注册"
             width: parent.width * 0.8
             enabled: usernameField.text.length>0&&emailField.text.length>0&&passwordField.text.length>0&&confirmPasswordField.text.length>0&&captchaField.text.length>0&&registrationView.value.length>0
+
             onClicked: {
                 // 模拟注册
-                networkHandler.request("/api/register", NetworkHandler.POST, {
-                                           email:emailField.text,
-                                           username:usernameField.text,
-                                           password:passwordField.text,
-                                           code:captchaField.text,
-                                           value:registrationView.value
-                                       })
+                if(confirmPasswordField.text!==passwordField.text){
+                    showWarning("密码不一致")
+                }
+                else{
+                    networkHandler.request("/api/register", NetworkHandler.POST, {
+                                               email:emailField.text,
+                                               username:usernameField.text,
+                                               password:passwordField.text,
+                                               code:captchaField.text,
+                                               value:registrationView.value
+                                           })
+                }
             }
         }
     }
