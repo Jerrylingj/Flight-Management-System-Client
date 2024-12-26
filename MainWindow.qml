@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import FluentUI 1.0
 import QtQuick.Layouts
+import NetworkHandler 1.0
 
 FluWindow {
     id: mainWindow
@@ -17,6 +18,30 @@ FluWindow {
     showStayTop: true
 
     property bool isAdmin: false // 标志当前是否管理员端
+    property string adminCode:''
+
+    NetworkHandler {
+        id:networkHandler
+        onRequestSuccess: function(data) {
+            console.log(JSON.stringify(data))
+            if(data.code !== 200) {
+                showError(data.message)
+                return
+            }
+            if(!data.data) {
+                showError('错误')
+                return
+            }
+            userInfo.authCode = adminCode
+            authCodeDiolog.close()
+            isAdmin = true
+            toggleSwitch.checked = true
+            showSuccess('成功')
+        }
+        onRequestFailed: function(data){
+            console.log(data)
+        }
+    }
 
     // 顶部切换开关
     RowLayout {
@@ -27,15 +52,48 @@ FluWindow {
         spacing: 10
         FluToggleSwitch {
             id: toggleSwitch
-            checked: isAdmin
+            checked: false
             Layout.alignment: Qt.AlignVCenter
             text: isAdmin ? "切换为用户端" : "切换为管理员端"
 
             onCheckedChanged: {
-                isAdmin = checked;
-                userNavView.visible = !isAdmin;
-                agentNavView.visible = isAdmin;
-                console.log("当前模式: " + (isAdmin ? "管理员端" : "用户端"));
+                if(userInfo.authCode.length === 0){
+                    checked = false;
+                    authCodeDiolog.open()
+                }else{
+                    isAdmin = checked;
+                    console.log("当前模式: " + (isAdmin ? "管理员端" : "用户端"));
+                }
+            }
+        }
+    }
+
+    FluContentDialog{
+        id: authCodeDiolog
+        title:'授权码'
+        contentWidth: 600
+        contentHeight: 600
+        contentDelegate: Component{
+            Item {
+                implicitWidth: parent.width
+                implicitHeight: 400
+                ColumnLayout{
+                    anchors.centerIn: parent
+                    FluText {
+                        id: authCodeText
+                        text: qsTr("请输入授权码")
+                    }
+                    FluTextBox{
+                        id: authCodeBox
+                    }
+                    FluButton{
+                        text:'提交'
+                        onClicked: {
+                            adminCode = authCodeBox.text
+                            networkHandler.request('/api/user/auth', NetworkHandler.POST, {authCode:adminCode})
+                        }
+                    }
+                }
             }
         }
     }
@@ -46,7 +104,7 @@ FluWindow {
         anchors.fill: parent
         pageMode: FluNavigationViewType.NoStack
         displayMode: FluNavigationViewType.Auto
-        visible: true
+        visible: !isAdmin
         function navigateTo(url) {
             const notAllowRoutes = [
                                      "qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml",
@@ -142,7 +200,7 @@ FluWindow {
         anchors.fill: parent
         pageMode: FluNavigationViewType.NoStack
         displayMode: FluNavigationViewType.Auto
-        visible: false
+        visible: isAdmin
 
         items: FluPaneItemExpander {
             title: qsTr("主菜单")

@@ -39,7 +39,7 @@ FluContentPage {
         console.log("获取用户信息");
         const url = "/api/userlist";
         const body = {
-            authCode: "123"
+            authCode: userInfo.authCode
         };
         networkHandler.request(url, NetworkHandler.POST, body);
     }

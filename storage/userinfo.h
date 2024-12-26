@@ -18,6 +18,7 @@ class UserInfo : public QObject
     Q_PROPERTY(QString myAvatar READ myAvatar WRITE setMyAvatar NOTIFY myAvatarChanged)
     Q_PROPERTY(QString myCreateTime READ myCreateTime WRITE setMyCreateTime NOTIFY myCreateTimeChanged)
     Q_PROPERTY(QJsonArray myJsonArray READ myJsonArray NOTIFY myJsonArrayChanged)
+    Q_PROPERTY(QString authCode READ authCode WRITE setAuthCode NOTIFY authCodeChanged)
 
 public:
     // 构造函数增加 NetworkHandler 参数
@@ -98,6 +99,14 @@ public:
         emit myJsonArrayChanged();
     }
 
+    QString authCode() const { return m_authCode; }
+    void setAuthCode(const QString& authCode){
+        if(m_authCode != authCode){
+            m_authCode = authCode;
+            emit authCodeChanged();
+        }
+    }
+
 signals:
     void userEmailChanged();
     void userNameChanged();
@@ -107,6 +116,7 @@ signals:
     void myAvatarChanged();
     void myCreateTimeChanged();
     void myJsonArrayChanged();
+    void authCodeChanged();
 
 private slots:
     // 槽函数用于处理网络请求成功
@@ -127,6 +137,7 @@ private:
     QString m_myAvatar;
     QString m_myCreateTime;
     QJsonArray m_myJsonArray; // 新增的成员变量
+    QString m_authCode;
 };
 
 inline void UserInfo::updateUserInfo() {
