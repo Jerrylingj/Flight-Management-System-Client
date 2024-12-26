@@ -36,7 +36,7 @@ FluWindow {
             authCodeDialog.close()
             isAdmin = true
             toggleSwitch.checked = true
-            showSuccess('成功')
+            showSuccess('认证成功')
             authCodeDialog.close();
         }
         onRequestFailed: function(data){
