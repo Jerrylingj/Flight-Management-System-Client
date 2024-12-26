@@ -11,6 +11,7 @@ import "../components"
 
 FluContentPage {
     id: userProfileView
+    // property string avatar_url
     title: qsTr("个人中心")
 
     NetworkHandler{
@@ -48,17 +49,18 @@ FluContentPage {
 
                     Image {
                         id: avatar
-                        property url avatar_url
-                        source: avatar_url
+                        source: userInfo.myAvatar.length?userInfo.myAvatar:"qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
+                        cache: false
                         Component.onCompleted: {
                             console.log(userInfo.myAvatar)
-                            if(userInfo.myAvatar.length>=0){
-                                avatar_url = userInfo.myAvatar
-                            }else{
-                                avatar_url = "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
-                            }
+                            // if(userInfo.myAvatar.length()===0){
+                            //     avatar_url = "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
+                            // }
+                            // else{
+                            //    avatar_url = userInfo.myAvatar
+                            // }
                         }
                         MouseArea{
                             width:parent.width
@@ -395,6 +397,8 @@ FluContentPage {
                                                     networkHandler.request('/api/user',NetworkHandler.DELETE,{},userInfo.myToken)
                                                     userInfo.myToken = ""
                                                     userInfo.myAvatar = "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
+                                                    avatar.source = userInfo.myAvatar
+                                                    userNavView.push("qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml")
                                                 }
                     }
                     onClicked: {
