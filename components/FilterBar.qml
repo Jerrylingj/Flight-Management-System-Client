@@ -7,7 +7,7 @@ FluFrame{
     z: 10
     id: filterBar
     Layout.fillWidth: true
-    Layout.preferredHeight: 80
+    Layout.preferredHeight: 100
     padding: 10
     clip: true
     property string departureCity
@@ -22,44 +22,89 @@ FluFrame{
         anchors.margins: 10
         spacing: 20
 
-        AddressPicker {
-            id: departureAddressPicker
-            Layout.preferredWidth: 80
+        // 出发地点与时间
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignVCenter
+            spacing: 10
+
+            AddressPicker {
+                id: departureAddressPicker
+                Layout.fillWidth: true
+                Layout.minimumWidth: 150
+                Layout.maximumWidth: 200
+            }
+
+            AltAirDatePicker {
+                id: startDatePicker
+                Layout.fillWidth: true
+                Layout.minimumWidth: 150
+                Layout.maximumWidth: 200
+            }
         }
 
-        AddressPicker {
-            id: arrivalAddressPicker
-            Layout.preferredWidth: 80
+        // Spacer 左侧
+        Item {
+            Layout.fillWidth: true
+            Layout.preferredWidth: 20
         }
 
-        AltAirDatePicker {
-            id: startDatePicker
-            Layout.preferredWidth: 150
+        // 箭头
+        FluText {
+            Layout.preferredWidth: 40
+            text: "→"
+            font.pixelSize: 20
+            font.bold: true
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
         }
 
-        AltAirDatePicker {
-            id: endDatePicker
-            Layout.preferredWidth: 150
+        // Spacer 右侧
+        Item {
+            Layout.fillWidth: true
+            Layout.preferredWidth: 20
         }
 
-        Timer{
-            id: timer_progress
-            interval: 30
-            onTriggered: {
-                filterButton.progress = (filterButton.progress + 0.1).toFixed(1)
-                if(filterButton.progress===1){
-                    timer_progress.stop()
-                }else{
-                    timer_progress.start()
-                }
+        // 到达地点与时间
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignVCenter
+            spacing: 10
+
+            AddressPicker {
+                id: arrivalAddressPicker
+                Layout.fillWidth: true
+                Layout.minimumWidth: 150
+                Layout.maximumWidth: 200
+            }
+
+            AltAirDatePicker {
+                id: endDatePicker
+                Layout.fillWidth: true
+                Layout.minimumWidth: 150
+                Layout.maximumWidth: 200
             }
         }
 
         // 还无法调节速度
         FluProgressButton {
             id: filterButton
-            width: 300
+            Layout.preferredWidth: 150
             text: qsTr("筛选")
+
+            Timer {
+                id: timer_progress
+                interval: 30
+                onTriggered: {
+                    filterButton.progress = (filterButton.progress + 0.1).toFixed(1)
+                    if (filterButton.progress === 1) {
+                        timer_progress.stop()
+                    } else {
+                        timer_progress.start()
+                    }
+                }
+            }
+
             onClicked:{
                 // console.log("点击查询按钮")
                 filterButton.progress = 0
