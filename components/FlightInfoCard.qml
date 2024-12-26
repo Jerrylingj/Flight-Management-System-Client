@@ -15,6 +15,8 @@ FluFrame {
     property string flightNumber
     property string departureTime
     property string arrivalTime
+    property string departureCity
+    property string arrivalCity
     property string departureAirport
     property string arrivalAirport
     property double price
@@ -128,18 +130,27 @@ FluFrame {
 
             // 时刻与航班
             RowLayout {
-               spacing: 10
+               spacing: 20
 
                 ColumnLayout {
                     FluText {
-                       text: formatTime(departureTime)
-                       font.pixelSize: 24
-                       font.bold: true
+                        Layout.alignment: Qt.AlignRight // 右对齐
+                        text: formatTime(departureTime)
+                        font.pixelSize: 24
+                        font.bold: true
                     }
 
                     FluText {
-                       text: departureAirport
-                       font.pixelSize: 12
+                        Layout.alignment: Qt.AlignRight // 右对齐
+                        text: departureCity + departureAirport
+                        font.pixelSize: 12
+                    }
+
+                    FluText {
+                        Layout.alignment: Qt.AlignRight // 右对齐
+                        visible: !isCrossDay()
+                        text: formatDate(departureTime)
+                        font.pixelSize: 14
                     }
                 }
 
@@ -151,6 +162,7 @@ FluFrame {
                 }
 
                 ColumnLayout {
+                    // 默认左对齐
                     FluText {
                         text: formatTime(arrivalTime)
                         font.pixelSize: 24
@@ -158,8 +170,14 @@ FluFrame {
                     }
 
                     FluText {
-                        text: arrivalAirport
+                        text: arrivalCity + arrivalAirport
                         font.pixelSize: 12
+                    }
+
+                    FluText {
+                        visible: !isCrossDay()
+                        text: formatDate(arrivalTime)
+                        font.pixelSize: 14
                     }
                 }
             }
@@ -167,9 +185,8 @@ FluFrame {
             // 日期显示
             FluText {
                 Layout.alignment: Qt.AlignHCenter
-                text: isCrossDay()
-                      ? formatDate(departureTime) + " → " + formatDate(arrivalTime)
-                      : formatDate(departureTime)
+                visible: isCrossDay()
+                text: formatDate(departureTime)
                 font.pixelSize: 14
             }
         }
