@@ -33,10 +33,11 @@ FluWindow {
                 return
             }
             userInfo.authCode = adminCode
-            authCodeDiolog.close()
+            authCodeDialog.close()
             isAdmin = true
             toggleSwitch.checked = true
             showSuccess('成功')
+            authCodeDialog.close();
         }
         onRequestFailed: function(data){
             console.log(data)
@@ -59,7 +60,7 @@ FluWindow {
             onCheckedChanged: {
                 if(userInfo.authCode.length === 0){
                     checked = false;
-                    authCodeDiolog.open()
+                    authCodeDialog.open()
                 }else{
                     isAdmin = checked;
                     console.log("当前模式: " + (isAdmin ? "管理员端" : "用户端"));
@@ -68,33 +69,53 @@ FluWindow {
         }
     }
 
-    FluContentDialog{
-        id: authCodeDiolog
-        title:'授权码'
-        contentWidth: 600
-        contentHeight: 600
-        contentDelegate: Component{
+    FluContentDialog {
+        id: authCodeDialog
+        title: qsTr("授权码")
+        contentWidth: 400
+        contentHeight: 150
+
+        contentDelegate: Component {
             Item {
                 implicitWidth: parent.width
-                implicitHeight: 400
-                ColumnLayout{
-                    anchors.centerIn: parent
-                    FluText {
-                        id: authCodeText
-                        text: qsTr("请输入授权码")
-                    }
-                    FluTextBox{
-                        id: authCodeBox
-                    }
-                    FluButton{
-                        text:'提交'
-                        onClicked: {
-                            adminCode = authCodeBox.text
-                            networkHandler.request('/api/user/auth', NetworkHandler.POST, {authCode:adminCode})
+                implicitHeight: 80
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    spacing: 20
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 10
+
+                        Item {
+                            Layout.preferredWidth: 20
+                        }
+
+                        FluText {
+                            text: qsTr("请输入授权码:");
+                            font.pixelSize: 14
+                            Layout.alignment: Qt.AlignVCenter
+                            Layout.preferredWidth: 120
+                        }
+
+                        FluTextBox {
+                            id: authCodeBox
+                            Layout.fillWidth: true
+                            Layout.maximumWidth: 180
+                            onTextChanged: {
+                                adminCode = text;
+                                console.log("adminCode: ", adminCode);
+                            }
                         }
                     }
                 }
             }
+        }
+
+        positiveText: qsTr("提交")
+        onPositiveClickListener: ()=> {
+            networkHandler.request('/api/user/auth', NetworkHandler.POST, { authCode: adminCode })
         }
     }
 
