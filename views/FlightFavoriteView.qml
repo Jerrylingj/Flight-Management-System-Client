@@ -18,6 +18,7 @@ FluContentPage {
         onRequestSuccess: function(responseData) {
             try {
                 if (responseData.success && responseData.favorites) {
+                    console.log(JSON.stringify(responseData));
                     flightData = responseData.favorites.map(function(flight) {
                         /*** 初始化数据 ***/
                         flight.isBooked = false;  // 初始化是否预订状态
@@ -81,6 +82,8 @@ FluContentPage {
 
     ColumnLayout {
         anchors.fill: parent
+        Layout.fillWidth: true
+        Layout.fillHeight: true
         spacing: 16
 
         FluFrame{
@@ -131,6 +134,7 @@ FluContentPage {
             y: filterPanel.height
             height: parent.height - filterPanel.height - 90
             Layout.fillWidth: true
+            Layout.fillHeight: true
             clip: true
 
             ColumnLayout {
@@ -149,6 +153,8 @@ FluContentPage {
                         flightNumber: modelData.flightNumber
                         departureTime: modelData.departureTime
                         arrivalTime: modelData.arrivalTime
+                        departureCity: modelData.departureCity
+                        arrivalCity: modelData.arrivalCity
                         departureAirport: modelData.departureAirport
                         arrivalAirport: modelData.arrivalAirport
                         price: modelData.price
