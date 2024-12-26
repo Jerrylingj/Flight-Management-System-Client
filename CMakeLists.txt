@@ -45,6 +45,7 @@ set(QML_FILES
     components/RebookFlightInfoCard.qml
     components/FilterBar.qml
     components/IconButton.qml
+    components/AltAirDatePicker.qml
 )
 
 set(SOURCE_FILES
@@ -100,6 +101,7 @@ qt_add_qml_module(${PROJECT_NAME}
     SOURCES ${SOURCE_FILES}
     RESOURCES ${RESOURCES_FILES}
     QML_FILES ${QML_FILES}
+
 )
 
 # Qt f

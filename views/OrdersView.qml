@@ -99,7 +99,7 @@ FluScrollablePage {
                 Layout.preferredWidth: 150
             }
 
-            FluDatePicker {
+            AltAirDatePicker {
                 id: datePicker
                 Layout.preferredWidth: 180
             }
