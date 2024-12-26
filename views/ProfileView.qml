@@ -54,11 +54,10 @@ FluContentPage {
                         fillMode: Image.PreserveAspectCrop
                         Component.onCompleted: {
                             console.log(userInfo.myAvatar)
-                            if(userInfo.myAvatar.length>0){
+                            if(userInfo.myAvatar.length>=0){
                                 avatar_url = userInfo.myAvatar
                             }else{
                                 avatar_url = "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
-
                             }
                         }
                         MouseArea{
@@ -395,7 +394,7 @@ FluContentPage {
                                                     userInfo.userEmail="noname@mail2.sysu.edu.cn"
                                                     networkHandler.request('/api/user',NetworkHandler.DELETE,{},userInfo.myToken)
                                                     userInfo.myToken = ""
-                                                    userInfo.myAvatar = ""
+                                                    userInfo.myAvatar = "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
                                                 }
                     }
                     onClicked: {
