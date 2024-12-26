@@ -165,26 +165,19 @@ FluContentPage {
     function filterFlights() {
         var departureCity = filterBar.departureCity;
         var arrivalCity = filterBar.arrivalCity;
-        // var selectedDate = filterBar.startDate;
-        // console.log("开始筛选函数")
-        console.log(departureCity+" "+arrivalCity)
-        // console.log(selectedDate)
+        var startDate = filterBar.startDate;
+        var endDate = filterBar.endDate;
+        console.log(departureCity + " " + arrivalCity);
+        console.log(startDate + " " + endDate);
 
         // 过滤航班数据
         filteredData = flightData.filter(function(flight) {
             var matchesDeparture = departureCity ? (departureCity === "全部" || flight.departureCity === departureCity) : true;
             var matchesArrival = arrivalCity ? (arrivalCity === "全部" || flight.arrivalCity === arrivalCity) : true;
+            var matchesStartDate = startDate ? (new Date(flight.departureTime).setHours(0, 0, 0, 0) >= new Date(startDate).setHours(0, 0, 0, 0)) : true;
+            var matchesEndDate = endDate ? (new Date(flight.departureTime).setHours(23, 59, 59, 999) <= new Date(endDate).setHours(23, 59, 59, 999)) : true;
 
-            // var flightDate = new Date(flight.departureTime);
-            // var matchesDate = selectedDate ? (
-            //     flightDate.getFullYear() === selectedDate.getFullYear() &&
-            //     flightDate.getMonth() === selectedDate.getMonth() &&
-            //     flightDate.getDate() === selectedDate.getDate()
-            // ) : true;
-
-            return matchesDeparture && matchesArrival
-
-            // return matchesDeparture && matchesArrival && matchesDate;
+            return matchesDeparture && matchesArrival && matchesStartDate && matchesEndDate;
         });
     }
 
