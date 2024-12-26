@@ -117,7 +117,7 @@ FluContentPage {
         // console.log("添加航班", flight);
 
         const body = {
-            authCode: "123",
+            authCode: userInfo.authCode,
             flightNumber: flight.flightNumber,
             departureCity: flight.departureCity,
             arrivalCity: flight.arrivalCity,
@@ -139,7 +139,7 @@ FluContentPage {
         const url = "/api/flights/update";
         // console.log("flightId", flight.flightId);
         const body = {
-            authCode: "123",
+            authCode: userInfo.authCode,
             flightId: flight.flightId,
             flightNumber: flight.flightNumber,
             departureCity: flight.departureCity,
@@ -163,7 +163,7 @@ FluContentPage {
     function deleteFlight(flight) {
         const url = "/api/flights/del";
         const body = {
-            authCode: "123",
+            authCode: userInfo.authCode,
             flightId: flight.flightId
         };
         delHandler.request(url, NetworkHandler.POST, body);

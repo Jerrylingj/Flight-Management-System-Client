@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     userInfo.setMyMoney(-1);
     userInfo.setUserEmail("noname@mail2.sysu.edu.cn");
     userInfo.setMyAvatar("qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg");
+    userInfo.setAuthCode("");
 
     // 将 UserInfo 对象暴露给 QML
     engine.rootContext()->setContextProperty("userInfo", &userInfo);
@@ -31,8 +32,7 @@ int main(int argc, char *argv[])
                          if (!obj && url == objUrl)
                              QCoreApplication::exit(-1);
                      }, Qt::QueuedConnection);
-    engine.load(url);
     qmlRegisterType<NetworkHandler>("NetworkHandler", 1, 0, "NetworkHandler");
-
+    engine.load(url);
     return app.exec();
 }

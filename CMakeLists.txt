@@ -68,6 +68,7 @@ set(RESOURCES_FILES
     figures/shopping-list.png
     figures/money.png
     figures/edit.png
+    figures/log-in.png
 
     figures/avatar.jpg
     figures/avatar.png
