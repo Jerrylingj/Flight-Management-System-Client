@@ -92,6 +92,7 @@ qt_add_qml_module(${PROJECT_NAME}
     RESOURCES figures/background1.jpg figures/background2.jpg figures/background3.jpg figures/background4.jpg figures/background5.jpg figures/background6.jpg
     RESOURCES figures/personnel.png
     QML_FILES components/RebookFlightInfoCard.qml
+    QML_FILES components/FilterBar.qml
 )
 
 # Qt f
