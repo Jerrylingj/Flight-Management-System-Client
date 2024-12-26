@@ -64,14 +64,14 @@ FluScrollablePage {
                             }
 
                             FluText {
-                                text: qsTr("        终端露台团队(Terminal Terrace Team, also the TTT)团队由中山大学软件工程学院2023级的4名同学组成，他们分别是（上图从左到右）：林国佳、林省煜、朱玄烨和杨普旭。")
+                                text: qsTr("        终端露台团队(Terminal Terrace Team, also the TTT)团队由中山大学软件工程学院2023级的4名同学组成，他们分别是（上图从左到右）：Jerrylingj、water2027、math-zhuxy和YANGPuxyu。")
                                 font.pixelSize: 18
                                 wrapMode: Text.WordWrap
                                 width: parent.width
                             }
 
                             FluText {
-                                text: qsTr("        团队的总部位于珠海高新区榕园经济技术开发区9栋二层，拥有先进的软硬件设施。")
+                                text: qsTr("        团队的总部位于珠海高新区，拥有先进的软硬件设施。")
                                 font.pixelSize: 18
                                 wrapMode: Text.WordWrap
                                 width: parent.width
@@ -91,7 +91,7 @@ FluScrollablePage {
             }
 
             FluPivotItem {
-                title: qsTr("林国佳")
+                title: qsTr("Jerrylingj")
                 contentItem: ColumnLayout {
                     width: parent.width
                     FluRectangle {
@@ -121,7 +121,7 @@ FluScrollablePage {
                             spacing: 10
 
                             FluText {
-                                text: qsTr("Guojia Lin 总经理")
+                                text: qsTr("Jerrylingj 总经理")
                                 font.pixelSize: 32
                                 font.family: "华文中宋"
                                 wrapMode: Text.WordWrap
@@ -143,7 +143,7 @@ FluScrollablePage {
             }
 
             FluPivotItem {
-                title: qsTr("林省煜")
+                title: qsTr("water2027")
                 contentItem: ColumnLayout {
                     width: parent.width
                     FluRectangle {
@@ -173,7 +173,7 @@ FluScrollablePage {
                             spacing: 10
 
                             FluText {
-                                text: qsTr("Shengyü Lin 技术部主任")
+                                text: qsTr("water2027 技术部主任")
                                 font.pixelSize: 32
                                 font.family: "华文中宋"
                                 wrapMode: Text.WordWrap
@@ -196,7 +196,7 @@ FluScrollablePage {
 
 
             FluPivotItem {
-                title: qsTr("朱玄烨")
+                title: qsTr("math-zhuxy")
                 contentItem: ColumnLayout {
                     width: parent.width
                     FluRectangle {
@@ -226,7 +226,7 @@ FluScrollablePage {
                             spacing: 10
 
                             FluText {
-                                text: qsTr("Xuanye Zhu 人事部主任")
+                                text: qsTr("math-zhuxy 人事部主任")
                                 font.pixelSize: 32
                                 font.family: "华文中宋"
                                 wrapMode: Text.WordWrap
@@ -248,7 +248,7 @@ FluScrollablePage {
             }
 
             FluPivotItem {
-                title: qsTr("杨普旭")
+                title: qsTr("YANGPuxyu")
                 contentItem: ColumnLayout {
                     width: parent.width
                     FluRectangle {
@@ -278,7 +278,7 @@ FluScrollablePage {
                             spacing: 10
 
                             FluText {
-                                text: qsTr("Puxü Yang 信息部主任")
+                                text: qsTr("YANGPuxyu 信息部主任")
                                 font.pixelSize: 32
                                 font.family: "华文中宋"
                                 wrapMode: Text.WordWrap
