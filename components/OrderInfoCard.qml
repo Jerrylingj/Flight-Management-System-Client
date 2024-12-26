@@ -195,15 +195,15 @@ FluFrame {
         property int selectedFlightId: -1;
 
         // 监听 selectedFlightId 的变化
-        onSelectedFlightIdChanged: {
-            showInfo(
-                "选择已变更",
-                4000,
-                selectedFlightId === -1
-                    ? "当前未选择"
-                    : "当前选择航班编号为 " + selectedFlightId + " 的航班"
-            )
-        }
+        // onSelectedFlightIdChanged: {
+            // showInfo(
+            //     "选择已变更",
+            //     4000,
+            //     selectedFlightId === -1
+            //         ? "当前未选择"
+            //         : "当前选择航班编号为 " + selectedFlightId + " 的航班"
+            // )
+        // }
     
         contentDelegate: Component {
             Item {
@@ -238,7 +238,7 @@ FluFrame {
                                 arrivalTime: modelData.arrivalTime
                                 departureAirport: modelData.departureAirport
                                 arrivalAirport: modelData.arrivalAirport
-                                originalDepAirport: orderInfoCard.departure
+                                originalDepAirport: orderInfoCard.departureAirport
                                 originalPrice: orderInfoCard.price
                                 price: modelData.price
                                 airlineCompany: modelData.airlineCompany
@@ -308,24 +308,22 @@ FluFrame {
                                 enabled: false
                                 border.color: "#409EFF"
                                 border.width: 5
-                                color: "white"
+                                color: FluTheme.dark ? "#333333" : "white"
                                 Layout.alignment: Qt.AlignHCenter // 确保组件居中
                             }
 
                             FluText {
                                 text: rebookingFlightInfo.selectedRebookFlight ? 
-                                    (rebookingFlightInfo.selectedRebookFlight.price === price ? 
-                                        qsTr("🪙您无需支付改签费用") : 
-                                        (rebookingFlightInfo.selectedRebookFlight.price > price ? 
-                                            qsTr("🪙请注意：您需要支付差价" + (rebookingFlightInfo.selectedRebookFlight.price - price) + "奶龙币") :
+                                    (rebookingFlightInfo.selectedRebookFlight.price === price ? qsTr("✅您无需支付改签费用") : (rebookingFlightInfo.selectedRebookFlight.price > price ?
+                                            qsTr("💴请注意：您需要支付差价" + (rebookingFlightInfo.selectedRebookFlight.price - price) + "奶龙币") :
                                             qsTr("🪙您将会被补偿" + (price - rebookingFlightInfo.selectedRebookFlight.price) + "奶龙币"))) : 
                                     qsTr("未知错误：rebookingFlightInfo.selectedRebookFlight is null")
                                 color: rebookingFlightInfo.selectedRebookFlight ? 
                                     (rebookingFlightInfo.selectedRebookFlight.price === price ? 
                                         "green" : 
                                         (rebookingFlightInfo.selectedRebookFlight.price > price ? 
-                                            "red" : 
-                                            "yellow")) : 
+                                            (FluTheme.dark ? "#FF6666" : "red") :
+                                            "#F3CF2A")) :
                                     "gray"
                                 font.pixelSize: 24
                                 font.bold: true
@@ -335,7 +333,7 @@ FluFrame {
                             FluText {
                                 text: rebookingFlightInfo.selectedRebookFlight ? 
                                     (rebookingFlightInfo.selectedRebookFlight.departureAirport === departureAirport ? 
-                                        qsTr("✅您的出发机场没有变更") : 
+                                        qsTr("🛩您的出发机场没有变更") :
                                         qsTr("⚠️请注意：您的出发机场将会变为" + rebookingFlightInfo.selectedRebookFlight.departureAirport)) : 
                                     qsTr("未知错误：rebookingFlightInfo.selectedRebookFlight is null")
                                 color: rebookingFlightInfo.selectedRebookFlight ? 
@@ -379,7 +377,8 @@ FluFrame {
                 if (flights[i].flightId === rebookingDialog.selectedFlightId) {
                     rebookingFlightInfo.selectedRebookFlight = flights[i]
                     if (userInfo.myMoney < flights[i].price - orderInfoCard.price) {
-                        showError("您的余额不足以支付差价", 3000, "您可以前往个人中心充值")
+                        showError("您的余额不足以支付差价", 3000, "您可以前往个人中心充值");
+                        rechargeReminder.open();
                     } else {
                         // 隐藏改签弹窗
                         rebookingDialog.close()
@@ -646,7 +645,7 @@ FluFrame {
                 disabled: new Date() > new Date(checkInEndTime) && !paymentStatus
                 normalColor: {
                     if(!checked){
-                        return "#F3CF2A"
+                        return FluTheme.dark ? "#D4A017" : "#F3CF2A"
                     }else{
                         return FluTheme.dark ? "#FA98EB" : "#E13EE1"
                     }
