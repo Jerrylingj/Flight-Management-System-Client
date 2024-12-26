@@ -17,7 +17,9 @@ FluFrame {
     property string departureTime
     property string arrivalTime
     property string departureAirport
+    property string originalDepAirport
     property string arrivalAirport
+    property double originalPrice
     property double price
     property string airlineCompany
     property string status
@@ -26,10 +28,12 @@ FluFrame {
 
     property bool isSelected : (currentSelectedFlightId === flightId)
 
-    property bool enabled : currentSelectedFlightId === flightId || currentSelectedFlightId === -1
+    property bool enabled
 
     signal cardSelected()
-    signal cardDeselected()
+
+    // 在父组件中自动水平居中
+    anchors.horizontalCenter: parent.horizontalCenter
 
 
     onEnabledChanged: {
@@ -48,33 +52,28 @@ FluFrame {
     }
 
     // 当卡片被选中时，发射信号
-    onCardSelected: {
-        rebookFlightInfoCard.cardSelected()
-    }
+    // onCardSelected: {
+    //     // rebookFlightInfoCard.cardSelected()
+    // }
 
     // 当卡片被取消选中时，发射信号
-    onCardDeselected: {
-        rebookFlightInfoCard.cardDeselected()
-    }
+    // onCardDeselected: {
+    //     // rebookFlightInfoCard.cardDeselected()
+    // }
 
     border.color: isSelected ? "#409EFF" : "gray"
     border.width: isSelected ? 5 : 1
     color: isSelected ? "#f0f0f0" : "white"
 
     MouseArea {
+        id : mouseArea
         anchors.fill: parent
-        enabled: parent.enabled  // 根据enabled属性控制是否可点击
         onClicked: {
-            if(enabled){
-                if (!isSelected) {
-                    cardSelected();
-                    console.log("当前卡片发出了被选择的信号");
-
-                } else {
-                    cardDeselected();
-                    console.log("当前卡片发出了被取消选择的信号");
-                }
+            if(rebookFlightInfoCard.enabled){
+                cardSelected()
                 console.log("当前改签航班信息的currentSelectedFlightId是"+currentSelectedFlightId+"，请检查改签窗口的currentId是否改变");
+            }else{
+                console.log("抱歉，当前卡片非可选择卡片")
             }
         }
     }
@@ -160,7 +159,7 @@ FluFrame {
                 width: 80
                 height: 24
                 radius: 5
-                color: status === "On Time" ? "#27AE60" : (status === "Delayed" ? "#F39C12" : "#C0392B")
+                color: status === "on Time" ? "#27AE60" : (status === "delayed" ? "#F39C12" : "#C0392B")
 
                 FluText {
                     anchors.centerIn: parent

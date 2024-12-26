@@ -43,7 +43,7 @@ FluFrame {
         property var flightList: []
 
         // Optional: track selected index or items
-        property int selectedIndex: -1
+        property var selectedRebookFlight: null
 
         // Update the entire list at once
         function setFlights(flights) {
@@ -162,7 +162,7 @@ FluFrame {
 
             } else {
                 console.error("订单操作失败，错误信息：", responseData.message);
-                showError(qsTr("操作失败"), 5000, qsTr("↙请点击左下角\"客服\"询问"))
+                showError(qsTr("操作失败"), 5000, responseData.message)
             }
         }
 
@@ -193,17 +193,17 @@ FluFrame {
         width: 600
     
         // 选中航班的flightId，null表示未选中任何航班
-        property var selectedFlightId: null
+        property int selectedFlightId: -1;
 
-            // 处理改签航班信息卡片选择的函数
-        function handleFlightSelection(flightId = null) {
-            rebookingDialog.selectedFlightId = flightId;
-            rebookingFlightInfo.flightList = rebookingFlightInfo.flightList; // Trigger Repeater refresh
-        }
-
-        // 定义一个JavaScript函数来处理信号
-        function handleFlightSelectionSignal(flightId) {
-            handleFlightSelection(flightId);
+        // 监听 selectedFlightId 的变化
+        onSelectedFlightIdChanged: {
+            showInfo(
+                "选择已变更",
+                4000,
+                selectedFlightId === -1
+                    ? "当前未选择"
+                    : "当前选择航班编号为 " + selectedFlightId + " 的航班"
+            )
         }
     
         contentDelegate: Component {
@@ -218,7 +218,7 @@ FluFrame {
                     clip: true
                     contentWidth: parent.width
                     contentHeight: rebookingColumnLayout.height
-                    property int selectedFlightId: -1;
+
     
                     ColumnLayout {
                         id: rebookingColumnLayout
@@ -239,52 +239,155 @@ FluFrame {
                                 arrivalTime: modelData.arrivalTime
                                 departureAirport: modelData.departureAirport
                                 arrivalAirport: modelData.arrivalAirport
+                                originalDepAirport: orderInfoCard.departure
+                                originalPrice: orderInfoCard.price
                                 price: modelData.price
                                 airlineCompany: modelData.airlineCompany
                                 status: modelData.status
-                                currentSelectedFlightId: rebookingFlickable.selectedFlightId
+                                enabled: true
+                                currentSelectedFlightId: rebookingDialog.selectedFlightId
 
                                 onCardSelected: {
-                                    if (rebookingFlickable.selectedFlightId === flightId) {
-                                        rebookingFlickable.selectedFlightId = -1  // 取消选择
+                                    if (rebookingDialog.selectedFlightId === flightId) {
+                                        rebookingDialog.selectedFlightId = -1  // 取消选择
                                     } else {
-                                        rebookingFlickable.selectedFlightId = flightId  // 选择当前卡片
+                                        rebookingDialog.selectedFlightId = flightId  // 选择当前卡片
                                     }
-                                }
-
-                                onCardDeselected: {
-                                    rebookingFlickable.selectedFlightId = -1  // 取消选择
                                 }
                             }
                         }
                     }
-
-                    // 监听 selectedFlightId 的变化
-                    onSelectedFlightIdChanged: {
-                        showInfo(
-                            "选择已变更",
-                            4000,
-                            selectedFlightId === -1
-                                ? "当前未选择"
-                                : "当前选择航班编号为 " + selectedFlightId + " 的航班"
-                        )
-                    }
                 }
             }
         }
-    
+
         negativeText: qsTr("取消")
         onNegativeClicked: {
             showWarning("操作已取消", 4000);
         }
+
+        FluContentDialog{
+            id : rebookVerificationDialog
+            width: 600
+
+            title: qsTr("改签确认")
+            message: qsTr("请您确认以下改签信息无误")
+            // 如果需要改变金额，显示相应信息并告知用户将会付款
+
+            contentDelegate: Component {
+                Item {
+                    implicitWidth: parent.width
+                    implicitHeight: 260
+                    Flickable{
+                        id: rebookVerificationFlickable
+                        width: parent.width
+                        height: parent.height
+                        clip: true
+                        contentWidth: parent.width
+                        contentHeight: rebookVerificationColumnLayout.height
+
+                        ColumnLayout {
+                            id: rebookVerificationColumnLayout
+                            width: parent.width
+
+                            // 间距调大
+                            spacing: 20
+                            Layout.alignment: Qt.AlignHCenter // 确保组件居中
+
+                            RebookFlightInfoCard {
+                                flightId: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.flightId : -1
+                                flightNumber: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.flightNumber : ""
+                                departureTime: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.departureTime : ""
+                                arrivalTime: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.arrivalTime : ""
+                                departureAirport: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.departureAirport : ""
+                                arrivalAirport: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.arrivalAirport : ""
+                                originalDepAirport: orderInfoCard.departureAirport
+                                originalPrice: orderInfoCard.price
+                                price: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.price : 0.0
+                                airlineCompany: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.airlineCompany : ""
+                                status: rebookingFlightInfo.selectedRebookFlight ? rebookingFlightInfo.selectedRebookFlight.status : ""
+                                enabled: false
+                                border.color: "#409EFF"
+                                border.width: 5
+                                color: "white"
+                                Layout.alignment: Qt.AlignHCenter // 确保组件居中
+                            }
+
+                            FluText {
+                                text: rebookingFlightInfo.selectedRebookFlight ? 
+                                    (rebookingFlightInfo.selectedRebookFlight.price === price ? 
+                                        qsTr("🪙您无需支付改签费用") : 
+                                        (rebookingFlightInfo.selectedRebookFlight.price > price ? 
+                                            qsTr("🪙请注意：您需要支付差价" + (rebookingFlightInfo.selectedRebookFlight.price - price) + "奶龙币") :
+                                            qsTr("🪙您将会被补偿" + (price - rebookingFlightInfo.selectedRebookFlight.price) + "奶龙币"))) : 
+                                    qsTr("未知错误：rebookingFlightInfo.selectedRebookFlight is null")
+                                color: rebookingFlightInfo.selectedRebookFlight ? 
+                                    (rebookingFlightInfo.selectedRebookFlight.price === price ? 
+                                        "green" : 
+                                        (rebookingFlightInfo.selectedRebookFlight.price > price ? 
+                                            "red" : 
+                                            "yellow")) : 
+                                    "gray"
+                                font.pixelSize: 24
+                                font.bold: true
+                                Layout.alignment: Qt.AlignHCenter // 确保组件居中
+                            }
+
+                            FluText {
+                                text: rebookingFlightInfo.selectedRebookFlight ? 
+                                    (rebookingFlightInfo.selectedRebookFlight.departureAirport === departureAirport ? 
+                                        qsTr("✅您的出发机场没有变更") : 
+                                        qsTr("⚠️请注意：您的出发机场将会变为" + rebookingFlightInfo.selectedRebookFlight.departureAirport)) : 
+                                    qsTr("未知错误：rebookingFlightInfo.selectedRebookFlight is null")
+                                color: rebookingFlightInfo.selectedRebookFlight ? 
+                                    (rebookingFlightInfo.selectedRebookFlight.departureAirport === departureAirport ? 
+                                        "#409EFF" : 
+                                        "orange") : 
+                                    "gray"
+                                font.pixelSize: 24
+                                font.bold: true
+                                Layout.alignment: Qt.AlignHCenter // 确保组件居中
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            onNegativeClicked: {
+                // 重新显示改签弹窗
+                rebookingDialog.open()
+            }
+
+            onPositiveClicked: {
+                rebookingDialog.close();
+                if(rebookingFlightInfo.selectedRebookFlight){
+                    rebookOrder(rebookingFlightInfo.selectedRebookFlight.flightId);
+                }else{
+                    showError("未知错误", 3000, "rebookingFlightInfo.selectedRebookFlight is null");
+                }
+            }
+        }
     
         positiveText: qsTr("确认改签")
         onPositiveClickListener: () => {
-            if (selectedFlightId === null) {
-                console.log("未选择任何卡片，改签操作不执行")
-            } else {
-                showSuccess("将改签至第" + selectedFlightId + "个航班")
-                showSuccess("改签成功", 4000, "祝您旅途愉快！")
+            if (rebookingDialog.selectedFlightId < 0) {
+            console.log("未选择任何卡片，改签操作不执行")
+            return
+            }
+            var flights = rebookingFlightInfo.flightList
+            for (var i = 0; i < flights.length; i++) {
+                if (flights[i].flightId === rebookingDialog.selectedFlightId) {
+                    rebookingFlightInfo.selectedRebookFlight = flights[i]
+                    if (userInfo.myMoney < flights[i].price - orderInfoCard.price) {
+                        showError("您的余额不足以支付差价", 3000, "您可以前往个人中心充值")
+                    } else {
+                        // 隐藏改签弹窗
+                        rebookingDialog.close()
+                        rebookVerificationDialog.open()
+                    }
+                    break;
+                }
             }
         }
     }
