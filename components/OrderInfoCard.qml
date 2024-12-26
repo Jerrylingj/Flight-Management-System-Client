@@ -176,7 +176,7 @@ FluFrame {
     FluContentDialog{
         id : rebookingFailDialog
         title: qsTr("非常抱歉")
-        message: qsTr("目前没有从" + departure + "到"+ destination + "的航班，您可以选择退签，我们将会全款返回"+price+"奶龙币");
+        message: qsTr("今天起三天没有从" + departure + "到"+ destination + "的航班，您可以选择退签，我们将会全款返回"+price+"奶龙币");
         buttonFlags: FluContentDialogType.PositiveButton
         positiveText : qsTr("确定")
         onPositiveClicked:{
