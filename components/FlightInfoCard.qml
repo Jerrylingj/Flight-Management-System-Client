@@ -148,7 +148,7 @@ FluFrame {
 
                     FluText {
                         Layout.alignment: Qt.AlignRight // 右对齐
-                        visible: !isCrossDay()
+                        visible: isCrossDay()
                         text: formatDate(departureTime)
                         font.pixelSize: 14
                     }
@@ -175,7 +175,7 @@ FluFrame {
                     }
 
                     FluText {
-                        visible: !isCrossDay()
+                        visible: isCrossDay()
                         text: formatDate(arrivalTime)
                         font.pixelSize: 14
                     }
@@ -185,7 +185,7 @@ FluFrame {
             // 日期显示
             FluText {
                 Layout.alignment: Qt.AlignHCenter
-                visible: isCrossDay()
+                visible: !isCrossDay()
                 text: formatDate(departureTime)
                 font.pixelSize: 14
             }

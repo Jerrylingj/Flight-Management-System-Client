@@ -8,7 +8,6 @@ FluFrame {
     id: orderInfoCard
     radius: 10
     Layout.fillWidth: true
-    Layout.preferredHeight: 100
     padding: 10
 
     property int  orderId;
@@ -396,88 +395,163 @@ FluFrame {
 
     // 整个Card
     RowLayout{
-        // Card的左半边（信息部分）
-        ColumnLayout{
-            // 主要信息展示栏
-            RowLayout{
-                // 航空公司 Logo 和航班信息
-                ColumnLayout{
-                    Layout.preferredWidth: 150
-                    spacing: 5
+        Layout.fillWidth: true
+        anchors.fill: parent
+        spacing: 30
 
-                    FluRectangle {
-                        color: "#409EFF"
-                        radius: [10, 10, 10, 10]
-                        height: 32
-                        width : 100
+        RowLayout {
+            Layout.preferredWidth : parent.width - 150
+            spacing: 30
+
+
+            ColumnLayout {
+                Layout.preferredWidth: 150
+                spacing: 5
+
+                // 航班号
+                FluText {
+                    text: flightNumber
+                    font.bold: true
+                    font.pixelSize: 20
+                    color: FluTheme.dark ? "#FFFF00" : "#409EFF"
+                }
+
+                // 航空公司信息
+                FluText {
+                    text: airlineCompany
+                    font.pixelSize: 12
+                }
+            }
+
+            // 时间和机场信息
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 5
+
+                // 时刻与航班
+                RowLayout {
+                   spacing: 20
+
+                    ColumnLayout {
                         FluText {
-                            text: flightNumber // 航班号
-                            font.pixelSize: 18
+                            Layout.alignment: Qt.AlignRight // 右对齐
+                            text: formatTime(departureTime)
+                            font.pixelSize: 24
                             font.bold: true
-                            color: "white"
-                            anchors.centerIn: parent
+                        }
+
+                        FluText {
+                            Layout.alignment: Qt.AlignRight // 右对齐
+                            text: departure + departureAirport
+                            font.pixelSize: 12
+                        }
+
+                        FluText {
+                            Layout.alignment: Qt.AlignRight // 右对齐
+                            visible: isCrossDay()
+                            text: formatDate(departureTime)
+                            font.pixelSize: 14
                         }
                     }
 
                     FluText {
-                        text: airlineCompany // 航空公司名称
-                        font.pixelSize: 12
+                        text: "→"
+                        font.pixelSize: 20
+                        font.bold: true
+                        verticalAlignment: Text.AlignVCenter
                     }
 
+                    ColumnLayout {
+                        // 默认左对齐
+                        FluText {
+                            text: formatTime(arrivalTime)
+                            font.pixelSize: 24
+                            font.bold: true
+                        }
 
+                        FluText {
+                            text: destination + arrivalAirport
+                            font.pixelSize: 12
+                        }
+
+                        FluText {
+                            visible: isCrossDay()
+                            text: formatDate(arrivalTime)
+                            font.pixelSize: 14
+                        }
+                    }
                 }
 
-                ColumnLayout{
-                    Layout.fillWidth: true
+                // 日期显示
+                FluText {
+                    Layout.alignment: Qt.AlignHCenter
+                    visible: !isCrossDay()
+                    text: formatDate(departureTime)
+                    font.pixelSize: 14
+                }
 
-                    FluText {
-                        text: formatTime(departureTime) // 起飞时间
-                        font.pixelSize: 24
-                        font.bold: true
+                Timer {
+                    id: checkInTimer
+                    interval: 1000
+                    running: true
+                    repeat: true
+
+                    function formatTimeDiff(diffMillis) {
+                        var totalSec = Math.floor(diffMillis / 1000)
+                        var h = Math.floor(totalSec / 3600)
+                        var m = Math.floor((totalSec % 3600) / 60)
+                        var s = totalSec % 60
+                        return (h < 10 ? "0"+h : h) + ":" + (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s)
                     }
 
-                    FluText {
-                        text: departureAirport // 起点机场
-                        font.pixelSize: 12
+                    onTriggered: {
+                        var now = new Date()
+                        var start = new Date(checkInStartTime)
+                        var end = new Date(checkInEndTime)
+                        if (now < start) {
+                            checkInCountdown.color = FluTheme.dark ? "#90EE90" : "#006400" // 浅绿色 : 深绿色
+                            checkInCountdown.text = "检票开始剩余：" + formatTimeDiff(start - now)
+                        } else if (now >= start && now < end) {
+                            checkInCountdown.color = "#FFA500" // 橙色
+                            checkInCountdown.text = "检票结束剩余：" + formatTimeDiff(end - now)
+                        } else {
+                            checkInCountdown.color = FluTheme.dark ? "#FF7F7F" : "#FF0000" // 浅红色 : 红色
+                            checkInCountdown.text = paymentStatus ? "检票已结束，您可以退改签" : "检票已结束，您可以取消支付"
+                        }
                     }
                 }
 
                 FluText {
-                    width: 50
-                    text: "→"
+                    id: checkInCountdown
+                    font.pixelSize: 20
                     font.bold: true
+                    Layout.alignment: Qt.AlignHCenter
                 }
+            }
+
+            // 价格和状态
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter
+                spacing: 10
 
                 ColumnLayout {
-                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.preferredWidth: 150
+                    spacing: 10
 
+                    // 价格
                     FluText {
-                        id: arrival
-                        text: formatTime(arrivalTime) // 到达时间
-                        font.pixelSize: 24
-                        font.bold: true
-                    }
-                    FluText {
-                        text: arrivalAirport // 终点机场
-                        font.pixelSize: 12
-                    }
-                }
-
-                // 价格和状态
-                ColumnLayout {
-                    Layout.preferredWidth: orderInfoCard.width / 6
-                    spacing: 5
-
-                    FluText {
-                        text: qsTr("￥") + price.toFixed(2) // 动态绑定价格
+                        text: qsTr("￥") + price.toFixed(2)
                         font.pixelSize: 18
                         font.bold: true
                         color: "#F39C12"
+                        horizontalAlignment: Text.AlignHCenter
                     }
 
+                    // 状态徽章
                     Rectangle {
                         id: statusBadge
-                        Layout.alignment: Qt.AlignHCenter
                         width: 80
                         height: 24
                         radius: 5
@@ -489,58 +563,18 @@ FluFrame {
                             color: "white"
                             font.pixelSize: 14
                             font.bold: true
+                            horizontalAlignment: Text.AlignHCenter
                         }
                     }
                 }
             }
-
-
-            
-            Timer {
-                id: checkInTimer
-                interval: 1000
-                running: true
-                repeat: true
-
-                function formatTimeDiff(diffMillis) {
-                    var totalSec = Math.floor(diffMillis / 1000)
-                    var h = Math.floor(totalSec / 3600)
-                    var m = Math.floor((totalSec % 3600) / 60)
-                    var s = totalSec % 60
-                    return (h < 10 ? "0"+h : h) + ":" + (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s)
-                }
-
-                onTriggered: {
-                    var now = new Date()
-                    var start = new Date(checkInStartTime)
-                    var end = new Date(checkInEndTime)
-                    if (now < start) {
-                        checkInCountdown.color = FluTheme.dark ? "#90EE90" : "#006400" // 浅绿色 : 深绿色
-                        checkInCountdown.text = "检票开始剩余：" + formatTimeDiff(start - now)
-                    } else if (now >= start && now < end) {
-                        checkInCountdown.color = "#FFA500" // 橙色
-                        checkInCountdown.text = "检票结束剩余：" + formatTimeDiff(end - now)
-                    } else {
-                        checkInCountdown.color = FluTheme.dark ? "#FF7F7F" : "#FF0000" // 浅红色 : 红色
-                        checkInCountdown.text = paymentStatus ? "检票已结束，您可以退改签" : "检票已结束，您可以取消支付"
-                    }
-                }
-            }
-
-            FluText {
-                id: checkInCountdown
-                font.pixelSize: 20
-                font.bold: true
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-
         }
 
         // Card的右半边（按钮部分）
         ColumnLayout{
             // 显示二维码和支付/退改签按钮
-            Layout.preferredWidth: orderInfoCard.width / 6
+            Layout.preferredWidth: 150
+            spacing: 10
 
             // 登机二维码按钮
             FluToggleButton {
@@ -637,7 +671,7 @@ FluFrame {
                     buttonFlags: FluContentDialogType.NeutralButton | FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
 
                     onNegativeClicked:{
-                        
+
                         unpayOrder();
                     }
                     positiveText: qsTr("改签")
@@ -791,13 +825,32 @@ FluFrame {
         }
     }
 
+
+    // 函数：判断航班是否跨天
+    function isCrossDay() {
+        const depDate = new Date(departureTime);
+        const arrDate = new Date(arrivalTime);
+
+        // 比较日期部分是否相同
+        return depDate.getFullYear() !== arrDate.getFullYear() ||
+               depDate.getMonth() !== arrDate.getMonth() ||
+               depDate.getDate() !== arrDate.getDate();
+    }
+
     // 函数：格式化时间为 "hh:mm" 格式
     function formatTime(timeString) {
-        var date = new Date(timeString);  // 使用 JavaScript 内置的 Date 对象解析时间字符串
-        var hours = date.getHours();  // 获取小时
-        var minutes = date.getMinutes();  // 获取分钟
-
-        // 保证小时和分钟都是两位数格式
+        var date = new Date(timeString);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
         return (hours < 10 ? '0' + hours : hours) + ":" + (minutes < 10 ? '0' + minutes : minutes);
+    }
+
+    // 函数：格式化日期为 "YYYY-MM-DD" 格式
+    function formatDate(dateString) {
+        var date = new Date(dateString);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        return year + "-" + (month < 10 ? '0' + month : month) + "-" + (day < 10 ? '0' + day : day);
     }
 }

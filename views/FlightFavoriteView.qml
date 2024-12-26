@@ -60,23 +60,21 @@ FluContentPage {
 
     // 筛选函数
     function filterFlights() {
-        var departureCity = departureAddressPicker.selectedCity;
-        var arrivalCity = arrivalAddressPicker.selectedCity;
-        var selectedDate = datePicker.current;
+        var departureCity = filterBar.departureCity;
+        var arrivalCity = filterBar.arrivalCity;
+        var startDate = filterBar.startDate;
+        var endDate = filterBar.endDate;
+        console.log(departureCity + " " + arrivalCity);
+        console.log(startDate + " " + endDate);
 
         // 过滤航班数据
         filteredData = flightData.filter(function(flight) {
             var matchesDeparture = departureCity ? (departureCity === "全部" || flight.departureCity === departureCity) : true;
             var matchesArrival = arrivalCity ? (arrivalCity === "全部" || flight.arrivalCity === arrivalCity) : true;
+            var matchesStartDate = startDate ? (new Date(flight.departureTime).setHours(0, 0, 0, 0) >= new Date(startDate).setHours(0, 0, 0, 0)) : true;
+            var matchesEndDate = endDate ? (new Date(flight.departureTime).setHours(23, 59, 59, 999) <= new Date(endDate).setHours(23, 59, 59, 999)) : true;
 
-            var flightDate = new Date(flight.departureTime);
-            var matchesDate = selectedDate ? (
-                flightDate.getFullYear() === selectedDate.getFullYear() &&
-                flightDate.getMonth() === selectedDate.getMonth() &&
-                flightDate.getDate() === selectedDate.getDate()
-            ) : true;
-
-            return matchesDeparture && matchesArrival && matchesDate;
+            return matchesDeparture && matchesArrival && matchesStartDate && matchesEndDate;
         });
     }
 
@@ -86,48 +84,12 @@ FluContentPage {
         Layout.fillHeight: true
         spacing: 16
 
-        FluFrame{
-            z: 10
-            id: filterPanel
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            padding: 10
-            clip: true
-
-            RowLayout {
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 20
-
-                AddressPicker {
-                    id: departureAddressPicker
-                    onAccepted: {
-                        // console.log("选择的省份:", selectedProvince);
-                        // console.log("选择的城市:", selectedCity);
-
-                        filterFlights();
-                    }
-                }
-
-                AddressPicker {
-                    id: arrivalAddressPicker
-                    onAccepted: {
-                        // console.log("选择的省份:", selectedProvince);
-                        // console.log("选择的城市:", selectedCity);
-
-                        filterFlights();
-                    }
-                }
-
-                FluDatePicker {
-                    id: datePicker
-                    Layout.preferredWidth: 180
-                    onAccepted: {
-                        // console.log("选择日期:", current);
-                        filterFlights();
-                    }
-                }
+        FilterBar{
+            id: filterBar
+            onExecuteFliter: {
+                filterFlights()
             }
+
         }
 
         Flickable {

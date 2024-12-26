@@ -62,7 +62,7 @@ FluPage {
             anchors.horizontalCenter: parent.horizontalCenter  // 确保水平居中
             text: "确认更改"
             width: parent.width * 0.8
-            enabled: usernameField.text>0
+            enabled: usernameField.text.length > 0
             onClicked: {
                 if(userInfo.myToken.length<=1){
                     showWarning("请先登录")

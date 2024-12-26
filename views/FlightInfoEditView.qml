@@ -170,26 +170,23 @@ FluContentPage {
     }
 
 
-
-    // 筛选航班数据
+    // 筛选函数
     function filterFlights() {
-        var departureCity = departureAddressPicker.selectedCity;
-        var arrivalCity = arrivalAddressPicker.selectedCity;
-        var selectedDate = datePicker.current;
+        var departureCity = filterBar.departureCity;
+        var arrivalCity = filterBar.arrivalCity;
+        var startDate = filterBar.startDate;
+        var endDate = filterBar.endDate;
+        console.log(departureCity + " " + arrivalCity);
+        console.log(startDate + " " + endDate);
 
         // 过滤航班数据
         filteredData = flightData.filter(function(flight) {
             var matchesDeparture = departureCity ? (departureCity === "全部" || flight.departureCity === departureCity) : true;
             var matchesArrival = arrivalCity ? (arrivalCity === "全部" || flight.arrivalCity === arrivalCity) : true;
+            var matchesStartDate = startDate ? (new Date(flight.departureTime).setHours(0, 0, 0, 0) >= new Date(startDate).setHours(0, 0, 0, 0)) : true;
+            var matchesEndDate = endDate ? (new Date(flight.departureTime).setHours(23, 59, 59, 999) <= new Date(endDate).setHours(23, 59, 59, 999)) : true;
 
-            var flightDate = new Date(flight.departureTime);
-            var matchesDate = selectedDate ? (
-                flightDate.getFullYear() === selectedDate.getFullYear() &&
-                flightDate.getMonth() === selectedDate.getMonth() &&
-                flightDate.getDate() === selectedDate.getDate()
-            ) : true;
-
-            return matchesDeparture && matchesArrival && matchesDate;
+            return matchesDeparture && matchesArrival && matchesStartDate && matchesEndDate;
         });
     }
 
@@ -408,38 +405,15 @@ FluContentPage {
         spacing: 16
 
         // 筛选面板
-        FluFrame {
-            id: filterPanel
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            padding: 10
-
-            RowLayout {
-                spacing: 20
-                anchors.fill: parent
-
-                AddressPicker {
-                    id: departureAddressPicker
-                    onAccepted: filterFlights();
-                }
-
-                AddressPicker {
-                    id: arrivalAddressPicker
-                    onAccepted: filterFlights();
-                }
-
-                FluDatePicker {
-                    id: datePicker
-                    Layout.preferredWidth: 180
-                    onAccepted: filterFlights();
-                }
-
-                FluFilledButton {
-                    text: qsTr("添加航班")
-                    onClicked: {
-                        addFlightDialog.open();
-                    }
-                }
+        FilterBar{
+            id: filterBar
+            // 该组件有以下财产：
+            // property string departureCity
+            // property string arrivalCity
+            // property var startDate
+            // property var endDate
+            onExecuteFliter: {
+                filterFlights();
             }
         }
 

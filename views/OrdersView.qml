@@ -5,13 +5,13 @@ import QtQuick.Layouts 1.15
 import NetworkHandler 1.0
 import "../components"
 
-FluScrollablePage {
+FluContentPage {
     id: ordersView
     title: qsTr("全部订单")
     // background: Rectangle { radius: 5 }
 
     property var orderData : []
-    property var filteredOrderData : []
+    property var filteredData : []
 
     // 创建 NetworkHandler 实例
     NetworkHandler {
@@ -34,25 +34,19 @@ FluScrollablePage {
             }
 
             var jsonString = JSON.stringify(responseData);
-            console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
+            // console.log("请求成功，返回数据：", jsonString); // 打印 JSON 字符串
 
-            var tempOrderData = responseData.data.map(function(order) {
+            orderData = responseData.data.map(function(order) {
                 /*** 初始化数据 ***/
                 return order;
             });
 
-            // 检查处理后的 orderData 是否为空
-            if (tempOrderData.length === 0) {
-                console.log("处理后的 orderData 为空");
-                orderData = []; // 确保 orderData 为空数组
-                return;
-            }
-
-            orderData = tempOrderData; // 初始化时显示所有航班数据
+            filterOrders();
         }
         onRequestFailed: function(errorMessage) {
             console.log("请求失败：", errorMessage); // 打印失败的错误信息
             orderData = []; // 在请求失败时，确保 orderData 为空数组，避免渲染问题
+            filteredDate = orderData;
         }
     }
 
@@ -65,102 +59,93 @@ FluScrollablePage {
         networkHandler.request(url, NetworkHandler.POST, {}, userInfo.myToken);
     }
 
-    // 在页面初始化时调用 fetchFlightData 获取航班数据
+    // 在页面初始化时调用 fetchorderData 获取航班数据
     Component.onCompleted: {
-        fetchOrderData();  // 页面加载完毕后调用 fetchFlightData 方法获取数据
+        fetchOrderData();  // 页面加载完毕后调用 fetchorderData 方法获取数据
     }
 
+    function filterOrders(){
+        var departureCity = filterBar.departureCity;
+        var arrivalCity = filterBar.arrivalCity;
+        var startDate = filterBar.startDate;
+        var endDate = filterBar.endDate;
+        // console.log(departureCity + " " + arrivalCity);
+        // console.log(startDate + " " + endDate);
 
-    FluFrame{
+        // 过滤航班数据
+        filteredData = orderData.filter(function(order) {
+            var matchesDeparture = departureCity ? (departureCity === "全部" || order.departure === departureCity) : true;
+            var matchesArrival = arrivalCity ? (arrivalCity === "全部" || order.destination === arrivalCity) : true;
+            var matchesStartDate = startDate ? (new Date(order.departureTime).setHours(0, 0, 0, 0) >= new Date(startDate).setHours(0, 0, 0, 0)) : true;
+            var matchesEndDate = endDate ? (new Date(order.departureTime).setHours(23, 59, 59, 999) <= new Date(endDate).setHours(23, 59, 59, 999)) : true;
+
+            return matchesDeparture && matchesArrival && matchesStartDate && matchesEndDate;
+        });
+    }
+
+    ColumnLayout{
+        anchors.fill: parent
         Layout.fillWidth: true
         Layout.preferredHeight: 80
-        padding: 10
+        spacing: 16
 
-        RowLayout{
-
-            anchors{
-                verticalCenter: parent.verticalCenter
-                left: parent.left
+        FilterBar{
+            id: filterBar
+            onExecuteFliter: {
+                filterOrders();
             }
+        }
 
-            // FluText{
-            //     text: qsTr("hourFormat=FluTimePickerType.H")
-            // }
+        Flickable{
+            id: flickableContainer
+            y: filterBar.height
+            height: parent.height - filterBar.height - 90
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            clip: true
 
-            FluTextBox {
-                id: departureInput
-                placeholderText: qsTr("请输入起点")
-                Layout.preferredWidth: 150
-            }
+            ColumnLayout{
+                id: columnLayout
+                width: parent.width
+                spacing: 10
 
-            FluTextBox {
-                id: destinationInput
-                placeholderText: qsTr("请输入终点")
-                Layout.preferredWidth: 150
-            }
+                Repeater {
+                    model: filteredData.length > 0 ? filteredData : []  // 如果 OrderData 为空，避免空数组导致的问题
+                    width: parent.width
 
-            AltAirDatePicker {
-                id: datePicker
-                Layout.preferredWidth: 180
-            }
+                    OrderInfoCard {
+                        width: parent.width
+                        height: 150
+                        orderId: modelData.orderId
+                        userId: modelData.userId
+                        flightId: modelData.flightId
+                        totalChangeCount: modelData.totalChangeCount
+                        paymentStatus: modelData.paymentStatus
+                        flightNumber: modelData.flightNumber
+                        airlineCompany: modelData.airlineCompany
+                        price: modelData.price
+                        flightStatus: modelData.flightStatus
+                        departure: modelData.departure
+                        destination: modelData.destination
+                        departureTime: modelData.departureTime
+                        arrivalTime: modelData.arrivalTime
+                        departureAirport: modelData.departureAirport
+                        arrivalAirport: modelData.arrivalAirport
+                        checkInStartTime: modelData.checkInStartTime
+                        checkInEndTime: modelData.checkInEndTime
 
-            // 还无法调节速度
-            Timer{
-                id: timer_progress
-                interval: 80
-                onTriggered: {
-                    queryButton.progress = (queryButton.progress + 0.1).toFixed(1)
-                    if(queryButton.progress===1){
-                        timer_progress.stop()
-                    }else{
-                        timer_progress.start()
+                        onOrderUpdated: {
+                            // console.log("收到 orderUpdated 信号，刷新订单数据");
+                            fetchOrderData();
+                        }
                     }
                 }
             }
 
-            // 还无法调节速度
-            FluProgressButton {
-                id: queryButton
-                width: 100
-                text: qsTr("查询")
-                onClicked:{
-                    // console.log("点击查询按钮")
-                    queryButton.progress = 0
-                    timer_progress.restart()
-                }
-            }
+            contentHeight: columnLayout.height
         }
+
     }
 
-    Repeater {
-        model: orderData.length > 0 ? orderData : []  // 如果 OrderData 为空，避免空数组导致的问题
-        width: parent.width
 
-        OrderInfoCard {
-            width: parent.width
-            height: 80
-            orderId: modelData.orderId
-            userId: modelData.userId
-            flightId: modelData.flightId
-            totalChangeCount: modelData.totalChangeCount
-            paymentStatus: modelData.paymentStatus
-            flightNumber: modelData.flightNumber
-            airlineCompany: modelData.airlineCompany
-            price: modelData.price
-            flightStatus: modelData.flightStatus
-            departure: modelData.departure
-            destination: modelData.destination
-            departureTime: modelData.departureTime
-            arrivalTime: modelData.arrivalTime
-            departureAirport: modelData.departureAirport
-            arrivalAirport: modelData.arrivalAirport
-            checkInStartTime: modelData.checkInStartTime
-            checkInEndTime: modelData.checkInEndTime
-
-            onOrderUpdated: {
-                console.log("收到 orderUpdated 信号，刷新订单数据");
-                fetchOrderData();
-            }
-        }
-    }
 }
