@@ -11,7 +11,7 @@
 ---
 
 ## 🚀 **Introduction**
-**AltAir** originated from the primary practical training course of the School of Software Engineering of Sun Yat-sen University and was developed by the **Terminal Terrace Team**. This a **QML-based frontend project** designed for efficient and intuitive user interaction. The system supports both **user** and **administrator** functionalities, including:
+**AltAir** originated from the primary practical training course of the School of Software Engineering of Sun Yat-sen University and was developed by the **[Terminal Terrace Team](https://github.com/Terminal-Terrace)**. This a **QML-based frontend project** designed for efficient and intuitive user interaction. The system supports both **user** and **administrator** functionalities, including:
 - **Flight search and filtering**.
 - **Order management**.
 - **Personal center**.
