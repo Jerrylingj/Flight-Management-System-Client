@@ -56,7 +56,6 @@ FluContentPage {
         }
     }
 
-
     // 用于查询收藏信息
     NetworkHandler {
         id: favoriteNetworkHandler
@@ -167,8 +166,8 @@ FluContentPage {
         var arrivalCity = filterBar.arrivalCity;
         var startDate = filterBar.startDate;
         var endDate = filterBar.endDate;
-        console.log(departureCity + " " + arrivalCity);
-        console.log(startDate + " " + endDate);
+        // console.log(departureCity + " " + arrivalCity);
+        // console.log(startDate + " " + endDate);
 
         // 过滤航班数据
         filteredData = flightData.filter(function(flight) {
