@@ -49,7 +49,7 @@ FluContentPage {
 
                     Image {
                         id: avatar
-                        source: userInfo.myAvatar
+                        source: userInfo.myAvatar.length?userInfo.myAvatar:"qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
                         cache: false
@@ -397,6 +397,8 @@ FluContentPage {
                                                     networkHandler.request('/api/user',NetworkHandler.DELETE,{},userInfo.myToken)
                                                     userInfo.myToken = ""
                                                     userInfo.myAvatar = "qrc:/qt/Flight_Management_System_Client/figures/avatar.jpg"
+                                                    avatar.source = userInfo.myAvatar
+                                                    userNavView.push("qrc:/qt/Flight_Management_System_Client/views/ProfileView.qml")
                                                 }
                     }
                     onClicked: {
