@@ -362,7 +362,7 @@ FluContentPage {
 
         if (isCrossDay) {
             console.log("检测到跨天航班（基于时刻判断）");
-            arrivalTime.setDate(arrivalTime.getDate() + 1);
+            arrivalTime.setDate(departureTime.getDate() + 1);
             flight.arrivalTime = arrivalTime.toString();
             console.log("到达时间：", arrivalTime);
         }
@@ -708,11 +708,6 @@ FluContentPage {
             const arr = newFlightData.arrivalTime;
 
             console.log("验证航班");
-            // if (new Date(dep) >= new Date(arr)) {
-            //     showError("到达时间早于起飞时间");
-            //     return;
-            // }
-
 
             newFlightData.checkinStartTime = calcCheckinStart(dep);
             newFlightData.checkinEndTime = calcCheckinEnd(dep);
@@ -723,7 +718,6 @@ FluContentPage {
 
             console.log("添加航班:", JSON.stringify(newFlightData));
             addFlight(newFlightData);
-            // addFlightDialog.close();
         }
     }
 
@@ -898,11 +892,6 @@ FluContentPage {
             const arr = editingFlight.arrivalTime;
 
             console.log("验证航班");
-            // if (new Date(dep) >= new Date(arr)) {
-            //     showError("到达时间早于起飞时间");
-            //     return;
-            // }
-
 
             editingFlight.checkinStartTime = calcCheckinStart(dep);
             editingFlight.checkinEndTime = calcCheckinEnd(dep);

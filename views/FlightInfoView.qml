@@ -185,6 +185,7 @@ FluContentPage {
 
     ColumnLayout {
         anchors.fill: parent
+        Layout.fillWidth: true
         spacing: 16
 
         FluFrame{
@@ -232,9 +233,8 @@ FluContentPage {
         Flickable {
             id: flickableContainer
             y: filterPanel.height
-            width: parent.width
             height: parent.height - filterPanel.height - 90
-            contentWidth: parent.width
+            Layout.fillWidth: true
             clip: true
 
             ColumnLayout {

@@ -129,9 +129,8 @@ FluContentPage {
 
         Flickable {
             y: filterPanel.height
-            width: parent.width
             height: parent.height - filterPanel.height - 90
-            contentWidth: parent.width
+            Layout.fillWidth: true
             clip: true
 
             ColumnLayout {
