@@ -93,6 +93,7 @@ qt_add_qml_module(${PROJECT_NAME}
     RESOURCES figures/personnel.png
     QML_FILES components/RebookFlightInfoCard.qml
     QML_FILES components/FilterBar.qml
+    QML_FILES components/AltAirDatePicker.qml
 )
 
 # Qt f

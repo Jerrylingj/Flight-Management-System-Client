@@ -10,6 +10,12 @@ FluFrame{
     Layout.preferredHeight: 80
     padding: 10
     clip: true
+    property string departureCity
+    property string arrivalCity
+    property var startDate
+    property var endDate
+
+    signal executeFliter()
 
     RowLayout {
         anchors.fill: parent
@@ -26,14 +32,14 @@ FluFrame{
             Layout.preferredWidth: 80
         }
 
-        FluDatePicker {
+        AltAirDatePicker {
             id: startDatePicker
-            Layout.preferredWidth: 120
+            Layout.preferredWidth: 150
         }
 
-        FluDatePicker {
+        AltAirDatePicker {
             id: endDatePicker
-            Layout.preferredWidth: 120
+            Layout.preferredWidth: 150
         }
 
         Timer{
@@ -52,18 +58,18 @@ FluFrame{
         // 还无法调节速度
         FluProgressButton {
             id: filterButton
-            width: 200
+            width: 300
             text: qsTr("筛选")
             onClicked:{
                 // console.log("点击查询按钮")
                 filterButton.progress = 0
                 timer_progress.restart()
+                departureCity = departureAddressPicker.selectedCity;
+                arrivalCity = arrivalAddressPicker.selectedCity;
+                startDate = startDatePicker.current;
+                endDate = endDatePicker.current;
                 executeFliter();
             }
-        }
-
-        function executeFliter() {
-            console.log("开始执行筛选");
         }
     }
 }
