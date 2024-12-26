@@ -16,6 +16,7 @@ qt_standard_project_setup(REQUIRES 6.5)
 set(QML_FILES
     Main.qml
     MainWindow.qml
+
     views/HomeView.qml
     views/FlightInfoView.qml
     views/OrdersView.qml
@@ -31,6 +32,7 @@ set(QML_FILES
     views/EditPersonalInfo.qml
     views/UsersInfoView.qml
     views/AboutView.qml
+
     components/FlightInfoCard.qml
     components/NoteCard.qml
     components/NoteList.qml
@@ -40,6 +42,9 @@ set(QML_FILES
     components/AddressPicker.qml
     components/RechargeEntry.qml
     components/FlightFavoriteCard.qml
+    components/RebookFlightInfoCard.qml
+    components/FilterBar.qml
+    components/IconButton.qml
 )
 
 set(SOURCE_FILES
@@ -53,28 +58,34 @@ set(SOURCE_FILES
 
 set(RESOURCES_FILES
     favicon.ico
+
     figures/homepage-cover.png
     figures/editinfo.png
     figures/login-flight.png
     figures/help-desk.png
+    figures/love.png
+    figures/shopping-list.png
+    figures/money.png
+    figures/edit.png
+
     figures/avatar.jpg
-    # figures/avatar.png
+    figures/avatar.png
     figures/nailong.jpg
     figures/user.png
     figures/NailongAskYou.jpg
     figures/NailongAskYouAgain.jpg
     figures/NailongAskYouLastOne.png
-    # figures/background1.jpg
-    # figures/background2.jpg
-    # figures/background3.jpg
-    # figures/background4.jpg
-    # figures/background5.jpg
-    # figures/background6.jpg
+    figures/background1.jpg
+    figures/background2.jpg
+    figures/background3.jpg
+    figures/background4.jpg
+    figures/background5.jpg
+    figures/background6.jpg
     figures/lgj.png
     figures/lsy.png
     figures/ypx.png
     figures/zxy.png
-    # figures/personnel.png
+    figures/personnel.png
 )
 
 qt_add_executable(${PROJECT_NAME}
@@ -88,11 +99,6 @@ qt_add_qml_module(${PROJECT_NAME}
     SOURCES ${SOURCE_FILES}
     RESOURCES ${RESOURCES_FILES}
     QML_FILES ${QML_FILES}
-    RESOURCES figures/avatar.png
-    RESOURCES figures/background1.jpg figures/background2.jpg figures/background3.jpg figures/background4.jpg figures/background5.jpg figures/background6.jpg
-    RESOURCES figures/personnel.png
-    QML_FILES components/RebookFlightInfoCard.qml
-    QML_FILES components/FilterBar.qml
 )
 
 # Qt f

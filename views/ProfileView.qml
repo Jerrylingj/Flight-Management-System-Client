@@ -131,34 +131,62 @@ FluContentPage {
                     height: parent.height
                     width: parent.width/2
                     spacing: 20
-                    FluFilledButton {
-                        text: qsTr("收藏")
-                        Layout.preferredWidth: 120
-                        onClicked: {
-                            if(!userInfo.myToken)  {
-                                showWarning(qsTr("请先登录！"))
-                                return
+                    FluRectangle{
+                        Layout.preferredWidth: 130
+                        Layout.preferredHeight: parent.height /2 -10
+                        FluClip{
+                            height: 30
+                            width: 30
+                            anchors.left: parent.left
+                            Image {
+                                anchors.fill: parent
+                                source: "qrc:/qt/Flight_Management_System_Client/figures/love.png"
                             }
-                            console.log("跳转到收藏界面");
-                            userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml")
-                            userNavView.setCurrentIndex(3);
+                        }
+                        FluFilledButton{
+                            text: qsTr("收藏")
+                            width: 100
+                            height: 30
+                            anchors.left: parent.left
+                            anchors.leftMargin: 30
+                            onClicked: {
+                                if(!userInfo.myToken)  {
+                                    showWarning(qsTr("请先登录！"))
+                                    return
+                                }
+                                console.log("跳转到收藏界面");
+                                userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightFavoriteView.qml")
+                                userNavView.setCurrentIndex(3);
+                            }
                         }
                     }
-
-                    RechargeEntry{
-                        id: rechargeEntry1
-                    }
-
-                    FluFilledButton {
-                        text: qsTr("充值")
-                        Layout.preferredWidth: 120
-                        onClicked: {
-                            if(userInfo.myToken.length<=1){
-                                showWarning("请先登录")
+                    FluRectangle{
+                        Layout.preferredWidth: 130
+                        Layout.preferredHeight: parent.height /2 -10
+                        FluClip{
+                            height: 30
+                            width: 30
+                            anchors.left: parent.left
+                            Image {
+                                anchors.fill: parent
+                                source: "qrc:/qt/Flight_Management_System_Client/figures/shopping-list.png"
                             }
-                            else{
-                                console.log("跳转到充值界面");
-                                rechargeEntry1.open();
+                        }
+                        FluFilledButton {
+                            text: qsTr("全部订单")
+                            width: 100
+                            height: 30
+                            anchors.left: parent.left
+                            anchors.leftMargin: 30
+                            onClicked: {
+                                if(!userInfo.myToken)  {
+                                    showWarning(qsTr("请先登录！"))
+                                    return
+                                }
+                                console.log("跳转到全部订单界面");
+                                // 跳转到全部订单页面逻辑
+                                userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightInfoView.qml")
+                                userNavView.setCurrentIndex(4);
                             }
                         }
                     }
@@ -167,30 +195,65 @@ FluContentPage {
                     height: parent.height
                     width: parent.width/2
                     spacing: 20
-                    FluFilledButton {
-                        text: qsTr("编辑个人信息")
-                        Layout.preferredWidth: 120
-                        onClicked: {
-                            if(!userInfo.myToken)  {
-                                showWarning(qsTr("请先登录！"))
-                                return
+                    FluRectangle{
+                        Layout.preferredWidth: 130
+                        Layout.preferredHeight: parent.height /2 -10
+                        FluClip{
+                            height: 30
+                            width: 30
+                            anchors.left: parent.left
+                            Image {
+                                anchors.fill: parent
+                                source: "qrc:/qt/Flight_Management_System_Client/figures/edit.png"
                             }
-                            console.log("跳转到编辑界面");
-                            userNavView.push("qrc:/qt/Flight_Management_System_Client/views/EditPersonalInfo.qml")
+                        }
+                        FluFilledButton {
+                            text: qsTr("编辑个人信息")
+                            width: 120
+                            height: 30
+                            anchors.left: parent.left
+                            anchors.leftMargin: 30
+                            onClicked: {
+                                if(!userInfo.myToken)  {
+                                    showWarning(qsTr("请先登录！"))
+                                    return
+                                }
+                                console.log("跳转到编辑界面");
+                                userNavView.push("qrc:/qt/Flight_Management_System_Client/views/EditPersonalInfo.qml")
+                            }
                         }
                     }
-                    FluFilledButton {
-                        text: qsTr("全部订单")
-                        Layout.preferredWidth: 120
-                        onClicked: {
-                            if(!userInfo.myToken)  {
-                                showWarning(qsTr("请先登录！"))
-                                return
+                    FluRectangle{
+                        Layout.preferredWidth: 130
+                        Layout.preferredHeight: parent.height /2 -10
+                        FluClip{
+                            height: 30
+                            width: 30
+                            anchors.left: parent.left
+                            Image {
+                                anchors.fill: parent
+                                source: "qrc:/qt/Flight_Management_System_Client/figures/money.png"
                             }
-                            console.log("跳转到全部订单界面");
-                            // 跳转到全部订单页面逻辑
-                            userNavView.push("qrc:/qt/Flight_Management_System_Client/views/FlightInfoView.qml")
-                            userNavView.setCurrentIndex(4);
+                        }
+                        RechargeEntry{
+                            id: rechargeEntry1
+                        }
+
+                        FluFilledButton {
+                            text: qsTr("充值")
+                            width: 120
+                            height: 30
+                            anchors.left: parent.left
+                            anchors.leftMargin: 30
+                            onClicked: {
+                                if(userInfo.myToken.length<=1){
+                                    showWarning("请先登录")
+                                }
+                                else{
+                                    console.log("跳转到充值界面");
+                                    rechargeEntry1.open();
+                                }
+                            }
                         }
                     }
                 }
