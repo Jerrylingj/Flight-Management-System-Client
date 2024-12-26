@@ -127,6 +127,11 @@ FluPage {
             }
 
             FluText {
+                text: (passwordField.text === confirmPasswordField.text && passwordField.text.length>0)?"密码一致":"密码不一致或为空"
+                color: (passwordField.text === confirmPasswordField.text && passwordField.text.length>0)?"green":"red"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            FluText {
                 text: (passwordField.text.length<=12&&passwordField.text.length>=6)?"位数正确":"密码需要6~12位"
                 color: (passwordField.text.length<=12&&passwordField.text.length>=6)?"green":"red"
                 anchors.horizontalCenter: parent.horizontalCenter
