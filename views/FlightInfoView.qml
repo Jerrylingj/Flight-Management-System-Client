@@ -191,6 +191,7 @@ FluContentPage {
     ColumnLayout {
         anchors.fill: parent
         Layout.fillWidth: true
+        Layout.fillHeight: true
         spacing: 16
 
         FilterBar{
@@ -210,6 +211,7 @@ FluContentPage {
             y: filterBar.height
             height: parent.height - filterBar.height - 90
             Layout.fillWidth: true
+            Layout.fillHeight: true
             clip: true
 
             ColumnLayout {
@@ -228,6 +230,8 @@ FluContentPage {
                        flightNumber: modelData.flightNumber
                        departureTime: modelData.departureTime
                        arrivalTime: modelData.arrivalTime
+                       departureCity: modelData.departureCity
+                       arrivalCity: modelData.arrivalCity
                        departureAirport: modelData.departureAirport
                        arrivalAirport: modelData.arrivalAirport
                        price: modelData.price
