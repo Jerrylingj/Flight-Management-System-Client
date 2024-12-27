@@ -256,7 +256,6 @@ FluWindow {
         }
 
         footerItems: FluPaneItemExpander {
-            title: qsTr("主菜单")
             iconVisible: false
 
             FluPaneItem {
@@ -264,7 +263,7 @@ FluWindow {
                 title: qsTr("关于我们")
                 icon: FluentIcons.Info
                 url: "qrc:/qt/Flight_Management_System_Client/views/AboutView.qml"
-                onTap: { agentNavView.navigateTo(url) }
+                onTap: { agentNavView.push(url) }
             }
 
         }

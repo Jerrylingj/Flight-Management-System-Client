@@ -142,12 +142,12 @@ FluPage {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             FluText {
-                text: passwordField.text.match(/^(?=.*[a-z]).*$/)?"有大写字母":"密码需要至少1个小写字母"
+                text: passwordField.text.match(/^(?=.*[a-z]).*$/)?"有小写写字母":"密码需要至少1个小写字母"
                 color:passwordField.text.match(/^(?=.*[a-z]).*$/)?"green":"red"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             FluText {
-                text: passwordField.text.match(/^(?=.*\d).*$/)?"有大写字母":"密码需要至少1个数字"
+                text: passwordField.text.match(/^(?=.*\d).*$/)?"有数字":"密码需要至少1个数字"
                 color:passwordField.text.match(/^(?=.*\d).*$/)?"green":"red"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
