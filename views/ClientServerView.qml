@@ -90,12 +90,12 @@ FluContentPage {
             enabled: button_enable
             onClicked: {
                 var newMessage=inputField.text.trim()
-                if(newMessage.length>=50){
+                if(newMessage.length>=25){
                     showWarning("字数过长");
                     inputField.text = ""
                 }
 
-                else if(newMessage!=="" && newMessage.length < 50){
+                else if(newMessage!=="" && newMessage.length < 25){
                     button_enable = false
                     // 创建一个新的消息对象
                     const msg = { role: "user", content: newMessage };

@@ -56,6 +56,7 @@ FluFrame {
         id: orderHandler
 
         onRequestSuccess: function (responseData) {
+            console.log("response", JSON.stringify(responseData));
             if (responseData.success) {
                 console.log("预定操作成功");
                 isBooked = true;

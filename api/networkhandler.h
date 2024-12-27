@@ -21,7 +21,7 @@ public:
 
     Q_ENUM(RequestMethod)
 
-    explicit NetworkHandler(QObject *parent = nullptr, QString api_url = "http://localhost:8080");
+    explicit NetworkHandler(QObject *parent = nullptr, QString api_url = "http://192.168.74.226:8080");
 
     Q_INVOKABLE void request(
         const QString &url,

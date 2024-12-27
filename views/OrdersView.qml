@@ -30,6 +30,7 @@ FluContentPage {
             if (!Array.isArray(responseData.data)) {
                 console.log("返回的data不是数组");
                 orderData = []; // 确保 orderData 为空数组
+                filterOrders();
                 return;
             }
 

@@ -225,7 +225,7 @@ Item{
             width: parent.width * 0.7
             height: parent.height - closeButton.height
             anchors.horizontalCenter: parent.horizontalCenter
-            contentHeight: userInfo.height + articleContent.implicitHeight + imageContainer.height
+            contentHeight: userInfo.height + articleContent.implicitHeight + imageContainer.height + 40
             clip: true
 
             FluRectangle{

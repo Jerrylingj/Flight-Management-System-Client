@@ -101,9 +101,9 @@ FluContentPage {
                         console.log("航班id为" + flight.flightId + "，name为" + flight.flightNumber + "的航班已被预定")
                     }
                 });
-
-                filterFlights();
             }
+
+            filterFlights();
         }
 
         onRequestFailed: function(errorMessage) {
