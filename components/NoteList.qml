@@ -10,6 +10,7 @@ import QtQuick.Effects
 Item{
     id:root
     property var selectedCity:null
+
     Flickable {
         width: parent.width
         height: parent.height
