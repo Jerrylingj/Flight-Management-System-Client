@@ -750,7 +750,7 @@ FluContentPage {
 
                         FluComboBox {
                             Layout.fillWidth: true
-                            model: ["on Time", "Delayed", "Cancelled"]
+                            model: ["on Time", "delayed", "Cancelled"]
                             currentIndex: 0
                             onCurrentIndexChanged:
                             {
@@ -928,7 +928,7 @@ FluContentPage {
 
                         FluComboBox {
                             Layout.fillWidth: true
-                            model: ["on Time", "Delayed", "Cancelled"]
+                            model: ["on Time", "delayed", "Cancelled"]
                             currentIndex: 0
                             onCurrentIndexChanged:
                             {
