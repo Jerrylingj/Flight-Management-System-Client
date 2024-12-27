@@ -122,6 +122,11 @@ FluContentPage {
                     source: options && options.avatar ? options.avatar : defautUrl
                     sourceSize: Qt.size(80, 80) // 限制图片大小
                     fillMode: Image.PreserveAspectFit // 保持图片比例
+                    onStatusChanged: {
+                       if (status === Image.Error || status === Image.Null) {
+                           source = defautUrl; // 如果加载失败，则切换到默认图片
+                       }
+                   }
                 }
             }
         }
@@ -177,6 +182,12 @@ FluContentPage {
                             source: editingUser.avatar || defautUrl
                             sourceSize: Qt.size(100, 100)
                             fillMode: Image.PreserveAspectFit
+
+                            onStatusChanged: {
+                                   if (status === Image.Error || status === Image.Null) {
+                                       source = defautUrl; // 如果加载失败，则切换到默认图片
+                                   }
+                               }
                         }
                     }
 
