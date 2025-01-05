@@ -513,8 +513,8 @@ FluContentPage {
                             // console.log("点击查询按钮")
                             filterButton.progress = 0
                             timer_progress.restart()
-                            departureCity = departureAddressPicker.selectedCity;
-                            arrivalCity = arrivalAddressPicker.selectedCity;
+                            filterBar.departureCity = departureAddressPicker.selectedCity;
+                            filterBar.arrivalCity = arrivalAddressPicker.selectedCity;
                             startDate = startDatePicker.current;
                             endDate = endDatePicker.current;
                             executeFliter();
@@ -530,8 +530,6 @@ FluContentPage {
                         }
                     }
                 }
-
-
             }
         }
 
@@ -750,7 +748,7 @@ FluContentPage {
 
                         FluComboBox {
                             Layout.fillWidth: true
-                            model: ["on Time", "delayed", "Cancelled"]
+                            model: ["on Time", "delayed", "cancelled"]
                             currentIndex: 0
                             onCurrentIndexChanged:
                             {
@@ -928,7 +926,7 @@ FluContentPage {
 
                         FluComboBox {
                             Layout.fillWidth: true
-                            model: ["on Time", "delayed", "Cancelled"]
+                            model: ["on Time", "delayed", "cancelled"]
                             currentIndex: 0
                             onCurrentIndexChanged:
                             {

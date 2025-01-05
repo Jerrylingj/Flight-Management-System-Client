@@ -90,8 +90,40 @@ cmake --build .
   <img src="./figures/readme/cover-6.png" alt="Screenshot 6" width="45%"/>
 </div>
 
+<div align="center">
+  <img src="./figures/readme/cover-7.png" alt="Screenshot 7" width="45%"/>
+  <img src="./figures/readme/cover-8.png" alt="Screenshot 8" width="45%"/>
+</div>
 
+<div align="center">
+  <img src="./figures/readme/cover-9.png" alt="Screenshot 9" width="45%"/>
+  <img src="./figures/readme/cover-10.png" alt="Screenshot 10" width="45%"/>
+</div>
 
+<div align="center">
+  <img src="./figures/readme/cover-11.png" alt="Screenshot 11" width="45%"/>
+  <img src="./figures/readme/cover-12.png" alt="Screenshot 12" width="45%"/>
+</div>
+
+<div align="center">
+  <img src="./figures/readme/cover-13.png" alt="Screenshot 13" width="45%"/>
+  <img src="./figures/readme/cover-14.png" alt="Screenshot 14" width="45%"/>
+</div>
+
+<div align="center">
+  <img src="./figures/readme/cover-15.png" alt="Screenshot 15" width="45%"/>
+  <img src="./figures/readme/cover-16.png" alt="Screenshot 16" width="45%"/>
+</div>
+
+<div align="center">
+  <img src="./figures/readme/cover-17.png" alt="Screenshot 17" width="45%"/>
+  <img src="./figures/readme/cover-18.png" alt="Screenshot 18" width="45%"/>
+</div>
+
+<div align="center">
+  <img src="./figures/readme/cover-19.png" alt="Screenshot 19" width="45%"/>
+  <img src="./figures/readme/cover-20.png" alt="Screenshot 20" width="45%"/>
+</div>
 
 ---
 
