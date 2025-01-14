@@ -27,7 +27,7 @@
 ├── views/                   # 功能页面
 ├── figures/                 # 静态资源
 ├── api/                     # 工具模块
-├── storage/				 # 全局变量
+├── storage/                 # 全局变量
 ├── Main.qml                 # 应用进入点
 └── README.md                # 项目说明文档
 ```
