@@ -58,17 +58,19 @@
 
 ## 🛠️ **Getting Started**
 
-### 1. Clone the Repository
+### 1. Clone project
+
 ```bash
 git clone git@github.com:Jerrylingj/Flight-Management-System-Client.git
 ```
 
-### 2. Build and Run
-```bash
-mkdir build && cd build
-cmake ..
-cmake --build .
+### 2. Configure <a href="[zhuzichu520/FluentUI: FluentUI for QML](https://github.com/zhuzichu520/FluentUI)">FluentUI</a> component library
+
+```Bash
+git clone --recursive https://github.com/zhuzichu520/FluentUI.git ## After cloning directly, build and run and the configuration will be completed.
 ```
+
+### 3. Run the project
 
 ---
 

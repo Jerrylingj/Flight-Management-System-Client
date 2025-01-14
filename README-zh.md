@@ -65,12 +65,13 @@
 git clone git@github.com:Jerrylingj/Flight-Management-System-Client.git
 ```
 
-### 2. 构建并运行
-```bash
-mkdir build && cd build
-cmake ..
-cmake --build .
+### 2. 配置<a href="[zhuzichu520/FluentUI: FluentUI for QML](https://github.com/zhuzichu520/FluentUI)">FluentUI</a>组件库
+
+```Bash
+git clone --recursive https://github.com/zhuzichu520/FluentUI.git ## 直接克隆了之后构建运行即配置完毕
 ```
+
+### 3. 运行项目
 
 ---
 
