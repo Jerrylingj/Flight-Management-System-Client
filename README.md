@@ -25,7 +25,7 @@
 ├── views/                   # Feature pages
 ├── figures/                 # Static resources
 ├── api/                     # Utility modules
-├── storage/				 # Global variables
+├── storage/	             # Global variables
 ├── Main.qml                 # Application entry point
 └── README.md                # Project documentation
 ```
@@ -141,11 +141,10 @@ We welcome contributions from everyone! Follow these steps:
 ## 📞 **Contact**
 
 For questions or suggestions, please contact:
-- **Jerrylingj**：lingj28@mail2.sysu.edu.cn
-- **water2027**：linshy76@mail2.sysu.edu.cn
-- **math-zhuxy**：zhuxy255@mail2.sysu.edu.cn
-
-- **YANGPuxyu**：yangpx26@mail2.sysu.edu.cn
+- [**Jerrylingj**](https://github.com/Jerrylingj)：lingj28@mail2.sysu.edu.cn
+- **[water2027](https://github.com/water2027)**：linshy76@mail2.sysu.edu.cn
+- **[math-zhuxy](https://github.com/math-zhuxy)**：zhuxy255@mail2.sysu.edu.cn
+- **[YANGPuxyu](https://github.com/YANGPuxyu)**：yangpx26@mail2.sysu.edu.cn
 
 ---
 
